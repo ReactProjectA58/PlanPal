@@ -11,7 +11,7 @@ import Register from "./components/Register.jsx";
 import { AppContext } from "./context/AppContext.jsx";
 import { getUserData } from "./services/users.service.js";
 import ContactsList from "./components/Contacts/ContactsList.jsx";
-import SideBar from "./components/SideBar/SideBar.jsx";
+import Sidebar from "./components/Sidebar/Sidebar.jsx";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -39,7 +39,7 @@ function App() {
     <BrowserRouter>
       <AppContext.Provider value={{ ...appState, setAppState }}>
         <Header />
-        <SideBar />
+        <Sidebar />
         <div className="container mx-auto">
           <Routes>
             <Route path="/" element={<Home />} />
