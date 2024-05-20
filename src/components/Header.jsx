@@ -15,20 +15,31 @@ export default function Header() {
   return (
     <header className="navbar bg-base-100 shadow-md">
       <div className="flex-1">
-        <NavLink to="/" className="btn btn-ghost normal-case text-xl">Home</NavLink>
+        <NavLink
+          to="/"
+          className="btn btn-ghost normal-case text-xl relative left-14"
+        >
+          Home
+        </NavLink>
       </div>
       <div className="flex-none">
         {user ? (
           <>
             <span className="mr-4 text-lg">
-              {`Welcome, ${userData ? userData.handle : 'Loading'}`}
+              {`Welcome, ${userData ? userData.handle : "Loading"}`}
             </span>
-            <Button onClick={logout} className="btn btn-primary">LogOut</Button>
+            <Button onClick={logout} className="btn btn-primary">
+              LogOut
+            </Button>
           </>
         ) : (
           <>
-            <NavLink to="/login" className="btn btn-ghost">Login</NavLink>
-            <NavLink to="/register" className="btn btn-ghost">Register</NavLink>
+            <NavLink to="/login" className="btn btn-ghost">
+              Login
+            </NavLink>
+            <NavLink to="/register" className="btn btn-ghost">
+              Register
+            </NavLink>
           </>
         )}
       </div>

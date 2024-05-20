@@ -21,13 +21,13 @@ export default function SearchBar({ onSearch, clearSearch, currentView }) {
   }, [clearSearch, currentView]);
 
   return (
-    <div className="relative flex items-center max-w-md shadow-lg rounded-lg mr-4">
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+    <div className=" flex items-center max-w-md shadow-lg rounded-lg ">
+      <div className="relative left-4 flex items-center pointer-events-none">
         <FontAwesomeIcon icon={faMagnifyingGlass} className="text-gray-600" />
       </div>
       <input
         type="text"
-        className="pl-10 pr-3 py-2 rounded-l-lg border border-transparent  focus:outline-none w-full"
+        className="pl-10 pr-3 py-2 -ml-3 rounded-l-lg border border-transparent focus:outline-none w-full"
         placeholder="Search..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}

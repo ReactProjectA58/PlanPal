@@ -7,9 +7,8 @@ export default function SideBar() {
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
 
       <label
-        className="btn btn-circle swap swap-rotate z-10"
+        className="btn btn-circle swap swap-rotate z-10 relative bottom-14 left-3"
         htmlFor="my-drawer"
-        style={{ position: "relative", bottom: "135%", left: "35%" }}
       >
         <FontAwesomeIcon
           icon={faBars}

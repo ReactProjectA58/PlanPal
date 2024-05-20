@@ -10,7 +10,7 @@ import {
 export default function Footer() {
   return (
     <footer className="bg-primary-800 text-white py-4">
-      <footer className="footer p-10 bg-base-300 text-base-content">
+      <footer className="footer bg-base-300 text-base-content fixed bottom-0 p-5 flex justify-around">
         <nav>
           <h6 className=" font-semibold text-gray-600 uppercase ">Team 03</h6>
           <div className="grid grid-flow-col gap-4 mt-1">
