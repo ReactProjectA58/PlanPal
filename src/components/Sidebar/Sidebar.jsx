@@ -1,25 +1,16 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { Burger, CancelBurger } from "../../common/helpers/icons";
 
 export default function SideBar() {
   return (
-    <div className="drawer">
+    <div className="drawer z-50">
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
 
       <label
         className="btn btn-circle swap swap-rotate z-10 relative bottom-14 left-3"
         htmlFor="my-drawer"
       >
-        <FontAwesomeIcon
-          icon={faBars}
-          className="swap-off fill-current [:checked~*_&]:!-rotate-45 [:checked~*_&]:!opacity-0"
-          style={{ width: "24px", height: "24px" }}
-        />
-        <FontAwesomeIcon
-          icon={faTimes}
-          className="swap-on fill-current [:checked~*_&]:!rotate-0 [:checked~*_&]:!opacity-100"
-          style={{ width: "24px", height: "24px" }}
-        />
+        <Burger />
+        <CancelBurger />
       </label>
 
       <div className="drawer-content"></div>

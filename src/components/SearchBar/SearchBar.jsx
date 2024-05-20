@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { MagnGlass } from "../../common/helpers/icons";
 
 export default function SearchBar({ onSearch, clearSearch, currentView }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,7 +22,7 @@ export default function SearchBar({ onSearch, clearSearch, currentView }) {
   return (
     <div className=" flex items-center max-w-md shadow-lg rounded-lg ">
       <div className="relative left-4 flex items-center pointer-events-none">
-        <FontAwesomeIcon icon={faMagnifyingGlass} className="text-gray-600" />
+        <MagnGlass />
       </div>
       <input
         type="text"

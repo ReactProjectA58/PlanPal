@@ -6,6 +6,12 @@ import {
   faAddressCard,
   faPhone,
 } from "@fortawesome/free-solid-svg-icons";
+import {
+  AboutUs,
+  ContactUs,
+  GithubIcon,
+  GithubIssues,
+} from "../common/helpers/icons.jsx";
 
 export default function Footer() {
   return (
@@ -15,10 +21,10 @@ export default function Footer() {
           <h6 className=" font-semibold text-gray-600 uppercase ">Team 03</h6>
           <div className="grid grid-flow-col gap-4 mt-1">
             <a href="/contact-us">
-              <FontAwesomeIcon icon={faPhone} size="2x" />
+              <ContactUs />
             </a>
             <a href="/about">
-              <FontAwesomeIcon icon={faAddressCard} size="2x" />
+              <AboutUs />
             </a>
           </div>
         </nav>
@@ -26,10 +32,10 @@ export default function Footer() {
           <h6 className="font-semibold text-gray-600 uppercase ">Project</h6>
           <div className="grid grid-flow-col gap-4 mt-1">
             <a href="https://github.com/ReactProjectA58/PlanPal">
-              <FontAwesomeIcon icon={faGithub} size="2x" />
+              <GithubIcon />
             </a>
             <a href="https://github.com/orgs/ReactProjectA58/projects/1">
-              <FontAwesomeIcon icon={faListCheck} size="2x" />
+              <GithubIssues />
             </a>
           </div>
         </nav>
