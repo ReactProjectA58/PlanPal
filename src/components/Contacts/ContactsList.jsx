@@ -57,7 +57,7 @@ export default function ContactsList() {
                     <strong>Email:</strong> {contact.email}
                   </div>
                   <div className="text-sm text-gray-600">
-                    <strong>Phone:</strong> {contact.phone}
+                    <strong>Phone:</strong> {contact.phoneNumber}
                   </div>
                 </div>
               </li>
