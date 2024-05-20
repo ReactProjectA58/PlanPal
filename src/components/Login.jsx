@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react";
 import Button from "../components/Button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
@@ -10,6 +10,7 @@ export default function Login() {
         email: '',
         password: '',
     });
+    const [error, setError] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -17,12 +18,23 @@ export default function Login() {
         if (user) {
             navigate(location.state?.from.pathname || '/');
         }
-    }, [user]);
+    }, [user, navigate, location.state]);
 
     const login = async () => {
-        const { user } = await loginUser(form.email, form.password);
-        setAppState({ user, userData: null });
-        navigate(location.state?.from.pathname || '/');
+        setError(''); 
+
+        if (!form.email || !form.password) {
+            setError('Email and password are required');
+            return;
+        }
+
+        const response = await loginUser(form.email, form.password);
+        if (response.error) {
+            setError(response.error);
+        } else {
+            setAppState({ user: response.user, userData: null });
+            navigate(location.state?.from.pathname || '/');
+        }
     };
 
     const updateForm = prop => e => {
@@ -55,7 +67,8 @@ export default function Login() {
                     className="input input-bordered"
                 />
             </div>
+            {error && <div className="text-red-500 mt-2">{error}</div>}
             <Button onClick={login} className="btn btn-primary mt-4">Login</Button>
         </div>
-    )
+    );
 }
