@@ -10,7 +10,8 @@ import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
 import { AppContext } from "./context/AppContext.jsx";
 import { getUserData } from "./services/users.service.js";
-import Sidebar from "./components/Sidebar/Sidebar.jsx";
+import ContactsList from "./components/Contacts/ContactsList.jsx";
+import SideBar from "./components/SideBar/SideBar.jsx";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -38,12 +39,13 @@ function App() {
     <BrowserRouter>
       <AppContext.Provider value={{ ...appState, setAppState }}>
         <Header />
-        <Sidebar />
+        <SideBar />
         <div className="container mx-auto">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/contacts" element={<ContactsList />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

@@ -1,8 +1,7 @@
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 
-export default function Sidebar() {
+export default function SideBar() {
   return (
     <div className="drawer">
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
@@ -42,7 +41,7 @@ export default function Sidebar() {
             <a>Events</a>
           </li>
           <li>
-            <a>Contacts</a>
+            <a href="/contacts">Contacts</a>
           </li>
         </ul>
       </div>
