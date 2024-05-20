@@ -32,11 +32,12 @@ export const validateRegister = async (formData) => {
 
   const snapshot = await getAllUsers();
   const allUsers = snapshot.exists() ? Object.values(snapshot.val()) : [];
-  if (formData.username.length < USER_NAME_MIN_LENGTH ||
-    formData.username.length > USER_NAME_MAX_LENGTH) {
-    validationErrors.username = USERNAME_LENGTH_ERROR;
-  } else if (allUsers.find(user => user.username === formData.username)) {
-    validationErrors.username = USERNAME_EXISTS_ERROR;
+  console.log(allUsers);
+  if (formData.userName.length < USER_NAME_MIN_LENGTH ||
+    formData.userName.length > USER_NAME_MAX_LENGTH) {
+    validationErrors.userName = USERNAME_LENGTH_ERROR;
+  } else if (allUsers.find(user => user.userName === formData.userName)) {
+    validationErrors.userName = USERNAME_EXISTS_ERROR;
   }
   if (!NAME_FORMAT.test(formData.firstName)) {
     validationErrors.firstName = FIRST_NAME_ERROR;
@@ -44,20 +45,22 @@ export const validateRegister = async (formData) => {
   if (!NAME_FORMAT.test(formData.lastName)) {
     validationErrors.lastName = LAST_NAME_ERROR;
   }
-  if (formData.password !== formData.confirmPassword) {
-    validationErrors.confirmPassword = PASSWORD_MATCH_ERROR;
-  } else {
-    if (formData.password.length < PASSWORD_MIN_LENGTH ||
-      formData.password.length > PASSWORD_MAX_LENGTH ||
-      !PASSWORD_FORMAT.test(formData.password)) {
-      validationErrors.password = PASSWORD_COMPLEXITY_ERROR;
-    }
+  if (formData.password.length < PASSWORD_MIN_LENGTH || formData.password.length > PASSWORD_MAX_LENGTH) {
+    validationErrors.password = PASSWORD_LENGTH_ERROR;
+  } else if (!PASSWORD_FORMAT.test(formData.password)) {
+    validationErrors.password = PASSWORD_COMPLEXITY_ERROR;
   }
-  if (!PHONE_FORMAT.test(formData.phoneNumber)) {
+
+  if (!validationErrors.password && formData.password !== formData.confirmPassword) {
+    validationErrors.confirmPassword = PASSWORD_MATCH_ERROR;
+  }
+
+ if (!PHONE_FORMAT.test(formData.phoneNumber)) {
     validationErrors.phoneNumber = PHONE_FORMAT_ERROR;
   } else if (allUsers.find(user => user.phoneNumber === formData.phoneNumber)) {
     validationErrors.phoneNumber = PHONE_EXISTS_ERROR;
   }
+
   if (!EMAIL_FORMAT.test(formData.email)) {
     validationErrors.email = EMAIL_FORMAT_ERROR;
   } else if (allUsers.find(user => user.email === formData.email)) {
