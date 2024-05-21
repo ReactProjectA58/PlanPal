@@ -57,10 +57,10 @@ export default function Register() {
       <h1 className="text-3xl font-semibold mb-4">Register</h1>
       <div className="flex flex-col space-y-2">
         <label htmlFor="userName" className="text-lg">
-          Username:{" "}
+          Username{" "}
         </label>
         <input
-          placeholder="Username"
+          placeholder="Enter Your Username"
           value={form.userName}
           onChange={updateForm("userName")}
           type="text"
@@ -74,10 +74,10 @@ export default function Register() {
         )}
 
         <label htmlFor="email" className="text-lg">
-          Email:{" "}
+          Email{" "}
         </label>
         <input
-          placeholder="Email"
+          placeholder="Enter Your Email"
           value={form.email}
           onChange={updateForm("email")}
           type="email"
@@ -89,10 +89,10 @@ export default function Register() {
         {errors.email && <span className="text-red-500">{errors.email}</span>}
 
         <label htmlFor="firstName" className="text-lg">
-          First Name:{" "}
+          First Name{" "}
         </label>
         <input
-          placeholder="First Name"
+          placeholder="Enter Your First Name"
           value={form.firstName}
           onChange={updateForm("firstName")}
           type="text"
@@ -106,10 +106,10 @@ export default function Register() {
         )}
 
         <label htmlFor="lastName" className="text-lg">
-          Last Name:{" "}
+          Last Name{" "}
         </label>
         <input
-          placeholder="Last Name"
+          placeholder="Enter Your Last Name"
           value={form.lastName}
           onChange={updateForm("lastName")}
           type="text"
@@ -123,10 +123,10 @@ export default function Register() {
         )}
 
         <label htmlFor="phoneNumber" className="text-lg">
-          Phone Number:{" "}
+          Phone Number{" "}
         </label>
         <input
-          placeholder="Phone Number"
+          placeholder="Enter Your Phone Number"
           value={form.phoneNumber}
           onChange={updateForm("phoneNumber")}
           type="text"
@@ -140,10 +140,10 @@ export default function Register() {
         )}
 
         <label htmlFor="password" className="text-lg">
-          Password:{" "}
+          Password{" "}
         </label>
         <input
-          placeholder="Password"
+          placeholder="Enter Your Password"
           value={form.password}
           onChange={updateForm("password")}
           type="password"
@@ -157,10 +157,10 @@ export default function Register() {
         )}
 
         <label htmlFor="confirmPassword" className="text-lg">
-          Confirm Password:{" "}
+          Confirm Password{" "}
         </label>
         <input
-          placeholder="Confirm Password"
+          placeholder="Confirm Your Password"
           value={form.confirmPassword}
           onChange={updateForm("confirmPassword")}
           type="password"

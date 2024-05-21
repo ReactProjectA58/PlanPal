@@ -48,8 +48,9 @@ export default function Login() {
         <div className="container mx-auto">
             <h1 className="text-3xl font-semibold mb-4">Login</h1>
             <div className="flex flex-col space-y-2">
-                <label htmlFor="email" className="text-lg">Email: </label>
+                <label htmlFor="email" className="text-lg">Email </label>
                 <input 
+                    placeholder="Enter Your Email"
                     value={form.email} 
                     onChange={updateForm('email')} 
                     type="text" 
@@ -57,8 +58,9 @@ export default function Login() {
                     id="email" 
                     className="input input-bordered"
                 />
-                <label htmlFor="password" className="text-lg">Password: </label>
+                <label htmlFor="password" className="text-lg">Password </label>
                 <input 
+                    placeholder="Enter Your Password"
                     value={form.password} 
                     onChange={updateForm('password')} 
                     type="password" 
