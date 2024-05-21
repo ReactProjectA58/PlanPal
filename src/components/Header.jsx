@@ -1,12 +1,26 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Button from "./Button";
 import { AppContext } from "../context/AppContext";
 import { logoutUser } from "../services/auth.service";
+import { DARK_THEME, LIGHT_THEME } from "../common/constants";
+import { Moon, Sun } from "../common/helpers/icons";
 
 export default function Header() {
   const { user, userData, setAppState } = useContext(AppContext);
+  const [theme, setTheme] = useState(
+    localStorage.getItem("theme") ? localStorage.getItem("theme") : LIGHT_THEME
+  );
 
+  const handleToggle = (e) => {
+    e.target.checked ? setTheme(DARK_THEME) : setTheme(LIGHT_THEME);
+  };
+
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+    const localTheme = localStorage.getItem("theme");
+    document.querySelector("html").setAttribute("data-theme", localTheme);
+  }, [theme]);
   const logout = async () => {
     await logoutUser();
     setAppState({ user: null, userData: null });
@@ -42,6 +56,12 @@ export default function Header() {
             </NavLink>
           </>
         )}
+        <label className="swap swap-rotate">
+          <input type="checkbox" onChange={handleToggle} />
+
+          <Sun />
+          <Moon />
+        </label>
       </div>
     </header>
   );

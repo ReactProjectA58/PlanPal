@@ -4,7 +4,9 @@ import {
   faBars,
   faListCheck,
   faMagnifyingGlass,
+  faMoon,
   faPhone,
+  faSun,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -44,6 +46,26 @@ export const CancelBurger = () => {
     <FontAwesomeIcon
       icon={faTimes}
       className="swap-on fill-current [:checked~*_&]:!rotate-0 [:checked~*_&]:!opacity-100"
+      style={{ width: "24px", height: "24px" }}
+    />
+  );
+};
+
+export const Moon = () => {
+  return (
+    <FontAwesomeIcon
+      icon={faMoon}
+      className="swap-off fill-current w-10 h-10"
+      style={{ width: "24px", height: "24px" }}
+    />
+  );
+};
+
+export const Sun = () => {
+  return (
+    <FontAwesomeIcon
+      icon={faSun}
+      className="swap-on fill-current w-10 h-10"
       style={{ width: "24px", height: "24px" }}
     />
   );
