@@ -12,6 +12,7 @@ import { AppContext } from "./context/AppContext.jsx";
 import { getUserData } from "./services/users.service.js";
 import ContactsList from "./components/Contacts/ContactsList.jsx";
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
+import Profile from "./components/Profile/Profile.jsx";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -46,6 +47,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/contacts" element={<ContactsList />} />
+            <Route path="/profile/:handle" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

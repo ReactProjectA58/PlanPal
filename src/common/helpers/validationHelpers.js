@@ -28,37 +28,44 @@ export const PASSWORD_COMPLEXITY_ERROR = `Password must contain at least one low
 export const EMAIL_FORMAT_ERROR = "Invalid email address.";
 export const EMAIL_EXISTS_ERROR = "User with this email already exists!";
 
-export const validateRegister = async (formData) => {
+export const validateRegister = async (formData, isUpdate = false, handle = null) => {
   const validationErrors = {};
 
   const snapshot = await getAllUsers();
   const allUsers = snapshot.exists() ? Object.values(snapshot.val()) : [];
-  console.log(allUsers);
+
+  const filteredUsers = handle ? allUsers.filter(user => user.handle !== handle) : allUsers;
+
   if (
-    formData.userName.length < USER_NAME_MIN_LENGTH ||
-    formData.userName.length > USER_NAME_MAX_LENGTH
+    formData.userName &&
+    (formData.userName.length < USER_NAME_MIN_LENGTH ||
+    formData.userName.length > USER_NAME_MAX_LENGTH)
   ) {
     validationErrors.userName = USERNAME_LENGTH_ERROR;
-  } else if (allUsers.find((user) => user.userName === formData.userName)) {
+  } else if (!isUpdate && allUsers.find((user) => user.userName === formData.userName)) {
     validationErrors.userName = USERNAME_EXISTS_ERROR;
   }
+
   if (!NAME_FORMAT.test(formData.firstName)) {
     validationErrors.firstName = FIRST_NAME_ERROR;
   }
+
   if (!NAME_FORMAT.test(formData.lastName)) {
     validationErrors.lastName = LAST_NAME_ERROR;
   }
+
   if (
-    formData.password.length < PASSWORD_MIN_LENGTH ||
-    formData.password.length > PASSWORD_MAX_LENGTH
+    formData.password &&
+    (formData.password.length < PASSWORD_MIN_LENGTH ||
+    formData.password.length > PASSWORD_MAX_LENGTH)
   ) {
     validationErrors.password = PASSWORD_LENGTH_ERROR;
-  } else if (!PASSWORD_FORMAT.test(formData.password)) {
+  } else if (formData.password && !PASSWORD_FORMAT.test(formData.password)) {
     validationErrors.password = PASSWORD_COMPLEXITY_ERROR;
   }
 
   if (
-    !validationErrors.password &&
+    formData.password &&
     formData.password !== formData.confirmPassword
   ) {
     validationErrors.confirmPassword = PASSWORD_MATCH_ERROR;
@@ -66,16 +73,15 @@ export const validateRegister = async (formData) => {
 
   if (!PHONE_FORMAT.test(formData.phoneNumber)) {
     validationErrors.phoneNumber = PHONE_FORMAT_ERROR;
-  } else if (
-    allUsers.find((user) => user.phoneNumber === formData.phoneNumber)
-  ) {
+  } else if (filteredUsers.find((user) => user.phoneNumber === formData.phoneNumber)) {
     validationErrors.phoneNumber = PHONE_EXISTS_ERROR;
   }
 
   if (!EMAIL_FORMAT.test(formData.email)) {
     validationErrors.email = EMAIL_FORMAT_ERROR;
-  } else if (allUsers.find((user) => user.email === formData.email)) {
+  } else if (filteredUsers.find((user) => user.email === formData.email)) {
     validationErrors.email = EMAIL_EXISTS_ERROR;
   }
+
   return validationErrors;
 };
