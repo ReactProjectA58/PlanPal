@@ -2,12 +2,14 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import {
   faAddressCard,
   faBars,
+  faChevronLeft,
   faListCheck,
   faMagnifyingGlass,
   faMoon,
   faPhone,
   faSun,
   faTimes,
+  faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -56,7 +58,7 @@ export const Moon = () => {
     <FontAwesomeIcon
       icon={faMoon}
       className="swap-off fill-current w-10 h-10"
-      style={{ width: "24px", height: "24px" }}
+      style={{ width: "20px", height: "20px" }}
     />
   );
 };
@@ -66,7 +68,15 @@ export const Sun = () => {
     <FontAwesomeIcon
       icon={faSun}
       className="swap-on fill-current w-10 h-10"
-      style={{ width: "24px", height: "24px" }}
+      style={{ width: "20px", height: "20px" }}
     />
   );
+};
+
+export const Contacts = () => {
+  return <FontAwesomeIcon icon={faChevronLeft} size={"lg"} />;
+};
+
+export const GoBack = () => {
+  return <FontAwesomeIcon icon={faUserGroup} size={"lg"} />;
 };
