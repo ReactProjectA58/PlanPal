@@ -20,6 +20,7 @@ export default function Header() {
     const localTheme = localStorage.getItem("theme");
     document.querySelector("html").setAttribute("data-theme", localTheme);
   }, [theme]);
+
   const logout = async () => {
     await logoutUser();
     setAppState({ user: null, userData: null });
@@ -72,7 +73,11 @@ export default function Header() {
           </>
         )}
         <label className="swap swap-rotate">
-          <input type="checkbox" onChange={handleToggle} />
+          <input
+            type="checkbox"
+            onChange={handleToggle}
+            checked={theme === DARK_THEME}
+          />
 
           <Sun />
           <Moon />
