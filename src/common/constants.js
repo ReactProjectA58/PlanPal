@@ -1,5 +1,6 @@
 export const NAME_FORMAT = /^[a-zA-Z]+$/;
-export const PASSWORD_FORMAT = /(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+/;
+export const PASSWORD_FORMAT =
+  /(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+/;
 export const PHONE_FORMAT = /^\d{10}$/;
 export const EMAIL_FORMAT = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const USER_NAME_MIN_LENGTH = 3;
@@ -14,4 +15,5 @@ export const LAST_NAME_MAX_LENGTH = 30;
 export const MIN_TITLE_LENGTH = 3;
 export const MAX_TITLE_LENGTH = 30;
 export const MIN_DESCRIPTION_LENGTH = 0;
-export const MAX_DESCRIPTION_LENGTH = 500;
+export const MAX_DESCRIPTION_LENGTH = 500;export const LIGHT_THEME = "autumn";
+export const DARK_THEME = "coffee";
