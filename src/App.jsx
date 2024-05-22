@@ -13,6 +13,14 @@ import { getUserData } from "./services/users.service.js";
 import ContactsList from "./components/Contacts/ContactsList.jsx";
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
 import Profile from "./components/Profile/Profile.jsx";
+import withLoading from "./hoc/PageLoading.jsx";
+
+const HomeWithLoading = withLoading(Home);
+const LoginWithLoading = withLoading(Login);
+const RegisterWithLoading = withLoading(Register);
+const ContactsListWithLoading = withLoading(ContactsList);
+const ProfileWithLoading = withLoading(Profile);
+const NotFoundWithLoading = withLoading(NotFound);
 
 function App() {
   const [appState, setAppState] = useState({
@@ -43,12 +51,12 @@ function App() {
         <Sidebar />
         <div className="container mx-auto">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/contacts" element={<ContactsList />} />
-            <Route path="/profile/:handle" element={<Profile />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="/" element={<HomeWithLoading />} />
+            <Route path="/login" element={<LoginWithLoading />} />
+            <Route path="/register" element={<RegisterWithLoading />} />
+            <Route path="/contacts" element={<ContactsListWithLoading />} />
+            <Route path="/profile/:handle" element={<ProfileWithLoading />} />
+            <Route path="*" element={<NotFoundWithLoading />} />
           </Routes>
         </div>
         <Footer />
