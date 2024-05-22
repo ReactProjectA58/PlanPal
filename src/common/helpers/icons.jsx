@@ -5,8 +5,11 @@ import {
   faChevronLeft,
   faListCheck,
   faMagnifyingGlass,
+  faMinus,
   faMoon,
   faPhone,
+  faPlus,
+  faSquarePlus,
   faSun,
   faTimes,
   faUserGroup,
@@ -79,4 +82,28 @@ export const Contacts = () => {
 
 export const GoBack = () => {
   return <FontAwesomeIcon icon={faUserGroup} size={"lg"} />;
+};
+
+export const Plus = () => {
+  return <FontAwesomeIcon icon={faSquarePlus} size={"xl"} />;
+};
+
+export const PlusToggle = () => {
+  return (
+    <FontAwesomeIcon
+      icon={faPlus}
+      className="swap-off fill-current"
+      size={"xl"}
+    />
+  );
+};
+
+export const MinusToggle = () => {
+  return (
+    <FontAwesomeIcon
+      icon={faMinus}
+      className="swap-on fill-current"
+      size={"xl"}
+    />
+  );
 };
