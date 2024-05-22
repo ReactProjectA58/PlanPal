@@ -20,7 +20,8 @@ export const createUserHandle = async (
   email,
   firstName,
   lastName,
-  phoneNumber
+  phoneNumber, 
+  event = null,
 ) => {
   const db = getDatabase();
   const userRef = ref(db, `users/${handle}`);

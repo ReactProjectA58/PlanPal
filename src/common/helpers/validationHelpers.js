@@ -13,6 +13,10 @@ import {
   PHONE_FORMAT,
   USER_NAME_MAX_LENGTH,
   USER_NAME_MIN_LENGTH,
+  MIN_TITLE_LENGTH, 
+  MAX_TITLE_LENGTH,
+  MIN_DESCRIPTION_LENGTH,
+  MAX_DESCRIPTION_LENGTH,
 } from "../constants";
 
 export const USERNAME_LENGTH_ERROR = `Username must be between ${USER_NAME_MIN_LENGTH} and ${USER_NAME_MAX_LENGTH} characters.`;
@@ -27,6 +31,13 @@ export const PASSWORD_LENGTH_ERROR = `Password must be between ${PASSWORD_MIN_LE
 export const PASSWORD_COMPLEXITY_ERROR = `Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character.`;
 export const EMAIL_FORMAT_ERROR = "Invalid email address.";
 export const EMAIL_EXISTS_ERROR = "User with this email already exists!";
+export const TITLE_ERROR = `Title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters.`;
+export const DESCRIPTION_ERROR = `Content must be between ${MIN_DESCRIPTION_LENGTH} and ${MAX_DESCRIPTION_LENGTH} characters.`;
+export const START_DATE_REQUIRED_ERROR = 'Start date is required.';
+export const END_DATE_REQUIRED_ERROR = 'End date is required.';
+export const START_DATE_PERIOD_ERROR = 'Start date must be in the future.';
+export const END_DATE_PERIOD_ERROR = 'End date must be after start date.';
+
 
 export const validateRegister = async (formData) => {
   const validationErrors = {};
@@ -78,4 +89,60 @@ export const validateRegister = async (formData) => {
     validationErrors.email = EMAIL_EXISTS_ERROR;
   }
   return validationErrors;
+};
+
+export const validateEvent = (title, description, startDate, endDate) => {
+  const formErrors = {};
+
+  if (title.length < MIN_TITLE_LENGTH || title.length > MAX_TITLE_LENGTH) {
+    formErrors.title = TITLE_ERROR;
+  }
+
+  if (
+    description.length < MIN_DESCRIPTION_LENGTH ||
+    description.length > MAX_DESCRIPTION_LENGTH
+  ) {
+    formErrors.description = DESCRIPTION_ERROR;
+  }
+
+  if (!startDate) {
+    formErrors.startDate = START_DATE_REQUIRED_ERROR;
+  }
+
+  if (!endDate) {
+    formErrors.endDate = END_DATE_REQUIRED_ERROR;
+  }
+
+  if (startDate && endDate && startDate > endDate) {
+    formErrors.endDate = END_DATE_PERIOD_ERROR;
+  }
+
+  if (startDate && startDate < new Date()) {
+    formErrors.startDate = START_DATE_PERIOD_ERROR;
+  }
+
+  if (Object.keys(formErrors).length === 0) {
+    return false;
+  }
+
+  return formErrors;
+};
+
+export const validateTitle = (title) => {
+  if (title.length < MIN_TITLE_LENGTH || title.length > MAX_TITLE_LENGTH) {
+    return TITLE_ERROR;
+  }
+
+  return false;
+};
+
+export const validateDescription = (description) => {
+  if (
+    description.length < MIN_DESCRIPTION_LENGTH ||
+    description.length > MAX_DESCRIPTION_LENGTH
+  ) {
+    return DESCRIPTION_ERROR;
+  }
+
+  return false;
 };
