@@ -1,11 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLinkedin, faGithub } from "@fortawesome/free-brands-svg-icons";
-import {
-  faInfoCircle,
-  faListCheck,
-  faAddressCard,
-  faPhone,
-} from "@fortawesome/free-solid-svg-icons";
 import {
   AboutUs,
   ContactUs,
@@ -15,8 +7,8 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="bg-primary-800 text-white py-4">
-      <footer className="footer bg-base-300 text-base-content fixed bottom-0 p-5 flex justify-around">
+    <footer className="bg-primary-800 text-white  ">
+      <footer className="footer bg-base-300 text-base-content  bottom-0 p-3 flex justify-around">
         <nav>
           <h6 className=" font-semibold text-gray-600 uppercase ">Team 03</h6>
           <div className="grid grid-flow-col gap-4 mt-1">

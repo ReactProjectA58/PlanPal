@@ -15,6 +15,7 @@ import Sidebar from "./components/Sidebar/Sidebar.jsx";
 import Profile from "./components/Profile/Profile.jsx";
 import withLoading from "./hoc/PageLoading.jsx";
 import CreateEventForm from "./components/Events/CreateEventForm.jsx";
+import SideBar from "./components/Sidebar/Sidebar.jsx";
 
 const HomeWithLoading = withLoading(Home);
 const LoginWithLoading = withLoading(Login);
@@ -48,20 +49,21 @@ function App() {
   return (
     <BrowserRouter>
       <AppContext.Provider value={{ ...appState, setAppState }}>
-        <Header />
-        <Sidebar />
-        <div className="container mx-auto">
-          <Routes>
-            <Route path="/" element={<HomeWithLoading />} />
-            <Route path="/login" element={<LoginWithLoading />} />
-            <Route path="/register" element={<RegisterWithLoading />} />
-            <Route path="/contacts" element={<ContactsListWithLoading />} />
-            <Route path="/create-event" element={<CreateEventForm />} />
-            <Route path="/profile/:handle" element={<ProfileWithLoading />} />
-            <Route path="*" element={<NotFoundWithLoading />} />
-          </Routes>
+        <div className="flex flex-col  justify-between max-w-full">
+          <Header />
+          <div className="container mx-auto min-h-screen  min-w-min">
+            <Routes>
+              <Route path="/" element={<HomeWithLoading />} />
+              <Route path="/login" element={<LoginWithLoading />} />
+              <Route path="/register" element={<RegisterWithLoading />} />
+              <Route path="/contacts" element={<ContactsListWithLoading />} />
+              <Route path="/create-event" element={<CreateEventForm />} />
+              <Route path="/profile/:handle" element={<ProfileWithLoading />} />
+              <Route path="*" element={<NotFoundWithLoading />} />
+            </Routes>
+          </div>
+          <Footer />
         </div>
-        <Footer />
       </AppContext.Provider>
     </BrowserRouter>
   );
