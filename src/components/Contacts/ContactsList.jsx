@@ -16,6 +16,7 @@ export default function ContactsList() {
   const [clearSearch, setClearSearch] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -37,6 +38,10 @@ export default function ContactsList() {
       return searchResults;
     }
     return [];
+  };
+
+  const toggleCollapse = () => {
+    setIsOpen((prev) => !prev);
   };
 
   const handleSearch = (query) => {
@@ -130,10 +135,10 @@ export default function ContactsList() {
       </div>
       <div>
         <div className="collapse bg-base-200">
-          <input type="checkbox" />
+          <input type="checkbox" checked={isOpen} onClick={toggleCollapse} />
           <div className="collapse-title text-xl font-medium">
             <label className="swap">
-              <input type="checkbox" />
+              <input type="checkbox" checked={isOpen} />
               <MinusToggle />
               <PlusToggle />
             </label>
