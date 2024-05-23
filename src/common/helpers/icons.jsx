@@ -2,13 +2,16 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import {
   faAddressCard,
   faBars,
+  faChevronDown,
   faChevronLeft,
+  faChevronUp,
   faListCheck,
   faMagnifyingGlass,
   faMinus,
   faMoon,
   faPhone,
   faPlus,
+  faSquareMinus,
   faSquarePlus,
   faSun,
   faTimes,
@@ -85,7 +88,23 @@ export const GoBack = () => {
 };
 
 export const Plus = () => {
-  return <FontAwesomeIcon icon={faSquarePlus} size={"xl"} />;
+  return (
+    <FontAwesomeIcon
+      className="swap-off fill-current"
+      icon={faSquarePlus}
+      size={"xl"}
+    />
+  );
+};
+
+export const Minus = () => {
+  return (
+    <FontAwesomeIcon
+      className="swap-on fill-current"
+      icon={faSquareMinus}
+      size={"xl"}
+    />
+  );
 };
 
 export const PlusToggle = () => {
@@ -93,7 +112,7 @@ export const PlusToggle = () => {
     <FontAwesomeIcon
       icon={faPlus}
       className="swap-off fill-current"
-      size={"xl"}
+      size={"md"}
     />
   );
 };
@@ -103,7 +122,27 @@ export const MinusToggle = () => {
     <FontAwesomeIcon
       icon={faMinus}
       className="swap-on fill-current"
-      size={"xl"}
+      size={"md"}
+    />
+  );
+};
+
+export const ArrowUp = () => {
+  return (
+    <FontAwesomeIcon
+      icon={faChevronUp}
+      className="swap on fill-current"
+      size={"md"}
+    />
+  );
+};
+
+export const ArrowDown = () => {
+  return (
+    <FontAwesomeIcon
+      icon={faChevronDown}
+      className="swap on fill-current"
+      size={"md"}
     />
   );
 };

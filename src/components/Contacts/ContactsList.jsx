@@ -4,11 +4,13 @@ import { searchUsers } from "../../services/search.service";
 import {
   Contacts,
   GoBack,
+  Minus,
   MinusToggle,
   Plus,
   PlusToggle,
 } from "../../common/helpers/icons";
 import SearchBar from "../SearchBar/SearchBar";
+import ContactPanel from "./ContactPanel/ContactPanel";
 
 export default function ContactsList() {
   const [searchResults, setSearchResults] = useState([]);
@@ -17,6 +19,8 @@ export default function ContactsList() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const [isNested, setIsNested] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -40,8 +44,16 @@ export default function ContactsList() {
     return [];
   };
 
-  const toggleCollapse = () => {
-    setIsOpen((prev) => !prev);
+  const isInContacts = (userName, contacts) => {
+    return contacts.some((contact) => contact.name === userName);
+  };
+
+  const toggleNestedCollapse = () => {
+    setIsNested((prev) => !prev);
+  };
+
+  const handleTooltip = () => {
+    setIsChecked((prev) => !prev);
   };
 
   const handleSearch = (query) => {
@@ -120,8 +132,19 @@ export default function ContactsList() {
                         </td>
 
                         <td className="flex items-center justify-center mr-6">
-                          <div className="tooltip" data-tip="Add contact">
-                            <Plus />
+                          <div
+                            className="tooltip"
+                            data-tip={isChecked ? "Remove user" : "Add user"}
+                          >
+                            <label className="swap">
+                              <input
+                                type="checkbox"
+                                defaultChecked={isChecked}
+                                onClick={handleTooltip}
+                              />
+                              <Minus />
+                              <Plus />
+                            </label>
                           </div>
                         </td>
                       </tr>
@@ -133,21 +156,7 @@ export default function ContactsList() {
           </ul>
         </div>
       </div>
-      <div>
-        <div className="collapse bg-base-200">
-          <input type="checkbox" checked={isOpen} onClick={toggleCollapse} />
-          <div className="collapse-title text-xl font-medium">
-            <label className="swap">
-              <input type="checkbox" checked={isOpen} />
-              <MinusToggle />
-              <PlusToggle />
-            </label>
-          </div>
-          <div className="collapse-content">
-            <p>testing this</p>
-          </div>
-        </div>
-      </div>
+      <ContactPanel />
     </div>
   );
 }
