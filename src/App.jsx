@@ -11,11 +11,10 @@ import Register from "./components/Register.jsx";
 import { AppContext } from "./context/AppContext.jsx";
 import { getUserData } from "./services/users.service.js";
 import ContactsList from "./components/Contacts/ContactsList.jsx";
-import Sidebar from "./components/Sidebar/Sidebar.jsx";
 import Profile from "./components/Profile/Profile.jsx";
 import withLoading from "./hoc/PageLoading.jsx";
 import CreateEventForm from "./components/Events/CreateEventForm.jsx";
-import SideBar from "./components/Sidebar/Sidebar.jsx";
+import AllEvents from "./components/Events/AllEvents.jsx";
 
 const HomeWithLoading = withLoading(Home);
 const LoginWithLoading = withLoading(Login);
@@ -58,6 +57,7 @@ function App() {
               <Route path="/register" element={<RegisterWithLoading />} />
               <Route path="/contacts" element={<ContactsListWithLoading />} />
               <Route path="/create-event" element={<CreateEventForm />} />
+              <Route path="/events" element={<AllEvents />} />
               <Route path="/profile/:handle" element={<ProfileWithLoading />} />
               <Route path="*" element={<NotFoundWithLoading />} />
             </Routes>

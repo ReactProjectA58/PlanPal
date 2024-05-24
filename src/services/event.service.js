@@ -1,4 +1,4 @@
-import { ref, push } from "firebase/database";
+import { ref, push, getDatabase, get, child } from "firebase/database";
 import { db } from "../config/firebase-config";
 
 export const addEvent = async (event) => {
@@ -11,4 +11,25 @@ export const addEvent = async (event) => {
   const result = await push(ref(db, "events"), newEvent);
   console.log(result.key);
   return result;
+};
+
+export const getAllEvents = async () => {
+  const db = getDatabase();
+  const eventsRef = ref(db, 'events/');
+  
+  try {
+    const snapshot = await get(eventsRef);
+    if (snapshot.exists()) {
+      const eventsData = snapshot.val();
+      return Object.keys(eventsData).map(key => ({
+        id: key,
+        ...eventsData[key]
+      }));
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    throw new Error("Failed to fetch events");
+  }
 };
