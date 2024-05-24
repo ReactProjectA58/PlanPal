@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   ArrowDown,
   ArrowUp,
@@ -6,10 +6,21 @@ import {
   Plus,
   PlusToggle,
 } from "../../../common/helpers/icons";
+import { useForm } from "react-hook-form";
+import { AppContext } from "../../../context/AppContext";
+import { createContactList } from "../../../services/contacts.service";
 
 export default function ContactPanel() {
+  const { userData } = useContext(AppContext);
+  const { handleSubmit, register, reset } = useForm();
   const [isOpen, setIsOpen] = useState(false);
   const [isArrowUp, setIsArrowUp] = useState(false);
+
+  const onSubmit = (data) => {
+    const { title } = data;
+    createContactList(title, userData?.handle);
+    reset();
+  };
 
   const toggleCollapsePlus = () => {
     setIsOpen((prev) => !prev);
@@ -20,7 +31,7 @@ export default function ContactPanel() {
   };
 
   return (
-    <div>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="collapse bg-base-200 mb-2">
         <input
           type="checkbox"
@@ -59,12 +70,15 @@ export default function ContactPanel() {
               className="input input-bordered h-min"
               placeholder="My Colleagues"
               type="text"
-              //   {...register("title")}
+              {...register("title")}
             />
-            <Plus />
+            <button type="submit">
+              {" "}
+              <Plus />
+            </button>
           </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
