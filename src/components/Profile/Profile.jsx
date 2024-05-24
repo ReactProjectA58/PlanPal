@@ -14,7 +14,9 @@ function Profile() {
     email: "",
     avatar: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    address: "",
+    username: "",
   });
   const [avatar, setAvatar] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -27,7 +29,10 @@ function Profile() {
         const userSnapshot = await getUserByHandle(handle);
         if (userSnapshot.exists()) {
           const data = userSnapshot.val();
-          setUserData(data);
+          setUserData({
+            ...data,
+            username: data.handle,
+          });
           setAvatarPreview(data.avatar);
         } else {
           console.log("User not found");
@@ -80,127 +85,197 @@ function Profile() {
   };
 
   return (
-    <div className="container mx-auto">
-      <h1 className="text-3xl font-semibold mb-4">Profile</h1>
-      <div className="flex flex-col space-y-2">
-      <div>
-          <label className="text-lg font-medium">Avatar:</label>
-          {isEditing ? (
-            <>
-              {avatarPreview && (
-                <img src={avatarPreview} alt="Avatar Preview" className="w-16 h-16 rounded-full mt-2" />
+    <div className="container mx-auto mt-10">
+      <div className="card w-full bg-base-100 shadow-xl">
+        <div className="card-body">
+          <h2 className="card-title text-3xl font-semibold mb-4">My Profile</h2>
+          <div className="flex flex-col space-y-4">
+            <div className="flex items-center">
+              <div className="flex items-center space-x-10">
+                {" "}
+                <div>
+                  {isEditing ? (
+                    <>
+                      {avatarPreview && (
+                        <img
+                          src={avatarPreview}
+                          alt="Avatar Preview"
+                          className="w-16 h-16 rounded-full mt-2"
+                        />
+                      )}
+                    </>
+                  ) : (
+                    <img
+                      src={userData.avatar}
+                      alt="Avatar"
+                      className="w-16 h-16 rounded-full"
+                    />
+                  )}
+                </div>
+                {isEditing && <UploadButton onFileChange={handleFileChange} />}
+              </div>
+            </div>
+            <div>
+              <label className="text-lg font-medium">Username:</label>
+              <span className="text-lg">{userData.username}</span>
+            </div>
+            <div>
+              <label className="text-lg font-medium">First Name:</label>
+              {isEditing ? (
+                <>
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={userData.firstName}
+                    onChange={handleChange}
+                    className={`input input-bordered w-full ${
+                      errors.firstName ? "border-red-500" : ""
+                    }`}
+                  />
+                  {errors.firstName && (
+                    <p className="text-red-500">{errors.firstName}</p>
+                  )}
+                </>
+              ) : (
+                <span className="text-lg">{userData.firstName}</span>
               )}
-              <UploadButton onFileChange={handleFileChange} />
-            </>
-          ) : (
-            <img src={userData.avatar} alt="Avatar" className="w-16 h-16 rounded-full" />
-          )}
-        </div>
-        <div>
-          <label className="text-lg font-medium">First Name:</label>
-          {isEditing ? (
-            <>
-              <input
-                type="text"
-                name="firstName"
-                value={userData.firstName}
-                onChange={handleChange}
-                className="input input-bordered"
-              />
-              {errors.firstName && <p className="text-red-500">{errors.firstName}</p>}
-            </>
-          ) : (
-            <span className="text-lg">{userData.firstName}</span>
-          )}
-        </div>
-        <div>
-          <label className="text-lg font-medium">Last Name:</label>
-          {isEditing ? (
-            <>
-              <input
-                type="text"
-                name="lastName"
-                value={userData.lastName}
-                onChange={handleChange}
-                className="input input-bordered"
-              />
-              {errors.lastName && <p className="text-red-500">{errors.lastName}</p>}
-            </>
-          ) : (
-            <span className="text-lg">{userData.lastName}</span>
-          )}
-        </div>
-        <div>
-          <label className="text-lg font-medium">Phone:</label>
-          {isEditing ? (
-            <>
-              <input
-                type="text"
-                name="phoneNumber"
-                value={userData.phoneNumber}
-                onChange={handleChange}
-                className="input input-bordered"
-              />
-              {errors.phoneNumber && <p className="text-red-500">{errors.phoneNumber}</p>}
-            </>
-          ) : (
-            <span className="text-lg">{userData.phoneNumber}</span>
-          )}
-        </div>
-        <div>
-          <label className="text-lg font-medium">Email:</label>
-          {isEditing ? (
-            <>
-              <input
-                type="email"
-                name="email"
-                value={userData.email}
-                onChange={handleChange}
-                className="input input-bordered"
-              />
-              {errors.email && <p className="text-red-500">{errors.email}</p>}
-            </>
-          ) : (
-            <span className="text-lg">{userData.email}</span>
-          )}
-        </div>
-        {isEditing && (
-          <>
-            <div>
-              <label className="text-lg font-medium">Password:</label>
-              <input
-                type="password"
-                name="password"
-                value={userData.password}
-                onChange={handleChange}
-                className="input input-bordered"
-              />
-              {errors.password && <p className="text-red-500">{errors.password}</p>}
             </div>
             <div>
-              <label className="text-lg font-medium">Confirm Password:</label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={userData.confirmPassword}
-                onChange={handleChange}
-                className="input input-bordered"
-              />
-              {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword}</p>}
+              <label className="text-lg font-medium">Last Name:</label>
+              {isEditing ? (
+                <>
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={userData.lastName}
+                    onChange={handleChange}
+                    className={`input input-bordered w-full ${
+                      errors.lastName ? "border-red-500" : ""
+                    }`}
+                  />
+                  {errors.lastName && (
+                    <p className="text-red-500">{errors.lastName}</p>
+                  )}
+                </>
+              ) : (
+                <span className="text-lg">{userData.lastName}</span>
+              )}
             </div>
-          </>
-        )}
-      </div>
-      <div className="mt-4">
-        {isEditing ? (
-          <button onClick={handleSave} className="btn btn-primary">
-            Save
-          </button>
-        ) : (
-          <button onClick={() => setIsEditing(true)} className="btn btn-primary">
-            Edit
-          </button>
-        )}
+            <div>
+              <label className="text-lg font-medium">Phone:</label>
+              {isEditing ? (
+                <>
+                  <input
+                    type="text"
+                    name="phoneNumber"
+                    value={userData.phoneNumber}
+                    onChange={handleChange}
+                    className={`input input-bordered w-full ${
+                      errors.phoneNumber ? "border-red-500" : ""
+                    }`}
+                  />
+                  {errors.phoneNumber && (
+                    <p className="text-red-500">{errors.phoneNumber}</p>
+                  )}
+                </>
+              ) : (
+                <span className="text-lg">{userData.phoneNumber}</span>
+              )}
+            </div>
+            <div>
+              <label className="text-lg font-medium">Email:</label>
+              {isEditing ? (
+                <>
+                  <input
+                    type="email"
+                    name="email"
+                    value={userData.email}
+                    onChange={handleChange}
+                    className={`input input-bordered w-full ${
+                      errors.email ? "border-red-500" : ""
+                    }`}
+                  />
+                  {errors.email && (
+                    <p className="text-red-500">{errors.email}</p>
+                  )}
+                </>
+              ) : (
+                <span className="text-lg">{userData.email}</span>
+              )}
+            </div>
+            <div>
+              <label className="text-lg font-medium">Address:</label>
+              {isEditing ? (
+                <>
+                  <input
+                    type="text"
+                    name="address"
+                    value={userData.address}
+                    onChange={handleChange}
+                    className={`input input-bordered w-full ${
+                      errors.address ? "border-red-500" : ""
+                    }`}
+                  />
+                  {errors.address && (
+                    <p className="text-red-500">{errors.address}</p>
+                  )}
+                </>
+              ) : (
+                <span className="text-lg">{userData.address}</span>
+              )}
+            </div>
+            {isEditing && (
+              <>
+                <div>
+                  <label className="text-lg font-medium">Password:</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={userData.password}
+                    onChange={handleChange}
+                    className={`input input-bordered w-full ${
+                      errors.password ? "border-red-500" : ""
+                    }`}
+                  />
+                  {errors.password && (
+                    <p className="text-red-500">{errors.password}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="text-lg font-medium">
+                    Confirm Password:
+                  </label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={userData.confirmPassword}
+                    onChange={handleChange}
+                    className={`input input-bordered w-full ${
+                      errors.confirmPassword ? "border-red-500" : ""
+                    }`}
+                  />
+                  {errors.confirmPassword && (
+                    <p className="text-red-500">{errors.confirmPassword}</p>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+          <div className="mt-4 flex justify-end">
+            {isEditing ? (
+              <button onClick={handleSave} className="btn btn-primary">
+                Save
+              </button>
+            ) : (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="btn btn-primary"
+              >
+                Edit
+              </button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

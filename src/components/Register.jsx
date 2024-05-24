@@ -8,15 +8,17 @@ import { validateRegister } from "../common/helpers/validationHelpers";
 
 export default function Register() {
   const [form, setForm] = useState({
-    userName: "",
-    email: "",
-    password: "",
-    confirmPassword: "", 
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
+  firstName: "",
+  lastName: "",
+  phoneNumber: "",
+  email: "",
+  avatar: "",
+  password: "",
+  confirmPassword: "",
+  address: "",
+  userName: "",
   });
-  const [errors, setErrors] = useState({}); 
+  const [errors, setErrors] = useState({});
   const { user, setAppState } = useContext(AppContext);
   const navigate = useNavigate();
 
@@ -34,20 +36,25 @@ export default function Register() {
   };
 
   const register = async () => {
-    const validationErrors = await validateRegister(form); 
+    const validationErrors = await validateRegister(form);
     if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors); 
+      setErrors(validationErrors);
     } else {
       const credential = await registerUser(form.email, form.password);
-      await createUserHandle(
-        form.userName,
-        credential.user.uid,
-        credential.user.email,
-        form.firstName,
-        form.lastName,
-        form.phoneNumber
-      );
-      setAppState({ user: credential.user, userData: null });
+      const userData = {
+        uid: credential.user.uid,
+        email: credential.user.email,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        phoneNumber: form.phoneNumber,
+        address: "",
+        avatar: "https://firebasestorage.googleapis.com/v0/b/planpal-65592.appspot.com/o/avatars%2Fdefault-profile.png?alt=media&token=fd3e31cf-95d7-4bbd-a9e4-7155048663dd",
+        handle: form.userName,
+        isBlocked: false,
+        role: "User",
+      };
+      await createUserHandle(userData);
+      setAppState({ user: credential.user, userData });
       navigate("/");
     }
   };
@@ -67,7 +74,7 @@ export default function Register() {
           id="userName"
           className={`input input-bordered ${
             errors.userName ? "border-red-500" : ""
-          }`} 
+          }`}
         />
         {errors.userName && (
           <span className="text-red-500">{errors.userName}</span>
@@ -84,7 +91,7 @@ export default function Register() {
           id="email"
           className={`input input-bordered ${
             errors.email ? "border-red-500" : ""
-          }`} 
+          }`}
         />
         {errors.email && <span className="text-red-500">{errors.email}</span>}
 
@@ -99,7 +106,7 @@ export default function Register() {
           id="firstName"
           className={`input input-bordered ${
             errors.firstName ? "border-red-500" : ""
-          }`} 
+          }`}
         />
         {errors.firstName && (
           <span className="text-red-500">{errors.firstName}</span>
@@ -116,7 +123,7 @@ export default function Register() {
           id="lastName"
           className={`input input-bordered ${
             errors.lastName ? "border-red-500" : ""
-          }`} 
+          }`}
         />
         {errors.lastName && (
           <span className="text-red-500">{errors.lastName}</span>
@@ -133,7 +140,7 @@ export default function Register() {
           id="phoneNumber"
           className={`input input-bordered ${
             errors.phoneNumber ? "border-red-500" : ""
-          }`} 
+          }`}
         />
         {errors.phoneNumber && (
           <span className="text-red-500">{errors.phoneNumber}</span>
@@ -150,7 +157,7 @@ export default function Register() {
           id="password"
           className={`input input-bordered ${
             errors.password ? "border-red-500" : ""
-          }`} 
+          }`}
         />
         {errors.password && (
           <span className="text-red-500">{errors.password}</span>
@@ -167,7 +174,7 @@ export default function Register() {
           id="confirmPassword"
           className={`input input-bordered ${
             errors.confirmPassword ? "border-red-500" : ""
-          }`} 
+          }`}
         />
         {errors.confirmPassword && (
           <span className="text-red-500">{errors.confirmPassword}</span>
