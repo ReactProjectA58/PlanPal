@@ -12,15 +12,13 @@ import {
 import SearchBar from "../SearchBar/SearchBar";
 import ContactPanel from "./ContactPanel/ContactPanel";
 
-export default function ContactsList() {
+export default function ContactsDashboard() {
   const [searchResults, setSearchResults] = useState([]);
   const [currentView, setCurrentView] = useState("My Contacts");
   const [clearSearch, setClearSearch] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const [isNested, setIsNested] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -42,14 +40,6 @@ export default function ContactsList() {
       return searchResults;
     }
     return [];
-  };
-
-  const isInContacts = (userName, contacts) => {
-    return contacts.some((contact) => contact.name === userName);
-  };
-
-  const toggleNestedCollapse = () => {
-    setIsNested((prev) => !prev);
   };
 
   const handleTooltip = () => {

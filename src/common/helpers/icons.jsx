@@ -112,7 +112,7 @@ export const PlusToggle = () => {
     <FontAwesomeIcon
       icon={faPlus}
       className="swap-off fill-current"
-      size={"md"}
+      size={"1x"}
     />
   );
 };
@@ -122,7 +122,7 @@ export const MinusToggle = () => {
     <FontAwesomeIcon
       icon={faMinus}
       className="swap-on fill-current"
-      size={"md"}
+      size={"1x"}
     />
   );
 };
@@ -132,7 +132,7 @@ export const ArrowUp = () => {
     <FontAwesomeIcon
       icon={faChevronUp}
       className="swap on fill-current"
-      size={"md"}
+      size={"1x"}
     />
   );
 };
@@ -142,7 +142,7 @@ export const ArrowDown = () => {
     <FontAwesomeIcon
       icon={faChevronDown}
       className="swap on fill-current"
-      size={"md"}
+      size={"1x"}
     />
   );
 };

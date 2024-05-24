@@ -10,16 +10,16 @@ import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
 import { AppContext } from "./context/AppContext.jsx";
 import { getUserData } from "./services/users.service.js";
-import ContactsList from "./components/Contacts/ContactsList.jsx";
 import Profile from "./components/Profile/Profile.jsx";
 import withLoading from "./hoc/PageLoading.jsx";
 import CreateEventForm from "./components/Events/CreateEventForm.jsx";
 import AllEvents from "./components/Events/AllEvents.jsx";
+import ContactsDashboard from "./components/Contacts/ContactsDashboard.jsx";
 
 const HomeWithLoading = withLoading(Home);
 const LoginWithLoading = withLoading(Login);
 const RegisterWithLoading = withLoading(Register);
-const ContactsListWithLoading = withLoading(ContactsList);
+const ContactsDashboardWithLoading = withLoading(ContactsDashboard);
 const ProfileWithLoading = withLoading(Profile);
 const NotFoundWithLoading = withLoading(NotFound);
 
@@ -55,7 +55,10 @@ function App() {
               <Route path="/" element={<HomeWithLoading />} />
               <Route path="/login" element={<LoginWithLoading />} />
               <Route path="/register" element={<RegisterWithLoading />} />
-              <Route path="/contacts" element={<ContactsListWithLoading />} />
+              <Route
+                path="/contacts"
+                element={<ContactsDashboardWithLoading />}
+              />
               <Route path="/create-event" element={<CreateEventForm />} />
               <Route path="/events" element={<AllEvents />} />
               <Route path="/profile/:handle" element={<ProfileWithLoading />} />
