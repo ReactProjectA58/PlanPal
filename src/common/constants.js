@@ -15,5 +15,6 @@ export const LAST_NAME_MAX_LENGTH = 30;
 export const MIN_TITLE_LENGTH = 3;
 export const MAX_TITLE_LENGTH = 30;
 export const MIN_DESCRIPTION_LENGTH = 0;
-export const MAX_DESCRIPTION_LENGTH = 500;export const LIGHT_THEME = "autumn";
+export const MAX_DESCRIPTION_LENGTH = 500;
+export const LIGHT_THEME = "autumn";
 export const DARK_THEME = "coffee";

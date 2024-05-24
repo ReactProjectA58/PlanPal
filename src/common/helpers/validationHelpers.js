@@ -33,6 +33,9 @@ export const EMAIL_FORMAT_ERROR = "Invalid email address.";
 export const EMAIL_EXISTS_ERROR = "User with this email already exists!";
 export const TITLE_ERROR = `Title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters.`;
 export const DESCRIPTION_ERROR = `Content must be between ${MIN_DESCRIPTION_LENGTH} and ${MAX_DESCRIPTION_LENGTH} characters.`;
+export const LOCATION_ERROR = 'Location is required.';
+export const START_TIME_REQUIRED_ERROR = 'Start time is required.';
+export const END_TIME_REQUIRED_ERROR = 'End time is required.';
 export const START_DATE_REQUIRED_ERROR = 'Start date is required.';
 export const END_DATE_REQUIRED_ERROR = 'End date is required.';
 export const START_DATE_PERIOD_ERROR = 'Start date must be in the future.';
@@ -97,43 +100,6 @@ export const validateRegister = async (formData, isUpdate = false, handle = null
   return validationErrors;
 };
 
-export const validateEvent = (title, description, startDate, endDate) => {
-  const formErrors = {};
-
-  if (title.length < MIN_TITLE_LENGTH || title.length > MAX_TITLE_LENGTH) {
-    formErrors.title = TITLE_ERROR;
-  }
-
-  if (
-    description.length < MIN_DESCRIPTION_LENGTH ||
-    description.length > MAX_DESCRIPTION_LENGTH
-  ) {
-    formErrors.description = DESCRIPTION_ERROR;
-  }
-
-  if (!startDate) {
-    formErrors.startDate = START_DATE_REQUIRED_ERROR;
-  }
-
-  if (!endDate) {
-    formErrors.endDate = END_DATE_REQUIRED_ERROR;
-  }
-
-  if (startDate && endDate && startDate > endDate) {
-    formErrors.endDate = END_DATE_PERIOD_ERROR;
-  }
-
-  if (startDate && startDate < new Date()) {
-    formErrors.startDate = START_DATE_PERIOD_ERROR;
-  }
-
-  if (Object.keys(formErrors).length === 0) {
-    return false;
-  }
-
-  return formErrors;
-};
-
 export const validateTitle = (title) => {
   if (title.length < MIN_TITLE_LENGTH || title.length > MAX_TITLE_LENGTH) {
     return TITLE_ERROR;
@@ -152,3 +118,46 @@ export const validateDescription = (description) => {
 
   return false;
 };
+
+export const validateStartDate = (startDate) => {
+  if (!startDate) {
+    return START_DATE_REQUIRED_ERROR;
+  }
+  if (new Date(startDate) < new Date()) {
+    return START_DATE_PERIOD_ERROR;
+  }
+  return false;
+};
+
+export const validateEndDate = (endDate, startDate) => {
+  if (!endDate) {
+    return END_DATE_REQUIRED_ERROR;
+  }
+  if (new Date(endDate) <= new Date(startDate)) {
+    return END_DATE_PERIOD_ERROR;
+  }
+  return false;
+};
+
+export const validateStartTime = (startTime) => {
+  if (!startTime) {
+    return START_TIME_REQUIRED_ERROR;
+  }
+  return false;
+};
+
+export const validateEndTime = (endTime) => {
+  if (!endTime) {
+    return END_TIME_REQUIRED_ERROR;
+  }
+  return false;
+};
+
+export const validateLocation = (location) => {
+  if (!location) {
+    return LOCATION_ERROR;
+  }
+  return false;
+};
+
+

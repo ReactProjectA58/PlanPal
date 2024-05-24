@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { addEvent } from "../../services/event.service.js";
 import Button from "../Button.jsx";
 import { AppContext } from "../../context/AppContext.jsx";
+import { validateTitle, validateDescription, validateLocation, validateStartDate, validateEndDate, validateStartTime, validateEndTime } from "../../common/helpers/validationHelpers.js";
 
 export default function CreateEvent() {
   const [event, setEvent] = useState({
@@ -17,6 +18,7 @@ export default function CreateEvent() {
     isRecurring: false,
   });
 
+  const [errors, setErrors] = useState({});
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
 
@@ -28,12 +30,34 @@ export default function CreateEvent() {
   };
 
   const createEvent = async () => {
+    const { title, description, location, startDate, startTime, endDate, endTime } = event;
+    
+    const validationErrors = {
+      title: validateTitle(title),
+      description: validateDescription(description),
+      location: validateLocation(location),
+      startDate: validateStartDate(startDate),
+      startTime: validateStartTime(startTime),
+      endDate: validateEndDate(endDate, startDate),
+      endTime: validateEndTime(endTime),
+    };
+
+    const filteredErrors = Object.keys(validationErrors).reduce((acc, key) => {
+      if (validationErrors[key]) acc[key] = validationErrors[key];
+      return acc;
+    }, {});
+
+    if (Object.keys(filteredErrors).length > 0) {
+      setErrors(filteredErrors);
+      return;
+    }
+
     try {
-        const formattedDate = new Date().toISOString();
+      const formattedDate = new Date().toISOString();
       await addEvent({
         ...event,
         createdOn: formattedDate,
-        creator: userData.handle, 
+        creator: userData.handle,
       });
 
       setEvent({
@@ -46,14 +70,14 @@ export default function CreateEvent() {
         description: "",
         isPublic: false,
         isRecurring: false,
-    });
-    
-    navigate("/events");
-} catch (error) {
-    console.error("Error creating event:", error);
-    alert("Failed to create event. Please try again.");
-}
-};
+      });
+
+      navigate("/events");
+    } catch (error) {
+      console.error("Error creating event:", error);
+      alert("Failed to create event. Please try again.");
+    }
+  };
 
   return (
     <div className="outer-create-event-container">
@@ -96,6 +120,7 @@ export default function CreateEvent() {
                   style={{ boxShadow: "inset 0px 0px 5px rgba(0, 0, 0, 0.5)" }}
                 />
               )}
+              {errors[key] && <div className="error-message">{errors[key]}</div>}
             </div>
           </div>
         ))}
