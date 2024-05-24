@@ -1,26 +1,15 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
   ArrowDown,
   ArrowUp,
   MinusToggle,
-  Plus,
   PlusToggle,
 } from "../../../common/helpers/icons";
-import { useForm } from "react-hook-form";
-import { AppContext } from "../../../context/AppContext";
-import { createContactList } from "../../../services/contacts.service";
+import CreateNewContactList from "./CreateNewContactList";
 
 export default function ContactPanel() {
-  const { userData } = useContext(AppContext);
-  const { handleSubmit, register, reset } = useForm();
   const [isOpen, setIsOpen] = useState(false);
   const [isArrowUp, setIsArrowUp] = useState(false);
-
-  const onSubmit = (data) => {
-    const { title } = data;
-    createContactList(title, userData?.handle);
-    reset();
-  };
 
   const toggleCollapsePlus = () => {
     setIsOpen((prev) => !prev);
@@ -31,7 +20,7 @@ export default function ContactPanel() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <div>
       <div className="collapse bg-base-200 mb-2">
         <input
           type="checkbox"
@@ -66,19 +55,10 @@ export default function ContactPanel() {
             </label>
           </div>
           <div className="collapse-content">
-            <input
-              className="input input-bordered h-min"
-              placeholder="My Colleagues"
-              type="text"
-              {...register("title")}
-            />
-            <button type="submit">
-              {" "}
-              <Plus />
-            </button>
+            <CreateNewContactList />
           </div>
         </div>
       </div>
-    </form>
+    </div>
   );
 }
