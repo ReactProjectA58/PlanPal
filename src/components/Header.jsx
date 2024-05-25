@@ -35,7 +35,7 @@ export default function Header() {
       }`}
     >
       <div className="flex items-center">
-        <SideBar />
+        {user && <SideBar />}
         <NavLink to="/" className="btn btn-ghost normal-case text-xl">
           Home
         </NavLink>
