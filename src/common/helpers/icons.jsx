@@ -15,6 +15,7 @@ import {
   faSquarePlus,
   faSun,
   faTimes,
+  faTrash,
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -145,4 +146,8 @@ export const ArrowDown = () => {
       size={"1x"}
     />
   );
+};
+
+export const TrashBin = () => {
+  return <FontAwesomeIcon icon={faTrash} size={"lg"} />;
 };

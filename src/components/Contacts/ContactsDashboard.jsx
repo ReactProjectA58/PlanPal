@@ -1,26 +1,65 @@
 import { useEffect, useState, useContext } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { searchUsers } from "../../services/search.service";
-import {
-  Contacts,
-  GoBack,
-  Minus,
-  MinusToggle,
-  Plus,
-  PlusToggle,
-} from "../../common/helpers/icons";
-import SearchBar from "../SearchBar/SearchBar";
 import ContactPanel from "./ContactPanel/ContactPanel";
+import { contactListsListener } from "../../services/contacts.service";
+import { AppContext } from "../../context/AppContext";
+import { getAllUsers } from "../../services/users.service";
 
 export default function ContactsDashboard() {
+  const { userData } = useContext(AppContext);
   const [searchResults, setSearchResults] = useState([]);
   const [currentView, setCurrentView] = useState("My Contacts");
   const [clearSearch, setClearSearch] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isChecked, setIsChecked] = useState(false);
+  const [contactLists, setContactLists] = useState(null);
+  const [allContacts, setAllContacts] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const location = useLocation();
-  const navigate = useNavigate();
+  useEffect(() => {
+    let unsubscribe;
+
+    if (userData?.contacts) {
+      getAllUsers()
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            setAllUsers(Object.values(snapshot.val()));
+            const userContactsSet = new Set(Object.keys(userData?.contacts));
+            const userContactsArray = Object.values(snapshot.val()).filter(
+              (user) => userContactsSet.has(user.userName.toLowerCase())
+            );
+            setAllContacts(userContactsArray);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching all users:", error);
+        });
+    } else {
+      setAllContacts([]);
+    }
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [userData?.contacts]);
+
+  useEffect(() => {
+    let unsubscribe;
+
+    if (userData?.handle) {
+      unsubscribe = contactListsListener(userData.handle, setContactLists);
+    }
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [userData?.handle]);
 
   useEffect(() => {
     const queryParam = new URLSearchParams(location.search).get("query");
@@ -35,118 +74,46 @@ export default function ContactsDashboard() {
     }
   }, [location.search]);
 
-  const getContacts = () => {
-    if (isSearching) {
-      return searchResults;
-    }
-    return [];
-  };
+  // useEffect(() => {
+  //   if (
+  //     contactLists &&
+  //     currentView !== "My Contacts" &&
+  //     currentView !== "All Users"
+  //   ) {
+  //     const view = contactLists.filter((list) => list.title === currentView);
 
-  const handleTooltip = () => {
-    setIsChecked((prev) => !prev);
-  };
+  //     if (view[0] && view[0].contacts) {
+  //       const userPromises = Object.keys(view[0].contacts).map((contact) =>
+  //         getUserByHandle(contact)
+  //       );
 
-  const handleSearch = (query) => {
-    navigate(`/contacts?query=${query}`);
-  };
-
-  const handleContactsBackClick = () => {
-    navigate("/contacts");
-    setCurrentView("My Contacts");
-    setClearSearch((prev) => !prev);
-  };
+  //       Promise.all(userPromises)
+  //         .then((snapshots) => {
+  //           const users = snapshots.map((snapshot) => snapshot.val());
+  //           setContactsByList(users);
+  //         })
+  //         .catch((e) => console.error("Error getting users:", e));
+  //     } else {
+  //       setContactsByList([]);
+  //     }
+  //   }
+  // }, [currentView, contactLists]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1.8fr_2fr] gap-6">
-      <div>
-        <div className="flex flex-col m-0">
-          <div className="flex justify-between items-center flex-col md:flex-row  pl-3">
-            <div className="flex items-center justify-between mb-4 md:mb-0">
-              {isSearching ? (
-                <a onClick={handleContactsBackClick}>
-                  <Contacts />
-                </a>
-              ) : (
-                <GoBack />
-              )}
-              <h2 className="text-lg md:ml-4">
-                {isSearching
-                  ? `Contacts Found for '${searchQuery}'`
-                  : currentView}
-              </h2>
-            </div>
-            <SearchBar
-              onSearch={handleSearch}
-              currentView={currentView}
-              clearSearch={clearSearch}
-            />
-          </div>
-
-          <ul>
-            {getContacts().map((contact, index) => (
-              <li
-                key={index}
-                className="mb-4 p-4 bg-transparent rounded-lg shadow-xl"
-              >
-                <div className="overflow-x-auto">
-                  <table className="table w-full">
-                    <thead>
-                      <tr></tr>
-                    </thead>
-                    <tbody>
-                      <tr className="flex justify-between">
-                        <td className="flex items-center gap-3   w-1/3">
-                          <div className="avatar">
-                            <div className="mask mask-squircle w-20 h-16">
-                              <img
-                                src={contact.avatar}
-                                alt="Avatar"
-                                className="object-cover w-full h-full"
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <div className="font-bold">
-                              {contact.firstName} {contact.lastName}
-                            </div>
-                            <div className="text-sm opacity-50">
-                              United States
-                            </div>
-                          </div>
-                        </td>
-                        <td className="flex flex-col items-center justify-center text-center  w-1/5">
-                          {contact.handle} <br />
-                          <span className="badge badge-ghost badge-sm">
-                            {contact.email}
-                          </span>
-                        </td>
-
-                        <td className="flex items-center justify-center mr-6">
-                          <div
-                            className="tooltip"
-                            data-tip={isChecked ? "Remove user" : "Add user"}
-                          >
-                            <label className="swap">
-                              <input
-                                type="checkbox"
-                                defaultChecked={isChecked}
-                                onClick={handleTooltip}
-                              />
-                              <Minus />
-                              <Plus />
-                            </label>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      <ContactPanel />
+    <div>
+      <ContactPanel
+        isSearching={isSearching}
+        currentView={currentView}
+        setCurrentView={setCurrentView}
+        clearSearch={clearSearch}
+        setClearSearch={setClearSearch}
+        searchQuery={searchQuery}
+        searchResults={searchResults}
+        isChecked={isChecked}
+        setIsChecked={setIsChecked}
+        allContacts={allContacts}
+        contactLists={contactLists}
+      />
     </div>
   );
 }
