@@ -15,26 +15,28 @@ export default function PanelLists({ setCurrentView, list }) {
   };
 
   return (
-    <div className="flex items-center justify-between py-2 border-t border-black">
-      <span
-        className={`text-sm cursor-pointer tracking-wider `}
-        onClick={() => {
-          setCurrentView(list.title);
-          navigate("/contacts");
-        }}
-      >
-        {list.title}
-      </span>
+    <ul className="mb-4 p-4 bg-transparent rounded-lg shadow-xl">
+      <div className="flex items-center justify-between py-2">
+        <span
+          className={`text-sm cursor-pointer tracking-wider `}
+          onClick={() => {
+            setCurrentView(list.title);
+            navigate("/contacts");
+          }}
+        >
+          {list.title}
+        </span>
 
-      <div className="flex gap-4">
-        <button>
-          <Plus />
-        </button>
-        <button onClick={() => handleDelete(list.key)}>
-          <TrashBin />
-        </button>
+        <div className="flex gap-4">
+          <button>
+            <Plus />
+          </button>
+          <button onClick={() => handleDelete(list.key)}>
+            <TrashBin />
+          </button>
+        </div>
       </div>
-    </div>
+    </ul>
   );
 }
 

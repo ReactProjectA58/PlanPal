@@ -65,8 +65,12 @@ export default function ContactPanel({
   return (
     <div>
       <div>
+        <h1 className="text-3xl rounded-lg shadow-2xl max-w-fit mx-auto my-auto p-4">
+          Contacts Dashboard
+        </h1>
+
         <div className="flex flex-col m-0">
-          <div className="flex justify-between items-center flex-col md:flex-row  pl-3">
+          <div className="flex justify-between items-center flex-col md:flex-row p-3">
             <div className="flex items-center justify-between mb-4 md:mb-0">
               {isSearching ? (
                 <a onClick={handleContactsBackClick}>
