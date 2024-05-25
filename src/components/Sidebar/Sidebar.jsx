@@ -28,7 +28,7 @@ export default function SideBar() {
             <a>Dashboard</a>
           </li>
           <li>
-            <a>Events</a>
+            <a href="/events">Events</a>
           </li>
           <li>
             <a href="/contacts">Contacts</a>

@@ -15,7 +15,7 @@ export default function CreateEvent() {
     location: "",
     description: "",
     isPublic: false,
-    isRecurring: false,
+    isReoccurring: "never", 
   });
 
   const [errors, setErrors] = useState({});
@@ -30,7 +30,7 @@ export default function CreateEvent() {
   };
 
   const createEvent = async () => {
-    const { title, description, location, startDate, startTime, endDate, endTime } = event;
+    const { title, description, location, startDate, startTime, endDate, endTime, isReoccurring } = event;
     
     const validationErrors = {
       title: validateTitle(title),
@@ -59,7 +59,7 @@ export default function CreateEvent() {
         createdOn: formattedDate,
         creator: userData.handle,
       });
-
+    
       setEvent({
         title: "",
         startDate: "",
@@ -69,14 +69,14 @@ export default function CreateEvent() {
         location: "",
         description: "",
         isPublic: false,
-        isRecurring: false,
+        isReoccurring: "never", 
       });
-
+    
       navigate("/events");
     } catch (error) {
       console.error("Error creating event:", error);
       alert("Failed to create event. Please try again.");
-    }
+    }    
   };
 
   return (
@@ -135,16 +135,20 @@ export default function CreateEvent() {
             />
           </label>
         </div>
-
-        <div className="event-isRecurring">
-          <label>
-            Recurring Event:
-            <input
-              type="checkbox"
-              checked={event.isRecurring}
-              onChange={(e) => updateEvent(e.target.checked, "isRecurring")}
-            />
-          </label>
+        <div className="event-reoccurring-option">
+          <label htmlFor="reoccurring-option">Reoccurring Option:</label>
+          <select
+            id="reoccurring-option"
+            value={event.isReoccurring}
+            onChange={(e) => updateEvent(e.target.value, "isReoccurring")}
+            className="reoccurring-option-style"
+          >
+            <option value="Weekly">Weekly</option>
+            <option value="Monthly">Monthly</option>
+            <option value="Yearly">Yearly</option>
+            <option value="Indefinitely">Indefinitely</option>
+            <option value="Never">Never</option> 
+          </select>
         </div>
 
         <div className="create-button">

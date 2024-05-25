@@ -23,8 +23,7 @@ export const USERNAME_LENGTH_ERROR = `Username must be between ${USER_NAME_MIN_L
 export const USERNAME_EXISTS_ERROR = "User with this username already exists!";
 export const FIRST_NAME_ERROR = `First name must contain only letters and be between ${FIRST_NAME_MIN_LENGTH} and ${FIRST_NAME_MAX_LENGTH} characters.`;
 export const LAST_NAME_ERROR = `Last name must contain only letters and be between ${LAST_NAME_MIN_LENGTH} and ${LAST_NAME_MAX_LENGTH} characters.`;
-export const PHONE_FORMAT_ERROR =
-  "Phone number must contain only digits and be 10 characters long.";
+export const PHONE_FORMAT_ERROR = "Phone number must contain only digits and be 10 characters long.";
 export const PHONE_EXISTS_ERROR = "User with this phone number already exists!";
 export const PASSWORD_MATCH_ERROR = "Passwords do not match!";
 export const PASSWORD_LENGTH_ERROR = `Password must be between ${PASSWORD_MIN_LENGTH} and ${PASSWORD_MAX_LENGTH} characters.`;
@@ -39,8 +38,7 @@ export const END_TIME_REQUIRED_ERROR = 'End time is required.';
 export const START_DATE_REQUIRED_ERROR = 'Start date is required.';
 export const END_DATE_REQUIRED_ERROR = 'End date is required.';
 export const START_DATE_PERIOD_ERROR = 'Start date must be in the future.';
-export const END_DATE_PERIOD_ERROR = 'End date must be after start date.';
-
+export const END_DATE_PERIOD_ERROR = 'End date must be after start date and time.';
 
 export const validateRegister = async (formData, isUpdate = false, handle = null) => {
   const validationErrors = {};
@@ -129,11 +127,14 @@ export const validateStartDate = (startDate) => {
   return false;
 };
 
-export const validateEndDate = (endDate, startDate) => {
+export const validateEndDate = (endDate, startDate, endTime, startTime) => {
   if (!endDate) {
     return END_DATE_REQUIRED_ERROR;
   }
-  if (new Date(endDate) <= new Date(startDate)) {
+  const startDateTime = new Date(`${startDate}T${startTime}`);
+  const endDateTime = new Date(`${endDate}T${endTime}`);
+
+  if (endDateTime <= startDateTime) {
     return END_DATE_PERIOD_ERROR;
   }
   return false;
@@ -159,5 +160,3 @@ export const validateLocation = (location) => {
   }
   return false;
 };
-
-

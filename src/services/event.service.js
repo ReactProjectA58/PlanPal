@@ -1,4 +1,4 @@
-import { ref, push, getDatabase, get, child } from "firebase/database";
+import { ref, push, getDatabase, get, update } from "firebase/database";
 import { db } from "../config/firebase-config";
 
 export const addEvent = async (event) => {
@@ -9,7 +9,6 @@ export const addEvent = async (event) => {
   };
 
   const result = await push(ref(db, "events"), newEvent);
-  console.log(result.key);
   return result;
 };
 
