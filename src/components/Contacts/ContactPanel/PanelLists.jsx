@@ -2,13 +2,16 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { Plus, TrashBin } from "../../../common/helpers/icons";
 import { deleteContactList } from "../../../services/contacts.service";
+import { useContext } from "react";
+import { AppContext } from "../../../context/AppContext";
 
 export default function PanelLists({ setCurrentView, list }) {
+  const { userData } = useContext(AppContext);
   const navigate = useNavigate();
 
   const handleDelete = (id) => {
-    deleteContactList(id);
-    setCurrentView("All Contacts");
+    deleteContactList(id, userData.handle);
+    setCurrentView("My Contacts");
   };
 
   return (

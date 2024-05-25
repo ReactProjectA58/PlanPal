@@ -27,9 +27,11 @@ export const createContactList = (title, user) => {
     });
 };
 
-export const deleteContactList = (listId) => {
+export const deleteContactList = (listId, user) => {
+  const creator = user.toLowerCase();
   const updates = {};
   updates[`contactLists/${listId}`] = null;
+  updates[`users/${creator}/contactLists/${listId}`] = null;
 
   return update(ref(db), updates);
 };
