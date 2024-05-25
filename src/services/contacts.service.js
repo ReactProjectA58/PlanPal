@@ -1,4 +1,12 @@
-import { push, ref, update } from "firebase/database";
+import {
+  equalTo,
+  onValue,
+  orderByChild,
+  push,
+  query,
+  ref,
+  update,
+} from "firebase/database";
 import { db } from "../config/firebase-config";
 
 export const createContactList = (title, user) => {
@@ -17,4 +25,27 @@ export const createContactList = (title, user) => {
     .catch((error) => {
       console.error("Error creating list", error);
     });
+};
+
+export const deleteContactList = (listId, user) => {
+  const creator = user.toLowerCase();
+  const updates = {};
+  updates[`contactLists/${listId}`] = null;
+  updates[`users/${creator}/contactLists/${listId}`] = null;
+
+  return update(ref(db), updates);
+};
+
+export const contactListsListener = (user, callBack) => {
+  const handle = user.toLowerCase();
+  const queryRef = query(
+    ref(db, "contactLists"),
+    orderByChild("creator"),
+    equalTo(handle)
+  );
+
+  return onValue(queryRef, (snapshot) => {
+    const data = snapshot.val() ? Object.values(snapshot.val()) : [];
+    callBack(data);
+  });
 };

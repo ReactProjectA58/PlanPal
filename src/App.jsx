@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "./config/firebase-config.js";
 import Home from "./views/Home.jsx";
+import Dashboard from "./views/Dashboard.jsx";
 import Footer from "./components/Footer.jsx";
 import Header from "./components/Header.jsx";
 import NotFound from "./views/NotFound.jsx";
@@ -10,18 +11,19 @@ import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
 import { AppContext } from "./context/AppContext.jsx";
 import { getUserData } from "./services/users.service.js";
-import ContactsList from "./components/Contacts/ContactsList.jsx";
 import Profile from "./components/Profile/Profile.jsx";
 import withLoading from "./hoc/PageLoading.jsx";
 import CreateEventForm from "./components/Events/CreateEventForm.jsx";
 import AllEvents from "./components/Events/AllEvents.jsx";
+import ContactsDashboard from "./components/Contacts/ContactsDashboard.jsx";
 
 const HomeWithLoading = withLoading(Home);
 const LoginWithLoading = withLoading(Login);
 const RegisterWithLoading = withLoading(Register);
-const ContactsListWithLoading = withLoading(ContactsList);
+const ContactsDashboardWithLoading = withLoading(ContactsDashboard);
 const ProfileWithLoading = withLoading(Profile);
 const NotFoundWithLoading = withLoading(NotFound);
+const DashboardWithLoading = withLoading(Dashboard);
 
 function App() {
   const [appState, setAppState] = useState({
@@ -48,14 +50,15 @@ function App() {
   return (
     <BrowserRouter>
       <AppContext.Provider value={{ ...appState, setAppState }}>
-        <div className="flex flex-col  justify-between max-w-full">
+        <div className="flex flex-col justify-between max-w-full">
           <Header />
-          <div className="container mx-auto min-h-screen  min-w-min">
+          <div className="container mx-auto min-h-screen min-w-min">
             <Routes>
-              <Route path="/" element={<HomeWithLoading />} />
+              <Route path="/" element={user ? <DashboardWithLoading /> : <HomeWithLoading />} />
               <Route path="/login" element={<LoginWithLoading />} />
               <Route path="/register" element={<RegisterWithLoading />} />
-              <Route path="/contacts" element={<ContactsListWithLoading />} />
+              <Route path="/contacts" element={<ContactsDashboardWithLoading />} />
+              <Route path="/dashboard" element={<DashboardWithLoading />} />
               <Route path="/create-event" element={<CreateEventForm />} />
               <Route path="/events" element={<AllEvents />} />
               <Route path="/profile/:handle" element={<ProfileWithLoading />} />
