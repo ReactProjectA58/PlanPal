@@ -2,7 +2,11 @@ import { useEffect, useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { searchUsers } from "../../services/search.service";
 import ContactPanel from "./ContactPanel/ContactPanel";
-import { contactListsListener } from "../../services/contacts.service";
+import {
+  contactListsListener,
+  addContact,
+  removeContact,
+} from "../../services/contacts.service";
 import { AppContext } from "../../context/AppContext";
 import { getAllUsers } from "../../services/users.service";
 
@@ -18,6 +22,7 @@ export default function ContactsDashboard() {
   const [allContacts, setAllContacts] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const location = useLocation();
+
   useEffect(() => {
     let unsubscribe;
 
@@ -76,30 +81,32 @@ export default function ContactsDashboard() {
     }
   }, [location.search]);
 
-  // useEffect(() => {
-  //   if (
-  //     contactLists &&
-  //     currentView !== "My Contacts" &&
-  //     currentView !== "All Users"
-  //   ) {
-  //     const view = contactLists.filter((list) => list.title === currentView);
+  const handleAddContact = (contactHandle) => {
+    addContact(userData.handle, contactHandle)
+      .then(() => {
+        console.log("Contact added");
+        setAllContacts((prevContacts) => [
+          ...prevContacts,
+          allUsers.find((user) => user.handle === contactHandle),
+        ]);
+      })
+      .catch((error) => {
+        console.error("Error adding contact:", error);
+      });
+  };
 
-  //     if (view[0] && view[0].contacts) {
-  //       const userPromises = Object.keys(view[0].contacts).map((contact) =>
-  //         getUserByHandle(contact)
-  //       );
-
-  //       Promise.all(userPromises)
-  //         .then((snapshots) => {
-  //           const users = snapshots.map((snapshot) => snapshot.val());
-  //           setContactsByList(users);
-  //         })
-  //         .catch((e) => console.error("Error getting users:", e));
-  //     } else {
-  //       setContactsByList([]);
-  //     }
-  //   }
-  // }, [currentView, contactLists]);
+  const handleRemoveContact = (contactHandle) => {
+    removeContact(userData.handle, contactHandle)
+      .then(() => {
+        console.log("Contact removed");
+        setAllContacts((prevContacts) =>
+          prevContacts.filter((contact) => contact.handle !== contactHandle)
+        );
+      })
+      .catch((error) => {
+        console.error("Error removing contact:", error);
+      });
+  };
 
   return (
     <div>
@@ -115,6 +122,8 @@ export default function ContactsDashboard() {
         setIsChecked={setIsChecked}
         allContacts={allContacts}
         contactLists={contactLists}
+        onAddContact={handleAddContact}
+        onRemoveContact={handleRemoveContact}
       />
     </div>
   );
