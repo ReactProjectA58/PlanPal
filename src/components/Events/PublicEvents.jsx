@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { getPublicEvents, joinEvent } from "../../services/event.service.js";
+import { getPublicEvents, joinEvent, leaveEvent } from "../../services/event.service.js";
 import { AppContext } from "../../context/AppContext.jsx";
 import { useNavigate } from "react-router-dom";
 
@@ -40,6 +40,28 @@ export default function PublicEvents() {
         goingToEvents: {
           ...userData.goingToEvents,
           [eventTitle]: eventId
+        }
+      };
+      setAppState(updatedUserData);
+      navigate("/my-events");
+    }
+  };
+
+  const handleLeaveEvent = async (eventTitle) => {
+    if (!userData) {
+      alert("User data is not available.");
+      return;
+    }
+
+    const result = await leaveEvent(userData.handle, eventTitle);
+    if (result) {
+      alert("You have left the event successfully!");
+
+      const updatedUserData = {
+        ...userData,
+        goingToEvents: {
+          ...userData.goingToEvents,
+          [eventTitle]: false
         }
       };
       setAppState(updatedUserData);
@@ -91,9 +113,15 @@ export default function PublicEvents() {
                 <p className="text-gray-500">Creator: {event.creator}</p>
                 <div className="card-actions mt-4 flex space-x-2">
                   <button className="btn btn-primary">View more</button>
-                  <button className="btn btn-secondary" onClick={() => handleJoinEvent(event.id, event.title)}>
-                    Join Event
-                  </button>
+                  {userData.goingToEvents && userData.goingToEvents[event.title] ? (
+                    <button className="btn btn-secondary" onClick={() => handleLeaveEvent(event.title)}>
+                      Leave Event
+                    </button>
+                  ) : (
+                    <button className="btn btn-secondary" onClick={() => handleJoinEvent(event.id, event.title)}>
+                      Join Event
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

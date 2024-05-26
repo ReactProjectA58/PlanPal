@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { displayMyEvents } from "../../services/event.service.js";
+import { displayMyEvents, leaveEvent } from "../../services/event.service.js";
 import { AppContext } from "../../context/AppContext.jsx";
 import { useNavigate } from "react-router-dom";
 
@@ -7,7 +7,7 @@ export default function MyEvents() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { userData, loading: userLoading } = useContext(AppContext);
+  const { userData, loading: userLoading, setAppState } = useContext(AppContext);
   const navigate = useNavigate();
 
   const fetchMyEvents = async (userHandle) => {
@@ -26,6 +26,28 @@ export default function MyEvents() {
       fetchMyEvents(userData.handle);
     }
   }, [userData, userLoading]);
+
+  const handleLeaveEvent = async (eventTitle) => {
+    if (!userData) {
+      alert("User data is not available.");
+      return;
+    }
+
+    const result = await leaveEvent(userData.handle, eventTitle);
+    if (result) {
+      alert("You have left the event successfully!");
+
+      const updatedUserData = {
+        ...userData,
+        goingToEvents: {
+          ...userData.goingToEvents,
+          [eventTitle]: false
+        }
+      };
+      setAppState(updatedUserData);
+      navigate("/my-events");
+    }
+  };
 
 
   if (loading || userLoading) return <div className="text-center mt-10">Loading...</div>;
@@ -72,6 +94,9 @@ export default function MyEvents() {
                 <p className="text-gray-500">Creator: {event.creator}</p>
                 <div className="card-actions mt-4 flex space-x-2">
                   <button className="btn btn-primary">View more</button>
+                    <button className="btn btn-secondary" onClick={() => handleLeaveEvent(event.title)}>
+                      Leave Event
+                    </button>
                 </div>
               </div>
             </div>
