@@ -6,6 +6,9 @@ export const addEvent = async (event) => {
     ...event,
     createdOn: Date.now(),
     isDeleted: false,
+    peopleGoing: {
+      [event.creator]: true
+    }
   };
 
   const result = await push(ref(db, "events"), newEvent);

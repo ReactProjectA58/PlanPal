@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { addEvent } from "../../services/event.service.js";
 import Button from "../Button.jsx";
 import { AppContext } from "../../context/AppContext.jsx";
@@ -19,7 +19,7 @@ export default function CreateEvent() {
   });
 
   const [errors, setErrors] = useState({});
-  const { userData, setAppState } = useContext(AppContext);
+  const { userData } = useContext(AppContext);
   const navigate = useNavigate();
 
   const updateEvent = (value, key) => {
@@ -28,15 +28,6 @@ export default function CreateEvent() {
       [key]: value,
     });
   };
-
-  useEffect(() => {
-    if (userData) {
-      setEvent((prevEvent) => ({
-        ...prevEvent,
-        creator: userData.handle,
-      }));
-    }
-  }, [userData]);
 
   const createEvent = async () => {
     const { title, description, location, startDate, startTime, endDate, endTime } = event;
@@ -62,12 +53,11 @@ export default function CreateEvent() {
     }
 
     try {
-      const newEvent = await addEvent({
+      await addEvent({
         ...event,
-        createdOn: Date.now(),
         creator: userData.handle,
       });
-
+    
       setEvent({
         title: "",
         startDate: "",
@@ -77,20 +67,8 @@ export default function CreateEvent() {
         location: "",
         description: "",
         isPublic: false,
-        isReoccurring: "never",
-        creator: userData.handle,
+        isReoccurring: "never", 
       });
-
-      setAppState((prevState) => ({
-        ...prevState,
-        userData: {
-          ...prevState.userData,
-          goingToEvents: {
-            ...prevState.userData.goingToEvents,
-            [newEvent.title]: true,
-          },
-        },
-      }));
     
       navigate("/my-events");
     } catch (error) {
