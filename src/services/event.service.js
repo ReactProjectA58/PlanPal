@@ -57,7 +57,7 @@ export const joinEvent = async (handle, eventId) => {
 
     await update(ref(db), updates);
 
-    return { id: eventId, title: eventTitle }; // Return the event details
+    return { id: eventId, title: eventTitle }; 
   } catch (error) {
     console.error('Error joining event:', error);
     return null;
@@ -77,4 +77,50 @@ export const displayMyEvents = async (userId) => {
 
   const events = await Promise.all(eventPromises);
   return events;
+};
+
+export const getPublicEvents = async () => {
+  const db = getDatabase();
+  const eventsRef = ref(db, 'events/');
+  
+  try {
+    const snapshot = await get(eventsRef);
+    if (snapshot.exists()) {
+      const eventsData = snapshot.val();
+      return Object.keys(eventsData)
+        .filter(key => eventsData[key].isPublic)
+        .map(key => ({
+          id: key,
+          ...eventsData[key]
+        }));
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    throw new Error("Failed to fetch events");
+  }
+};
+
+export const getPrivateEvents = async () => {
+  const db = getDatabase();
+  const eventsRef = ref(db, 'events/');
+  
+  try {
+    const snapshot = await get(eventsRef);
+    if (snapshot.exists()) {
+      const eventsData = snapshot.val();
+      return Object.keys(eventsData)
+        .filter(key => !eventsData[key].isPublic)
+        .map(key => ({
+          id: key,
+          ...eventsData[key]
+        }));
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    throw new Error("Failed to fetch events");
+  }
 };

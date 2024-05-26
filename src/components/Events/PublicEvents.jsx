@@ -1,9 +1,9 @@
 import { useEffect, useState, useContext } from "react";
-import { getAllEvents, joinEvent } from "../../services/event.service.js";
+import { getPublicEvents, joinEvent } from "../../services/event.service.js";
 import { AppContext } from "../../context/AppContext.jsx";
 import { useNavigate } from "react-router-dom";
 
-export default function AllEvents() {
+export default function PublicEvents() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,10 +13,10 @@ export default function AllEvents() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const eventsData = await getAllEvents();
-        setEvents(eventsData);
+        const publicEvents = await getPublicEvents();
+        setEvents(publicEvents);
       } catch (error) {
-        setError("Failed to fetch events. Please try again.");
+        setError("Failed to fetch public events. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -52,25 +52,15 @@ export default function AllEvents() {
 
   return (
     <div className="events-container relative px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">All Events</h1>
-      <div className="absolute top-0 left-0 mt-4 ml-4 z-10 flex space-x-4">
-        <a href="/create-event">
-          <button className="btn btn-primary">Create Event</button>
-        </a>
-        <a href="/my-events">
-          <button className="btn btn-secondary">My Events</button>
-        </a>
-        
-        <button className="btn btn-secondary" onClick={() => navigate('/public-events')}>
-          Public Events
-        </button>
-        <button className="btn btn-secondary" onClick={() => navigate('/private-events')}>
-          Private Events
+      <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Public Events</h1>
+      <div className="absolute top-0 right-0 mt-4 mr-4 z-10">
+        <button className="btn btn-secondary" onClick={() => navigate('/events')}>
+          Back
         </button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-20 mt-12">
         {events.length === 0 ? (
-          <div className="text-center text-gray-600">No events found.</div>
+          <div className="text-center text-gray-600">No public events found.</div>
         ) : (
           events.map((event) => (
             <div

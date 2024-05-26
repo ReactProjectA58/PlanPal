@@ -30,7 +30,7 @@ export default function CreateEvent() {
   };
 
   const createEvent = async () => {
-    const { title, description, location, startDate, startTime, endDate, endTime, isReoccurring } = event;
+    const { title, description, location, startDate, startTime, endDate, endTime } = event;
     
     const validationErrors = {
       title: validateTitle(title),
