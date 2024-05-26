@@ -39,7 +39,7 @@ export default function AllEvents() {
         ...userData,
         goingToEvents: {
           ...userData.goingToEvents,
-          [eventTitle]: eventId
+          [eventTitle]: true
         }
       };
       setAppState(updatedUserData);
@@ -60,7 +60,6 @@ export default function AllEvents() {
         <a href="/my-events">
           <button className="btn btn-secondary">My Events</button>
         </a>
-        
         <button className="btn btn-secondary" onClick={() => navigate('/public-events')}>
           Public Events
         </button>
@@ -98,6 +97,7 @@ export default function AllEvents() {
                 </p>
                 <p className="text-gray-500">Public: {event.isPublic ? "Yes" : "No"}</p>
                 <p className="text-gray-500">Reoccurring: {event.isReoccurring}</p>
+                <p className="text-gray-500">Creator: {event.creator}</p>
                 <div className="card-actions mt-4 flex space-x-2">
                   <button className="btn btn-primary">View more</button>
                   <button className="btn btn-secondary" onClick={() => handleJoinEvent(event.id, event.title)}>

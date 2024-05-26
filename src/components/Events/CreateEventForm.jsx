@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { addEvent } from "../../services/event.service.js";
 import Button from "../Button.jsx";
 import { AppContext } from "../../context/AppContext.jsx";
@@ -19,7 +19,7 @@ export default function CreateEvent() {
   });
 
   const [errors, setErrors] = useState({});
-  const { userData } = useContext(AppContext);
+  const { userData, setAppState } = useContext(AppContext);
   const navigate = useNavigate();
 
   const updateEvent = (value, key) => {
@@ -28,6 +28,15 @@ export default function CreateEvent() {
       [key]: value,
     });
   };
+
+  useEffect(() => {
+    if (userData) {
+      setEvent((prevEvent) => ({
+        ...prevEvent,
+        creator: userData.handle,
+      }));
+    }
+  }, [userData]);
 
   const createEvent = async () => {
     const { title, description, location, startDate, startTime, endDate, endTime } = event;
@@ -53,13 +62,12 @@ export default function CreateEvent() {
     }
 
     try {
-      const formattedDate = new Date().toISOString();
-      await addEvent({
+      const newEvent = await addEvent({
         ...event,
-        createdOn: formattedDate,
+        createdOn: Date.now(),
         creator: userData.handle,
       });
-    
+
       setEvent({
         title: "",
         startDate: "",
@@ -69,10 +77,22 @@ export default function CreateEvent() {
         location: "",
         description: "",
         isPublic: false,
-        isReoccurring: "never", 
+        isReoccurring: "never",
+        creator: userData.handle,
       });
+
+      setAppState((prevState) => ({
+        ...prevState,
+        userData: {
+          ...prevState.userData,
+          goingToEvents: {
+            ...prevState.userData.goingToEvents,
+            [newEvent.title]: true,
+          },
+        },
+      }));
     
-      navigate("/events");
+      navigate("/my-events");
     } catch (error) {
       console.error("Error creating event:", error);
       alert("Failed to create event. Please try again.");

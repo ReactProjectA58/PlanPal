@@ -9,7 +9,14 @@ export const addEvent = async (event) => {
   };
 
   const result = await push(ref(db, "events"), newEvent);
-  return result;
+  const eventId = result.key;
+
+  const updates = {};
+  updates[`users/${newEvent.creator}/goingToEvents/${newEvent.title}`] = true;
+
+  await update(ref(db), updates);
+
+  return { id: eventId, ...newEvent };
 };
 
 export const getAllEvents = async () => {
@@ -45,7 +52,7 @@ export const joinEvent = async (handle, eventId) => {
 
     const eventTitle = eventSnapshot.val().title;
 
-    const userEventSnapshot = await get(ref(db, `users/${handle}/goingToEvents/${eventId}`));
+    const userEventSnapshot = await get(ref(db, `users/${handle}/goingToEvents/${eventTitle}`));
     if (userEventSnapshot.exists()) {
       alert("You already joined this event");
       return;
@@ -53,7 +60,7 @@ export const joinEvent = async (handle, eventId) => {
 
     const updates = {};
     updates[`events/${eventId}/peopleGoing/${handle}`] = true;
-    updates[`users/${handle}/goingToEvents/${eventId}`] = eventTitle;
+    updates[`users/${handle}/goingToEvents/${eventTitle}`] = true;
 
     await update(ref(db), updates);
 
@@ -64,18 +71,59 @@ export const joinEvent = async (handle, eventId) => {
   }
 };
 
+export const leaveEvent = async (handle, eventTitle) => {
+  const eventRef = ref(db, `events/`);
+  let eventId;
 
-export const displayMyEvents = async (userId) => {
-  const userRef = ref(db, `users/${userId}/goingToEvents`);
+  try {
+    const snapshot = await get(eventRef);
+    if (snapshot.exists()) {
+      const events = snapshot.val();
+      for (const id in events) {
+        if (events[id].title === eventTitle) {
+          eventId = id;
+          break;
+        }
+      }
+    }
+
+    if (!eventId) {
+      console.error('Event does not exist');
+      return;
+    }
+
+    const updates = {};
+    updates[`events/${eventId}/peopleGoing/${handle}`] = null;
+    updates[`users/${handle}/goingToEvents/${eventTitle}`] = null;
+
+    await update(ref(db), updates);
+
+    return { id: eventId, title: eventTitle }; // Return the event details
+  } catch (error) {
+    console.error('Error leaving event:', error);
+    return null;
+  }
+};
+
+export const displayMyEvents = async (userHandle) => {
+  const userRef = ref(db, `users/${userHandle}/goingToEvents`);
   const snapshot = await get(userRef);
-  const eventIds = snapshot.val() ? Object.keys(snapshot.val()) : [];
-  
-  const eventPromises = eventIds.map(async (eventId) => {
-    const eventSnapshot = await get(ref(db, `events/${eventId}`));
-    return eventSnapshot.val();
-  });
+  const eventTitles = snapshot.val() ? Object.keys(snapshot.val()) : [];
 
-  const events = await Promise.all(eventPromises);
+  const events = [];
+  for (const title of eventTitles) {
+    const eventSnapshot = await get(ref(db, `events/`));
+    if (eventSnapshot.exists()) {
+      const allEvents = eventSnapshot.val();
+      for (const id in allEvents) {
+        if (allEvents[id].title === title) {
+          events.push({ id, ...allEvents[id] });
+          break;
+        }
+      }
+    }
+  }
+
   return events;
 };
 

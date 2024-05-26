@@ -69,6 +69,7 @@ export default function MyEvents() {
                 </p>
                 <p className="text-gray-500">Public: {event.isPublic ? "Yes" : "No"}</p>
                 <p className="text-gray-500">Reoccurring: {event.isReoccurring}</p>
+                <p className="text-gray-500">Creator: {event.creator}</p>
                 <div className="card-actions mt-4 flex space-x-2">
                   <button className="btn btn-primary">View more</button>
                 </div>
