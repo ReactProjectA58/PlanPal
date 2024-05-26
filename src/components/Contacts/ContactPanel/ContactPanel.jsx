@@ -14,7 +14,6 @@ import CreateNewContactList from "./CreateNewContactList";
 import ContactList from "./ContactList";
 import SearchBar from "../../SearchBar/SearchBar";
 import { useNavigate } from "react-router-dom";
-import { addContact, removeContact } from "../../../services/contacts.service";
 import { AppContext } from "../../../context/AppContext";
 
 export default function ContactPanel({
@@ -29,6 +28,8 @@ export default function ContactPanel({
   setIsChecked,
   contactLists,
   allContacts,
+  onAddContact,
+  onRemoveContact,
 }) {
   const { userData } = useContext(AppContext);
   const [isOpen, setIsOpen] = useState(false);
@@ -57,10 +58,6 @@ export default function ContactPanel({
     return [];
   };
 
-  const handleTooltip = () => {
-    setIsChecked((prev) => !prev);
-  };
-
   const isLoggedInUser = (contactHandle) => {
     return userData && userData.handle === contactHandle;
   };
@@ -81,23 +78,11 @@ export default function ContactPanel({
 
   const handleToggleContact = (contactHandle) => {
     if (isAddedContact(contactHandle)) {
-      removeContact(userData.handle, contactHandle)
-        .then(() => {
-          console.log("Contact removed");
-          setAddedContacts(addedContacts.filter((c) => c !== contactHandle));
-        })
-        .catch((error) => {
-          console.error("Error removing contact:", error);
-        });
+      onRemoveContact(contactHandle);
+      setAddedContacts(addedContacts.filter((c) => c !== contactHandle));
     } else {
-      addContact(userData.handle, contactHandle)
-        .then(() => {
-          console.log("Contact added");
-          setAddedContacts([...addedContacts, contactHandle]);
-        })
-        .catch((error) => {
-          console.error("Error adding contact:", error);
-        });
+      onAddContact(contactHandle);
+      setAddedContacts([...addedContacts, contactHandle]);
     }
   };
 
@@ -270,4 +255,6 @@ ContactPanel.propTypes = {
   searchResults: PropTypes.arrayOf(PropTypes.object),
   isChecked: PropTypes.bool,
   setIsChecked: PropTypes.func,
+  onAddContact: PropTypes.func,
+  onRemoveContact: PropTypes.func,
 };
