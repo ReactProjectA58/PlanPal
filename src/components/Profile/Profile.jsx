@@ -16,7 +16,6 @@ function Profile() {
     password: "",
     confirmPassword: "",
     address: "",
-    username: "",
   });
   const [avatar, setAvatar] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -31,7 +30,6 @@ function Profile() {
           const data = userSnapshot.val();
           setUserData({
             ...data,
-            username: data.handle,
           });
           setAvatarPreview(data.avatar);
         } else {
@@ -117,7 +115,7 @@ function Profile() {
             </div>
             <div>
               <label className="text-lg font-medium">Username:</label>
-              <span className="text-lg">{userData.username}</span>
+              <span className="text-lg">{userData.handle}</span>
             </div>
             <div>
               <label className="text-lg font-medium">First Name:</label>

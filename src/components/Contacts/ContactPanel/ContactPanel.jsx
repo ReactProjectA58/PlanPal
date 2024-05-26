@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import {
   ArrowDown,
   ArrowUp,
@@ -14,8 +14,9 @@ import CreateNewContactList from "./CreateNewContactList";
 import ContactList from "./ContactList";
 import SearchBar from "../../SearchBar/SearchBar";
 import { useNavigate } from "react-router-dom";
+import { addContact, removeContact } from "../../../services/contacts.service";
+import { AppContext } from "../../../context/AppContext";
 
-// THIS IS THE SEARCHER FOR THE
 export default function ContactPanel({
   isSearching,
   currentView,
@@ -29,8 +30,10 @@ export default function ContactPanel({
   contactLists,
   allContacts,
 }) {
+  const { userData } = useContext(AppContext);
   const [isOpen, setIsOpen] = useState(false);
   const [isArrowUp, setIsArrowUp] = useState(false);
+  const [addedContacts, setAddedContacts] = useState([]);
   const navigate = useNavigate();
 
   const toggleCollapsePlus = () => {
@@ -48,8 +51,8 @@ export default function ContactPanel({
     return [];
   };
 
-  const handleTooltip = () => {
-    setIsChecked((prev) => !prev);
+  const isLoggedInUser = (contactHandle) => {
+    return userData && userData.handle === contactHandle;
   };
 
   const handleSearch = (query) => {
@@ -61,6 +64,39 @@ export default function ContactPanel({
     setCurrentView("My Contacts");
     setClearSearch((prev) => !prev);
   };
+
+  const isAddedContact = (contactName) => {
+    return addedContacts.includes(contactName);
+  };
+
+  const toggleAddRemoveUser = async (contactName) => {
+    try {
+      if (isAddedContact(contactName)) {
+        await removeContact(userData.handle, contactName);
+        setAddedContacts((prevContacts) =>
+          prevContacts.filter((c) => c !== contactName)
+        );
+        console.log("Contact removed successfully");
+      } else {
+        await addContact(userData.handle, contactName);
+        setAddedContacts((prevContacts) => [...prevContacts, contactName]);
+        console.log("Contact added successfully");
+      }
+    } catch (error) {
+      console.error("Error toggling contact:", error);
+    }
+  };
+
+  useEffect(() => {
+    const storedContacts = localStorage.getItem("addedContacts");
+    if (storedContacts) {
+      setAddedContacts(JSON.parse(storedContacts));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("addedContacts", JSON.stringify(addedContacts));
+  }, [addedContacts]);
 
   return (
     <div>
@@ -128,23 +164,33 @@ export default function ContactPanel({
                             {contact.email}
                           </span>
                         </td>
-
-                        <td className="flex items-center justify-center mr-6">
-                          <div
-                            className="tooltip"
-                            data-tip={isChecked ? "Remove user" : "Add user"}
-                          >
-                            <label className="swap">
-                              <input
-                                type="checkbox"
-                                defaultChecked={isChecked}
-                                onClick={handleTooltip}
-                              />
-                              <Minus />
-                              <Plus />
-                            </label>
-                          </div>
-                        </td>
+                        {!isLoggedInUser(contact.handle) && (
+                          <td className="flex items-center justify-center mr-6">
+                            <div
+                              className="tooltip"
+                              data-tip={
+                                isAddedContact(contact.handle)
+                                  ? "Remove user"
+                                  : "Add user"
+                              }
+                            >
+                              <label className="swap">
+                                <input
+                                  type="checkbox"
+                                  checked={isAddedContact(contact.handle)}
+                                  onChange={() =>
+                                    toggleAddRemoveUser(contact.handle)
+                                  }
+                                />
+                                {isAddedContact(contact.handle) ? (
+                                  <Minus />
+                                ) : (
+                                  <Plus />
+                                )}
+                              </label>
+                            </div>
+                          </td>
+                        )}
                       </tr>
                     </tbody>
                   </table>

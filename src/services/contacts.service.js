@@ -49,3 +49,33 @@ export const contactListsListener = (user, callBack) => {
     callBack(data);
   });
 };
+
+export const addContact = (handle, contactName) => {
+  const updates = {};
+  const user = handle.toLowerCase();
+  const contact = contactName.toLowerCase();
+  updates[`users/${user}/contacts/${contact}`] = true;
+
+  return update(ref(db), updates);
+};
+
+export const removeContact = (handle, contactName) => {
+  const updates = {};
+  const user = handle.toLowerCase();
+  const contact = contactName.toLowerCase();
+  updates[`users/${user}/contacts/${contact}`] = null;
+
+  return update(ref(db), updates);
+};
+
+export const updateContact = (
+  contactListKey,
+  contactToUpdate,
+  updateStatus
+) => {
+  const contact = contactToUpdate.toLowerCase();
+  const updates = {};
+  updates[`contactLists/${contactListKey}/contacts/${contact}`] = updateStatus;
+
+  return update(ref(db), updates);
+};
