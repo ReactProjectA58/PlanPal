@@ -47,8 +47,18 @@ export default function ContactPanel({
   const getContacts = () => {
     if (isSearching) {
       return searchResults;
+    } else if (currentView === "My Contacts") {
+      return addedContacts
+        .map((contactHandle) =>
+          allContacts.find((contact) => contact.handle === contactHandle)
+        )
+        .filter(Boolean);
     }
     return [];
+  };
+
+  const handleTooltip = () => {
+    setIsChecked((prev) => !prev);
   };
 
   const isLoggedInUser = (contactHandle) => {
@@ -65,25 +75,29 @@ export default function ContactPanel({
     setClearSearch((prev) => !prev);
   };
 
-  const isAddedContact = (contactName) => {
-    return addedContacts.includes(contactName);
+  const isAddedContact = (contactHandle) => {
+    return addedContacts.includes(contactHandle);
   };
 
-  const toggleAddRemoveUser = async (contactName) => {
-    try {
-      if (isAddedContact(contactName)) {
-        await removeContact(userData.handle, contactName);
-        setAddedContacts((prevContacts) =>
-          prevContacts.filter((c) => c !== contactName)
-        );
-        console.log("Contact removed successfully");
-      } else {
-        await addContact(userData.handle, contactName);
-        setAddedContacts((prevContacts) => [...prevContacts, contactName]);
-        console.log("Contact added successfully");
-      }
-    } catch (error) {
-      console.error("Error toggling contact:", error);
+  const handleToggleContact = (contactHandle) => {
+    if (isAddedContact(contactHandle)) {
+      removeContact(userData.handle, contactHandle)
+        .then(() => {
+          console.log("Contact removed");
+          setAddedContacts(addedContacts.filter((c) => c !== contactHandle));
+        })
+        .catch((error) => {
+          console.error("Error removing contact:", error);
+        });
+    } else {
+      addContact(userData.handle, contactHandle)
+        .then(() => {
+          console.log("Contact added");
+          setAddedContacts([...addedContacts, contactHandle]);
+        })
+        .catch((error) => {
+          console.error("Error adding contact:", error);
+        });
     }
   };
 
@@ -100,105 +114,101 @@ export default function ContactPanel({
 
   return (
     <div>
-      <div>
-        <h1 className="text-3xl rounded-lg shadow-2xl max-w-fit mx-auto my-auto p-4">
-          Contacts Dashboard
-        </h1>
+      <h1 className="text-3xl rounded-lg shadow-2xl max-w-fit mx-auto my-auto p-4">
+        Contacts Dashboard
+      </h1>
 
-        <div className="flex flex-col m-0">
-          <div className="flex justify-between items-center flex-col md:flex-row p-3">
-            <div className="flex items-center justify-between mb-4 md:mb-0">
-              {isSearching ? (
-                <a onClick={handleContactsBackClick}>
-                  <Contacts />
-                </a>
-              ) : (
-                <GoBack />
-              )}
-              <h2 className="text-lg md:ml-4">
-                {isSearching
-                  ? `Contacts Found for '${searchQuery}'`
-                  : currentView}
-              </h2>
-            </div>
-            <SearchBar
-              onSearch={handleSearch}
-              currentView={currentView}
-              clearSearch={clearSearch}
-            />
-          </div>
-
-          <ul>
-            {getContacts().map((contact, index) => (
-              <li
-                key={index}
-                className="mb-4 p-4 bg-transparent rounded-lg shadow-xl"
-              >
-                <div className="overflow-x-auto">
-                  <table className="table w-full">
-                    <thead>
-                      <tr></tr>
-                    </thead>
-                    <tbody>
-                      <tr className="flex justify-between">
-                        <td className="flex items-center gap-3   w-1/3">
-                          <div className="avatar">
-                            <div className="mask mask-squircle w-20 h-16">
-                              <img
-                                src={contact.avatar}
-                                alt="Avatar"
-                                className="object-cover w-full h-full"
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <div className="font-bold">
-                              {contact.firstName} {contact.lastName}
-                            </div>
-                            <div className="text-sm opacity-50">Bulgaria</div>
-                          </div>
-                        </td>
-                        <td className="flex flex-col items-center justify-center text-center  w-1/5">
-                          {contact.handle} <br />
-                          <span className="badge badge-ghost badge-sm">
-                            {contact.email}
-                          </span>
-                        </td>
-                        {!isLoggedInUser(contact.handle) && (
-                          <td className="flex items-center justify-center mr-6">
-                            <div
-                              className="tooltip"
-                              data-tip={
-                                isAddedContact(contact.handle)
-                                  ? "Remove user"
-                                  : "Add user"
-                              }
-                            >
-                              <label className="swap">
-                                <input
-                                  type="checkbox"
-                                  checked={isAddedContact(contact.handle)}
-                                  onChange={() =>
-                                    toggleAddRemoveUser(contact.handle)
-                                  }
-                                />
-                                {isAddedContact(contact.handle) ? (
-                                  <Minus />
-                                ) : (
-                                  <Plus />
-                                )}
-                              </label>
-                            </div>
-                          </td>
-                        )}
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </li>
-            ))}
-          </ul>
+      <div className="flex justify-between items-center flex-col md:flex-row p-3">
+        <div className="flex items-center justify-between mb-4 md:mb-0">
+          {isSearching ? (
+            <a onClick={handleContactsBackClick}>
+              <Contacts />
+            </a>
+          ) : (
+            <GoBack />
+          )}
+          <h2 className="text-lg md:ml-4">
+            {isSearching ? `Contacts Found for '${searchQuery}'` : currentView}
+          </h2>
         </div>
+        <SearchBar
+          onSearch={handleSearch}
+          currentView={currentView}
+          clearSearch={clearSearch}
+        />
+      </div>
+
+      <div className={getContacts().length > 3 ? "overflow-y-scroll h-96" : ""}>
+        <ul>
+          {getContacts().map((contact, index) => (
+            <li
+              key={index}
+              className="mb-4 p-4 bg-transparent rounded-lg shadow-xl"
+            >
+              <div className="overflow-x-auto">
+                <table className="table w-full">
+                  <thead>
+                    <tr></tr>
+                  </thead>
+                  <tbody>
+                    <tr className="flex justify-between">
+                      <td className="flex items-center gap-3 w-1/3">
+                        <div className="avatar">
+                          <div className="mask mask-squircle w-20 h-16">
+                            <img
+                              src={contact.avatar}
+                              alt="Avatar"
+                              className="object-cover w-full h-full"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="font-bold">
+                            {contact.firstName} {contact.lastName}
+                          </div>
+                          <div className="text-sm opacity-50">Bulgaria</div>
+                        </div>
+                      </td>
+                      <td className="flex flex-col items-center justify-center text-center w-1/5">
+                        {contact.handle} <br />
+                        <span className="badge badge-ghost badge-sm">
+                          {contact.email}
+                        </span>
+                      </td>
+                      {!isLoggedInUser(contact.handle) && (
+                        <td className="flex items-center justify-center mr-6">
+                          <div
+                            className="tooltip"
+                            data-tip={
+                              isAddedContact(contact.handle)
+                                ? "Remove user"
+                                : "Add user"
+                            }
+                          >
+                            <label className="swap">
+                              <input
+                                type="checkbox"
+                                checked={isAddedContact(contact.handle)}
+                                onChange={() =>
+                                  handleToggleContact(contact.handle)
+                                }
+                              />
+                              {isAddedContact(contact.handle) ? (
+                                <Minus />
+                              ) : (
+                                <Plus />
+                              )}
+                            </label>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
       <div className="collapse bg-base-200 mb-2">
         <input
@@ -232,8 +242,8 @@ export default function ContactPanel({
             onChange={toggleCollapsePlus}
           />
 
-          <div className="flex justify-between collapse-title text-xl font-medium ">
-            <span>Create New Contact List</span>{" "}
+          <div className="flex justify-between collapse-title text-xl font-medium">
+            <span>Create New Contact List</span>
             <label className="swap">
               <input type="checkbox" checked={isOpen} readOnly />
               {isOpen ? <MinusToggle /> : <PlusToggle />}
@@ -253,5 +263,11 @@ ContactPanel.propTypes = {
   setCurrentView: PropTypes.func,
   contactLists: PropTypes.arrayOf(PropTypes.object),
   allContacts: PropTypes.arrayOf(PropTypes.object),
-  setIsSearching: PropTypes.bool,
+  isSearching: PropTypes.bool,
+  clearSearch: PropTypes.bool,
+  setClearSearch: PropTypes.func,
+  searchQuery: PropTypes.string,
+  searchResults: PropTypes.arrayOf(PropTypes.object),
+  isChecked: PropTypes.bool,
+  setIsChecked: PropTypes.func,
 };
