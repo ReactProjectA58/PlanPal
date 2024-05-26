@@ -54,7 +54,7 @@ export const validateRegister = async (formData, isUpdate = false, handle = null
     formData.userName.length > USER_NAME_MAX_LENGTH)
   ) {
     validationErrors.userName = USERNAME_LENGTH_ERROR;
-  } else if (!isUpdate && allUsers.find((user) => user.userName === formData.userName)) {
+  } else if (!isUpdate && allUsers.find((user) => user.handle === formData.userName.toLowerCase())) {
     validationErrors.userName = USERNAME_EXISTS_ERROR;
   }
 
