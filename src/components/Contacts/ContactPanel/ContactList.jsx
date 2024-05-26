@@ -22,16 +22,17 @@ export default function ContactList({
 
   return (
     <div>
-      <span
-        className={`text-sm font-bold cursor-pointer select-none tracking-wider `}
-        onClick={() => {
-          setCurrentView("My Contacts");
-          navigate("/contacts");
-        }}
-      >
-        My Contacts
-      </span>
-
+      <ul className="mb-4 p-4 bg-transparent rounded-lg shadow-xl">
+        <span
+          className={`text-sm cursor-pointer tracking-wider `}
+          onClick={() => {
+            setCurrentView("My Contacts");
+            navigate("/contacts");
+          }}
+        >
+          My Contacts
+        </span>
+      </ul>
       {renderedContacts &&
         renderedContacts.map((list) => {
           return (
