@@ -69,7 +69,7 @@ export default function AllEvents() {
     }
   };
 
-  if (loading || userLoading) return <div className="text-center mt-10">Loading...</div>;
+  if (loading || userLoading || !userData) return <div className="text-center mt-10">Loading...</div>;
   if (error) return <div className="text-center text-red-500 mt-10">{error}</div>;
 
   return (
