@@ -101,7 +101,7 @@ export const leaveEvent = async (handle, eventTitle) => {
 
     await update(ref(db), updates);
 
-    return { id: eventId, title: eventTitle }; // Return the event details
+    return { id: eventId, title: eventTitle }; 
   } catch (error) {
     console.error('Error leaving event:', error);
     return null;

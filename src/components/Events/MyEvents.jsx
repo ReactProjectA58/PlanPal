@@ -49,7 +49,6 @@ export default function MyEvents() {
     }
   };
 
-
   if (loading || userLoading) return <div className="text-center mt-10">Loading...</div>;
   if (error) return <div className="text-center text-red-500 mt-10">{error}</div>;
 
@@ -61,42 +60,39 @@ export default function MyEvents() {
           Back
         </button>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-20 mt-12">
+      <div className="flex flex-col space-y-2 mt-4">
         {events.length === 0 ? (
           <div className="text-center text-gray-600">No events found.</div>
         ) : (
           events.map((event) => (
-            <div
-              key={event.id}
-              className="card w-full sm:w-96 bg-base-100 shadow-xl transform transition-transform hover:scale-105 mt-8"
-            >
-              <figure className="px-10 pt-10">
+            <div key={event.id} className="card bg-base-100 shadow-xl transform transition-transform hover:scale-105 mt-4 flex flex-row items-center p-2 space-x-2">
+              <figure className="w-1/6">
                 <img
                   src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
                   alt="Event"
                   className="rounded-xl"
                 />
               </figure>
-              <div className="card-body items-center text-center space-y-2">
-                <h2 className="card-title text-2xl font-semibold">{event.title}</h2>
-                <p className="text-gray-700 break-words whitespace-normal overflow-hidden max-h-24">
+              <div className="card-body w-5/6 flex flex-col space-y-1">
+                <h2 className="card-title text-xl font-semibold">{event.title}</h2>
+                <p className="text-gray-700 break-words whitespace-normal overflow-hidden max-h-16 text-sm">
                   {event.description}
                 </p>
-                <p className="text-gray-500">Location: {event.location}</p>
-                <p className="text-gray-500">
+                <p className="text-gray-500 text-sm">Location: {event.location}</p>
+                <p className="text-gray-500 text-sm">
                   Start: {event.startDate} {event.startTime}
                 </p>
-                <p className="text-gray-500">
+                <p className="text-gray-500 text-sm">
                   End: {event.endDate} {event.endTime}
                 </p>
-                <p className="text-gray-500">Public: {event.isPublic ? "Yes" : "No"}</p>
-                <p className="text-gray-500">Reoccurring: {event.isReoccurring}</p>
-                <p className="text-gray-500">Creator: {event.creator}</p>
-                <div className="card-actions mt-4 flex space-x-2">
+                <p className="text-gray-500 text-sm">Public: {event.isPublic ? "Yes" : "No"}</p>
+                <p className="text-gray-500 text-sm">Reoccurring: {event.isReoccurring}</p>
+                <p className="text-gray-500 text-sm">Creator: {event.creator}</p>
+                <div className="card-actions flex space-x-2">
                   <button className="btn btn-primary">View more</button>
-                    <button className="btn btn-secondary" onClick={() => handleLeaveEvent(event.title)}>
-                      Leave Event
-                    </button>
+                  <button className="btn btn-secondary" onClick={() => handleLeaveEvent(event.title)}>
+                    Leave Event
+                  </button>
                 </div>
               </div>
             </div>
