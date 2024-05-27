@@ -18,8 +18,7 @@ export default function ContactList({
     }
   }, [contactLists, visibleContacts]);
 
-  console.log(contactLists);
-
+  // console.log(allContacts);
   return (
     <div>
       <ul className="mb-4 p-4 bg-transparent rounded-lg shadow-xl">
@@ -34,24 +33,21 @@ export default function ContactList({
         </span>
       </ul>
       {renderedContacts &&
-        renderedContacts.map((list) => {
-          return (
-            <PanelLists
-              key={list.title + list.key}
-              list={list}
-              allContacts={allContacts}
-              setCurrentView={setCurrentView}
-            />
-          );
-        })}
+        renderedContacts.map((list) => (
+          <PanelLists
+            key={list.key}
+            list={list}
+            renderedContacts={renderedContacts}
+            allContacts={allContacts}
+            setCurrentView={setCurrentView}
+          />
+        ))}
     </div>
   );
 }
 
 ContactList.propTypes = {
-  currentView: PropTypes.string,
   setCurrentView: PropTypes.func,
   contactLists: PropTypes.arrayOf(PropTypes.object),
   allContacts: PropTypes.arrayOf(PropTypes.object),
-  isSearching: PropTypes.bool,
 };
