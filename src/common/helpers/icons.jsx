@@ -108,6 +108,15 @@ export const Edit = ({ onClick }) => {
   );
 };
 
+// eslint-disable-next-line react/prop-types
+export const DeleteEvent = ({ onClick }) => {
+  return (
+    <div onClick={onClick} style={{ cursor: 'pointer', fontSize: '2em' }}>
+      <FontAwesomeIcon icon={faTrash} />
+    </div>
+  );
+};
+
 
 export const Plus = () => {
     return (

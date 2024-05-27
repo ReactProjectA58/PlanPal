@@ -3,6 +3,7 @@ import { useEffect, useState, useContext } from 'react';
 import { getEventById } from '../../services/event.service.js';
 import { AppContext } from '../../context/AppContext.jsx';
 import { GoBackArrow, Edit } from '../../common/helpers/icons.jsx';
+import { EVENT_COVER_BY_DEFAULT } from '../../common/constants.js';
 
 export default function SingleEventView() {
   const { eventId } = useParams();
@@ -55,7 +56,7 @@ export default function SingleEventView() {
         <span className="font-semibold">Address:</span> {event.location}
       </div>
       <div className="mb-4">
-        <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Event" className="rounded-xl w-full" />
+        <img src={event.cover || EVENT_COVER_BY_DEFAULT} alt="Event" className="rounded-xl w-half" />
       </div>
       <div className="mb-4">
         <span className="font-semibold">Description:</span> {event.description}

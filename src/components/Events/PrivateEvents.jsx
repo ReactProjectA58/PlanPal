@@ -3,6 +3,7 @@ import { getPrivateEvents, joinEvent, leaveEvent } from "../../services/event.se
 import { AppContext } from "../../context/AppContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { GoBackArrow } from "../../common/helpers/icons.jsx";
+import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
 
 export default function PrivateEvents() {
   const [events, setEvents] = useState([]);
@@ -87,9 +88,9 @@ export default function PrivateEvents() {
             <div key={event.id} className="event-card bg-gray-100 shadow-xl transform transition-transform hover:scale-105 mt-4 flex flex-row items-center p-4 space-x-4 rounded-lg">
               <figure className="w-1/3">
                 <img
-                  src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
+                  src={event.cover || EVENT_COVER_BY_DEFAULT}
                   alt="Event"
-                  className="rounded-xl w-full h-full object-cover"
+                  className="event-cover rounded-xl w-full h-full object-cover"
                 />
               </figure>
               <div className="card-body w-2/3 flex flex-col space-y-2">

@@ -1,10 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
-import { getEventById, updateEvent } from '../../services/event.service.js';
+import { getEventById, updateEvent, deleteEvent } from '../../services/event.service.js';
 import { AppContext } from '../../context/AppContext.jsx';
 import { validateTitle, validateDescription, validateLocation, validateStartDate, validateEndDate, validateStartTime, validateEndTime } from '../../common/helpers/validationHelpers.js';
 import Button from '../Button.jsx';
-import { GoBackArrow } from '../../common/helpers/icons.jsx';
+import { GoBackArrow, DeleteEvent } from '../../common/helpers/icons.jsx';
 
 export default function UpdateEvent() {
   const { eventId } = useParams();
@@ -69,6 +69,24 @@ export default function UpdateEvent() {
     }
   };
 
+  const handleDeleteEvent = async () => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this event?");
+    if (confirmDelete) {
+      try {
+        const result = await deleteEvent(eventId);
+        if (result) {
+          alert("Event deleted successfully");
+          navigate("/my-events");
+        } else {
+          alert("Failed to delete event. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error deleting event:", error);
+        alert("Failed to delete event. Please try again.");
+      }
+    }
+  };
+
   if (loading) return <div className="text-center mt-10">Loading...</div>;
   if (error) return <div className="text-center text-red-500 mt-10">{error}</div>;
   if (!event) return <div className="text-center mt-10">No event found.</div>;
@@ -77,7 +95,10 @@ export default function UpdateEvent() {
     <div className="update-event-container px-4 py-8">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">Update Event</h1>
-        <GoBackArrow onClick={() => navigate(`/events/${eventId}`)} />
+        <div className="flex items-center space-x-2">
+          <DeleteEvent onClick={handleDeleteEvent} />
+          <GoBackArrow onClick={() => navigate(`/events/${eventId}`)} />
+        </div>
       </div>
 
       {[
@@ -141,9 +162,11 @@ export default function UpdateEvent() {
         </select>
       </div>
 
-      <Button className="btn btn-primary" onClick={handleUpdateEvent}>
-        Update Event
-      </Button>
+      <div className="flex space-x-4">
+        <Button className="btn btn-primary" onClick={handleUpdateEvent}>
+          Update Event
+        </Button>
+      </div>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { getAllEvents, joinEvent, leaveEvent } from "../../services/event.servic
 import { AppContext } from "../../context/AppContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
+import './AllEvents.css';
 
 export default function AllEvents() {
   const [events, setEvents] = useState([]);
@@ -100,7 +101,7 @@ export default function AllEvents() {
                 <img
                   src={event.cover || EVENT_COVER_BY_DEFAULT}
                   alt="Event"
-                  className="rounded-xl w-full h-full object-cover"
+                  className="event-cover rounded-xl w-full h-full object-cover"
                 />
               </figure>
               <div className="card-body w-2/3 flex flex-col space-y-2">

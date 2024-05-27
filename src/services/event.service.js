@@ -1,4 +1,4 @@
-import { ref, push, getDatabase, get, update } from "firebase/database";
+import { ref, push, getDatabase, get, update, remove } from "firebase/database";
 import { db } from "../config/firebase-config";
 
 export const addEvent = async (event) => {
@@ -236,5 +236,18 @@ export const updateEvent = async (eventId, eventData) => {
   } catch (error) {
     console.error("Error updating event:", error);
     throw error;
+  }
+};
+
+
+export const deleteEvent = async (eventId) => {
+  try {
+    const eventRef = ref(db, `events/${eventId}`);
+    await remove(eventRef);
+    console.log("Event deleted successfully");
+    return true;
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    return false;
   }
 };
