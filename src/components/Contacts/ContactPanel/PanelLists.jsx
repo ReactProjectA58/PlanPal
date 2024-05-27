@@ -36,7 +36,6 @@ export default function PanelLists({
     updateContact(listKey, contact, updatedContacts);
   };
 
-  console.log({ allContacts }, "Panel lists");
   return (
     <ul className="mb-4 p-4 bg-transparent rounded-lg shadow-xl">
       <div className="flex items-center justify-between py-2">
@@ -92,7 +91,6 @@ export default function PanelLists({
           </div>
           <button
             onClick={() => {
-              console.log("Trash button clicked", list.key);
               handleDelete(list.key);
             }}
           >

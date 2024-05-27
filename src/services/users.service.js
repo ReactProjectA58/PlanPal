@@ -5,7 +5,7 @@ import {
   query,
   equalTo,
   orderByChild,
-  update
+  update,
 } from "firebase/database";
 import { db } from "../config/firebase-config";
 
@@ -24,7 +24,7 @@ export const getUserData = (uid) => {
 export const createUserHandle = async (userData) => {
   try {
     const userHandle = userData.handle.toLowerCase();
-    userData.handle = userHandle; 
+    userData.handle = userHandle;
     await set(ref(db, `users/${userHandle}`), userData);
     console.log("User document written with ID: ", userData.uid);
   } catch (e) {
@@ -43,4 +43,3 @@ export const updateUser = async (handle, userData) => {
     throw error;
   }
 };
-

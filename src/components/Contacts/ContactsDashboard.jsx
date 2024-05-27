@@ -25,23 +25,16 @@ export default function ContactsDashboard() {
 
   useEffect(() => {
     let unsubscribe;
-
-    console.log({ userData }, "USERDATA");
     if (userData) {
       getAllUsers()
         .then((snapshot) => {
-          console.log(snapshot, "SNAPSHOT");
-
           if (snapshot.exists()) {
-            console.log(Object.values(snapshot.val()), "SNAPSHOT");
-
             setAllUsers(Object.values(snapshot.val()));
             const userContactsSet = new Set(Object.keys(userData?.contacts));
             const userContactsArray = Object.values(snapshot.val()).filter(
               (user) =>
                 user.handle && userContactsSet.has(user.handle.toLowerCase())
             );
-            console.log({ userContactsArray }, "User contacts array");
             setAllContacts(userContactsArray);
           }
         })
@@ -89,13 +82,10 @@ export default function ContactsDashboard() {
   const handleAddContact = (contactHandle) => {
     addContact(userData.handle, contactHandle)
       .then(() => {
-        console.log("Contact added", allUsers);
-
         const foundUser = allUsers.find(
           (user) => user.handle === contactHandle
         );
 
-        console.log({ foundUser, allUsers, contactHandle }, "FOUND USER");
         if (foundUser) {
           setAllContacts((prevContacts) => [...prevContacts, foundUser]);
         }
@@ -104,8 +94,6 @@ export default function ContactsDashboard() {
         console.error("Error adding contact:", error);
       });
   };
-
-  console.log({ allContacts }, "ALL CONTACTS");
 
   const handleRemoveContact = (contactHandle) => {
     removeContact(userData.handle, contactHandle)
