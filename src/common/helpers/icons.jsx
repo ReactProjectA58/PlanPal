@@ -17,6 +17,8 @@ import {
   faTimes,
   faTrash,
   faUserGroup,
+  faPenToSquare,
+  faCircleArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -66,37 +68,56 @@ export const Moon = () => {
       icon={faMoon}
       className="swap-off fill-current w-10 h-10"
       style={{ width: "20px", height: "20px" }}
-    />
-  );
-};
-
-export const Sun = () => {
-  return (
-    <FontAwesomeIcon
+      />
+    );
+  };
+  
+  export const Sun = () => {
+    return (
+      <FontAwesomeIcon
       icon={faSun}
       className="swap-on fill-current w-10 h-10"
       style={{ width: "20px", height: "20px" }}
-    />
+      />
+    );
+  };
+  
+  export const Contacts = () => {
+    return <FontAwesomeIcon icon={faChevronLeft} size={"lg"} />;
+  };    
+  
+  export const GoBack = () => {
+    return <FontAwesomeIcon icon={faUserGroup} size={"lg"} />;
+  };  
+  
+  // eslint-disable-next-line react/prop-types
+export const GoBackArrow = ({ onClick }) => {
+    return (
+      <div onClick={onClick} style={{ cursor: 'pointer', fontSize: '2em' }}>
+        <FontAwesomeIcon icon={faCircleArrowLeft} />
+    </div>    
   );
+  
 };
 
-export const Contacts = () => {
-  return <FontAwesomeIcon icon={faChevronLeft} size={"lg"} />;
-};
+export const Edit = ({ onClick }) => {
+    return (
+      <div onClick={onclick} style={{ cursor: 'pointer', fontSize: '2em' }} >
+        <FontAwesomeIcon icon={faPenToSquare} />
+      </div>
+    )
+  };
 
-export const GoBack = () => {
-  return <FontAwesomeIcon icon={faUserGroup} size={"lg"} />;
-};
 
 export const Plus = () => {
-  return (
-    <FontAwesomeIcon
+    return (
+      <FontAwesomeIcon
       className="swap-off fill-current"
       icon={faSquarePlus}
       size={"xl"}
-    />
-  );
-};
+    />  
+  );  
+};  
 
 export const Minus = () => {
   return (
@@ -104,9 +125,9 @@ export const Minus = () => {
       className="swap-on fill-current"
       icon={faSquareMinus}
       size={"xl"}
-    />
-  );
-};
+    />  
+  );  
+};  
 
 export const PlusToggle = () => {
   return (
@@ -114,9 +135,9 @@ export const PlusToggle = () => {
       icon={faPlus}
       className="swap-off fill-current"
       size={"1x"}
-    />
-  );
-};
+    />  
+  );  
+};  
 
 export const MinusToggle = () => {
   return (
@@ -124,9 +145,9 @@ export const MinusToggle = () => {
       icon={faMinus}
       className="swap-on fill-current"
       size={"1x"}
-    />
-  );
-};
+    />  
+  );  
+};  
 
 export const ArrowUp = () => {
   return (
@@ -134,9 +155,9 @@ export const ArrowUp = () => {
       icon={faChevronUp}
       className="swap on fill-current"
       size={"1x"}
-    />
-  );
-};
+    />  
+  );  
+};  
 
 export const ArrowDown = () => {
   return (
@@ -144,10 +165,11 @@ export const ArrowDown = () => {
       icon={faChevronDown}
       className="swap on fill-current"
       size={"1x"}
-    />
-  );
-};
+    />  
+  );  
+};  
 
 export const TrashBin = () => {
   return <FontAwesomeIcon icon={faTrash} size={"lg"} />;
-};
+};  
+

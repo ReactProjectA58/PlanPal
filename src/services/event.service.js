@@ -175,3 +175,56 @@ export const getPrivateEvents = async () => {
     throw new Error("Failed to fetch events");
   }
 };
+
+export const getEventDetails = async (eventId) => {
+  const db = getDatabase();
+  const eventRef = ref(db, `events/${eventId}`);
+  
+  try {
+    const snapshot = await get(eventRef);
+    if (snapshot.exists()) {
+      return { id: eventId, ...snapshot.val() };
+    } else {
+      throw new Error("Event not found");
+    }
+  } catch (error) {
+    console.error("Error fetching event details:", error);
+    throw error;
+  }
+};
+
+export const getParticipants = async (eventId) => {
+  const db = getDatabase();
+  const participantsRef = ref(db, `events/${eventId}/peopleGoing`);
+  
+  try {
+    const snapshot = await get(participantsRef);
+    if (snapshot.exists()) {
+      return Object.keys(snapshot.val());
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching participants:", error);
+    throw error;
+  }
+};
+
+export const getEventById = async (eventId) => {
+  const db = getDatabase();
+  const eventRef = ref(db, `events/${eventId}`);
+  
+  try {
+    const snapshot = await get(eventRef);
+    if (snapshot.exists()) {
+      return { id: eventId, ...snapshot.val() };
+    } else {
+      throw new Error("Event not found");
+    }
+  } catch (error) {
+    console.error("Error fetching event:", error);
+    throw error;
+  }
+};
+
+

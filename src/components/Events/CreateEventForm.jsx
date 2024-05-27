@@ -4,6 +4,7 @@ import { addEvent } from "../../services/event.service.js";
 import Button from "../Button.jsx";
 import { AppContext } from "../../context/AppContext.jsx";
 import { validateTitle, validateDescription, validateLocation, validateStartDate, validateEndDate, validateStartTime, validateEndTime } from "../../common/helpers/validationHelpers.js";
+import { GoBackArrow } from "../../common/helpers/icons.jsx"; 
 
 export default function CreateEvent() {
   const [event, setEvent] = useState({
@@ -80,10 +81,10 @@ export default function CreateEvent() {
   return (
     <div className="outer-create-event-container">
       <div className="inner-create-event-container">
-        <div className="create-event-header">
+        <div className="flex justify-between items-center mb-4">
           <h1>Create Event</h1>
+          <GoBackArrow onClick={() => navigate("/events")} />
         </div>
-
         {[
           { label: "Title", key: "title", type: "text" },
           { label: "Start Date", key: "startDate", type: "date" },
