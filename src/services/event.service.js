@@ -228,3 +228,13 @@ export const getEventById = async (eventId) => {
 };
 
 
+export const updateEvent = async (eventId, eventData) => {
+  try {
+    const eventRef = ref(db, `events/${eventId}`);
+    await update(eventRef, eventData);
+    console.log("Event updated successfully");
+  } catch (error) {
+    console.error("Error updating event:", error);
+    throw error;
+  }
+};

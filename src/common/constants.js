@@ -18,3 +18,4 @@ export const MIN_DESCRIPTION_LENGTH = 0;
 export const MAX_DESCRIPTION_LENGTH = 500;
 export const LIGHT_THEME = "autumn";
 export const DARK_THEME = "coffee";
+export const EVENT_COVER_BY_DEFAULT = "https://images.pexels.com/photos/431722/pexels-photo-431722.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";

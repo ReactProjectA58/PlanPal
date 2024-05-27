@@ -90,23 +90,23 @@ export const Moon = () => {
     return <FontAwesomeIcon icon={faUserGroup} size={"lg"} />;
   };  
   
-  // eslint-disable-next-line react/prop-types
+// eslint-disable-next-line react/prop-types
 export const GoBackArrow = ({ onClick }) => {
-    return (
-      <div onClick={onClick} style={{ cursor: 'pointer', fontSize: '2em' }}>
-        <FontAwesomeIcon icon={faCircleArrowLeft} />
-    </div>    
+  return (
+    <div onClick={onClick} style={{ cursor: 'pointer', fontSize: '2em' }}>
+      <FontAwesomeIcon icon={faCircleArrowLeft} />
+    </div>
   );
-  
 };
 
+// eslint-disable-next-line react/prop-types
 export const Edit = ({ onClick }) => {
-    return (
-      <div onClick={onclick} style={{ cursor: 'pointer', fontSize: '2em' }} >
-        <FontAwesomeIcon icon={faPenToSquare} />
-      </div>
-    )
-  };
+  return (
+    <div onClick={onClick} style={{ cursor: 'pointer', fontSize: '2em' }}>
+      <FontAwesomeIcon icon={faPenToSquare} />
+    </div>
+  );
+};
 
 
 export const Plus = () => {

@@ -1,0 +1,149 @@
+import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState, useContext } from 'react';
+import { getEventById, updateEvent } from '../../services/event.service.js';
+import { AppContext } from '../../context/AppContext.jsx';
+import { validateTitle, validateDescription, validateLocation, validateStartDate, validateEndDate, validateStartTime, validateEndTime } from '../../common/helpers/validationHelpers.js';
+import Button from '../Button.jsx';
+import { GoBackArrow } from '../../common/helpers/icons.jsx';
+
+export default function UpdateEvent() {
+  const { eventId } = useParams();
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [errors, setErrors] = useState({});
+  const { userData } = useContext(AppContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const eventData = await getEventById(eventId);
+        setEvent(eventData);
+      } catch (error) {
+        setError('Failed to fetch event data. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvent();
+  }, [eventId]);
+
+  const updateEventData = (value, key) => {
+    setEvent({
+      ...event,
+      [key]: value,
+    });
+  };
+
+  const handleUpdateEvent = async () => {
+    const { title, description, location, startDate, startTime, endDate, endTime } = event;
+
+    const validationErrors = {
+      title: validateTitle(title),
+      description: validateDescription(description),
+      location: validateLocation(location),
+      startDate: validateStartDate(startDate),
+      startTime: validateStartTime(startTime),
+      endDate: validateEndDate(endDate, startDate),
+      endTime: validateEndTime(endTime),
+    };
+
+    const filteredErrors = Object.keys(validationErrors).reduce((acc, key) => {
+      if (validationErrors[key]) acc[key] = validationErrors[key];
+      return acc;
+    }, {});
+
+    if (Object.keys(filteredErrors).length > 0) {
+      setErrors(filteredErrors);
+      return;
+    }
+
+    try {
+      await updateEvent(eventId, event);
+      navigate(`/events/${eventId}`);
+    } catch (error) {
+      console.error("Error updating event:", error);
+      alert("Failed to update event. Please try again.");
+    }
+  };
+
+  if (loading) return <div className="text-center mt-10">Loading...</div>;
+  if (error) return <div className="text-center text-red-500 mt-10">{error}</div>;
+  if (!event) return <div className="text-center mt-10">No event found.</div>;
+
+  return (
+    <div className="update-event-container px-4 py-8">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold">Update Event</h1>
+        <GoBackArrow onClick={() => navigate(`/events/${eventId}`)} />
+      </div>
+
+      {[
+        { label: "Title", key: "title", type: "text" },
+        { label: "Start Date", key: "startDate", type: "date" },
+        { label: "Start Time", key: "startTime", type: "time" },
+        { label: "End Date", key: "endDate", type: "date" },
+        { label: "End Time", key: "endTime", type: "time" },
+        { label: "Location", key: "location", type: "text" },
+        { label: "Description", key: "description", type: "textarea" },
+      ].map(({ label, key, type }) => (
+        <div key={key} className={`event-${key} mb-4`}>
+          <label htmlFor={`input-${key}`} className="block font-semibold mb-1">{label}:</label>
+          <div className="input-field">
+            {type === "textarea" ? (
+              <textarea
+                className="w-full p-2 border rounded"
+                value={event[key]}
+                onChange={(e) => updateEventData(e.target.value, key)}
+                name={`input-${key}`}
+                id={`input-${key}`}
+                cols="30"
+                rows="10"
+              ></textarea>
+            ) : (
+              <input
+                className="w-full p-2 border rounded"
+                type={type}
+                value={event[key]}
+                onChange={(e) => updateEventData(e.target.value, key)}
+                name={`input-${key}`}
+                id={`input-${key}`}
+              />
+            )}
+            {errors[key] && <div className="text-red-500 text-sm mt-1">{errors[key]}</div>}
+          </div>
+        </div>
+      ))}
+
+      <div className="flex items-center space-x-2 mb-4">
+        <label className="font-semibold">Public Event:</label>
+        <input
+          type="checkbox"
+          checked={event.isPublic}
+          onChange={(e) => updateEventData(e.target.checked, "isPublic")}
+        />
+      </div>
+      <div className="flex items-center space-x-2 mb-4">
+        <label htmlFor="reoccurring-option" className="font-semibold">Reoccurring Option:</label>
+        <select
+          id="reoccurring-option"
+          value={event.isReoccurring}
+          onChange={(e) => updateEventData(e.target.value, "isReoccurring")}
+          className="border rounded p-2"
+        >
+          <option value="Weekly">Weekly</option>
+          <option value="Monthly">Monthly</option>
+          <option value="Yearly">Yearly</option>
+          <option value="Indefinitely">Indefinitely</option>
+          <option value="Never">Never</option>
+        </select>
+      </div>
+
+      <Button className="btn btn-primary" onClick={handleUpdateEvent}>
+        Update Event
+      </Button>
+    </div>
+  );
+}

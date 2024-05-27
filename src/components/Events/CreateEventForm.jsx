@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { addEvent } from "../../services/event.service.js";
+import { uploadCover } from "../../services/upload.service.js";
 import Button from "../Button.jsx";
 import { AppContext } from "../../context/AppContext.jsx";
 import { validateTitle, validateDescription, validateLocation, validateStartDate, validateEndDate, validateStartTime, validateEndTime } from "../../common/helpers/validationHelpers.js";
@@ -18,7 +19,7 @@ export default function CreateEvent() {
     isPublic: false,
     isReoccurring: "never", 
   });
-
+  const [coverFile, setCoverFile] = useState(null);
   const [errors, setErrors] = useState({});
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
@@ -28,6 +29,10 @@ export default function CreateEvent() {
       ...event,
       [key]: value,
     });
+  };
+
+  const handleFileChange = (e) => {
+    setCoverFile(e.target.files[0]);
   };
 
   const createEvent = async () => {
@@ -54,9 +59,15 @@ export default function CreateEvent() {
     }
 
     try {
+      let coverURL = "";
+      if (coverFile) {
+        coverURL = await uploadCover(event.title, coverFile);
+      }
+
       await addEvent({
         ...event,
         creator: userData.handle,
+        cover: coverURL,
       });
     
       setEvent({
@@ -70,6 +81,7 @@ export default function CreateEvent() {
         isPublic: false,
         isReoccurring: "never", 
       });
+      setCoverFile(null);
     
       navigate("/my-events");
     } catch (error) {
@@ -150,10 +162,20 @@ export default function CreateEvent() {
           </select>
         </div>
 
-        <div className="create-button">
+        <div className="flex items-center space-x-4">
           <Button className="create-button-style" onClick={createEvent}>
             Create
           </Button>
+          <Button className="upload-button-style" onClick={() => document.getElementById('cover-upload').click()}>
+            Upload Cover
+          </Button>
+          <input
+            type="file"
+            id="cover-upload"
+            style={{ display: 'none' }}
+            accept="image/*"
+            onChange={handleFileChange}
+          />
         </div>
       </div>
     </div>

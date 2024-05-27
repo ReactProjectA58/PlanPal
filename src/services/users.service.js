@@ -43,3 +43,20 @@ export const updateUser = async (handle, userData) => {
     throw error;
   }
 };
+
+export const getUserContacts = async (handle) => {
+  const userHandle = handle.toLowerCase();
+  const userRef = ref(db, `users/${userHandle}/contacts`);
+
+  try {
+    const snapshot = await get(userRef);
+    if (snapshot.exists()) {
+      return Object.keys(snapshot.val());
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching contacts:", error);
+    throw error;
+  }
+};

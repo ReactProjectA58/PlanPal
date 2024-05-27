@@ -1,9 +1,8 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
 import { getEventById } from '../../services/event.service.js';
 import { AppContext } from '../../context/AppContext.jsx';
 import { GoBackArrow, Edit } from '../../common/helpers/icons.jsx';
-import { useNavigate } from 'react-router-dom';
 
 export default function SingleEventView() {
   const { eventId } = useParams();
@@ -39,7 +38,7 @@ export default function SingleEventView() {
         <div className="flex items-center space-x-2">
           <GoBackArrow onClick={() => navigate("/events")} />
           {userData?.handle === event.creator && (
-            <Edit />
+            <Edit onClick={() => navigate(`/update-event/${eventId}`)} />
           )}
         </div>
       </div>
