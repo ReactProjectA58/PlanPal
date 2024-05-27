@@ -12,3 +12,15 @@ export const uploadAvatar = async (userId, file) => {
     throw error;
   }
 };
+
+export const uploadCover = async (eventId, file) => {
+  try {
+    const coverRef = ref(storage, `covers/${eventId}`);
+    await uploadBytes(coverRef, file);
+    const downloadURL = await getDownloadURL(coverRef);
+    return downloadURL;
+  } catch (error) {
+    console.error("Error uploading cover:", error);
+    throw error;
+  }
+};

@@ -20,6 +20,7 @@ import MyEvents from "./components/Events/MyEvents.jsx";
 import PublicEvents from "./components/Events/PublicEvents.jsx";
 import PrivateEvents from "./components/Events/PrivateEvents.jsx";
 import SingleViewEvent from "./components/Events/SingleEventView.jsx";
+import UpdateEvent from "./components/Events/UpdateEvent.jsx";
 
 const HomeWithLoading = withLoading(Home);
 const LoginWithLoading = withLoading(Login);
@@ -64,6 +65,7 @@ function App() {
               <Route path="/contacts" element={<ContactsDashboardWithLoading />} />
               <Route path="/dashboard" element={<DashboardWithLoading />} />
               <Route path="/create-event" element={<CreateEventForm />} />
+              <Route path="/update-event/:eventId" element={<UpdateEvent />} />
               <Route path="/events" element={<AllEvents />} />
               <Route path="/my-events" element={<MyEvents />} />
               <Route path="/public-events" element={<PublicEvents />} />
