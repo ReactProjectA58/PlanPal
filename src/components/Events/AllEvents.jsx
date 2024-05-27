@@ -3,7 +3,6 @@ import { getAllEvents, joinEvent, leaveEvent } from "../../services/event.servic
 import { AppContext } from "../../context/AppContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
-import './AllEvents.css';
 
 export default function AllEvents() {
   const [events, setEvents] = useState([]);
