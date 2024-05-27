@@ -75,7 +75,6 @@ export default function UpdateEvent() {
       try {
         const result = await deleteEvent(eventId);
         if (result) {
-          alert("Event deleted successfully");
           navigate("/my-events");
         } else {
           alert("Failed to delete event. Please try again.");
