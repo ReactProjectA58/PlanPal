@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { useContext, useEffect } from "react";
 import { Plus, TrashBin } from "../../../common/helpers/icons";
 import {
+  deleteContactList,
   removeContact,
   updateContact,
 } from "../../../services/contacts.service";
@@ -18,7 +19,7 @@ export default function PanelLists({
   const navigate = useNavigate();
 
   const handleDelete = (id) => {
-    removeContact(id, userData.handle);
+    deleteContactList(id, userData.handle);
     setCurrentView("My Contacts");
   };
 
@@ -89,7 +90,12 @@ export default function PanelLists({
               )}
             </ul>
           </div>
-          <button onClick={() => handleDelete(list.key)}>
+          <button
+            onClick={() => {
+              console.log("Trash button clicked", list.key);
+              handleDelete(list.key);
+            }}
+          >
             <TrashBin />
           </button>
         </div>
