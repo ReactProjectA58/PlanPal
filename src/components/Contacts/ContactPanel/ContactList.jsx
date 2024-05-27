@@ -18,7 +18,6 @@ export default function ContactList({
     }
   }, [contactLists, visibleContacts]);
 
-  // console.log(allContacts);
   return (
     <div>
       <ul className="mb-4 p-4 bg-transparent rounded-lg shadow-xl">

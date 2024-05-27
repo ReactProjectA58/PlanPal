@@ -50,16 +50,13 @@ export default function ContactPanel({
     if (isSearching) {
       return searchResults;
     } else if (currentView === "My Contacts") {
-      console.log({ addedContacts }, "Get Contacts fn");
       const mappedAddedContacts = addedContacts
         .map((contactHandle) =>
           allContacts.find((contact) => {
-            console.log({ contact, contactHandle }, "contact, contacthandle");
             return contact.handle === contactHandle;
           })
         )
         .filter(Boolean);
-      console.log(mappedAddedContacts);
       return mappedAddedContacts;
     }
     return [];
@@ -92,27 +89,17 @@ export default function ContactPanel({
       onAddContact(contactHandle);
       allAddedContacts = [...addedContacts, contactHandle];
     }
-    console.log({ allAddedContacts, contactHandle }, "all added");
     setAddedContacts(allAddedContacts);
     localStorage.setItem("addedContacts", JSON.stringify(allAddedContacts));
   };
 
   useEffect(() => {
-    console.log({ addedContacts }, "2");
-
     const storedContacts = localStorage.getItem("addedContacts");
-    console.log(JSON.parse(storedContacts), "Added contacts useeffect");
     if (storedContacts) {
       setAddedContacts(JSON.parse(storedContacts));
     }
   }, []);
 
-  // useEffect(() => {
-  //   console.log({ addedContacts }, "1");
-  //   localStorage.setItem("addedContacts", JSON.stringify(addedContacts));
-  // }, [addedContacts]);
-
-  console.log({ allContacts, addedContacts }, "Contact Panel");
   return (
     <div>
       <h1 className="text-3xl rounded-lg shadow-2xl max-w-fit mx-auto my-auto p-4">
@@ -146,7 +133,7 @@ export default function ContactPanel({
               key={index}
               className="mb-4 p-4 bg-transparent rounded-lg shadow-xl"
             >
-              {contact && ( // Check if contact data is available
+              {contact && (
                 <div className="overflow-x-auto">
                   <table className="table w-full">
                     <thead>
