@@ -16,17 +16,20 @@ export const AppProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("bkabkabka");
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      console.log(user);
       if (user) {
-        const userRef = ref(db, `users/${user.email.split('@')[0]}`);
+        const userRef = ref(db, `users/${user.email.split("@")[0]}`);
         const snapshot = await get(userRef);
         const userData = snapshot.val();
+        console.log(snapshot.val());
 
         setUser(user);
         setUserData({
           id: user.uid,
-          username: user.email.split('@')[0],
+          username: user.email.split("@")[0],
           ...userData,
         });
       } else {
@@ -40,6 +43,7 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   const setAppState = (newUserData) => {
+    console.log(newUserData, "newUserdata");
     setUserData(newUserData);
   };
 

@@ -73,9 +73,9 @@ export const updateContact = (
   contactToUpdate,
   updateStatus
 ) => {
-  const contact = contactToUpdate.toLowerCase();
+  const user = contactToUpdate.handle.toLowerCase();
   const updates = {};
-  updates[`contactLists/${contactListKey}/contacts/${contact}`] = updateStatus;
+  updates[`contactLists/${contactListKey}/contacts/${user}`] = updateStatus;
 
   return update(ref(db), updates);
 };
