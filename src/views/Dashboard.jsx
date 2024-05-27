@@ -1,9 +1,9 @@
-import MonthCalendar from "../components/Calendar/MonthCalendar";
+import Calendar from "../components/Calendar/Calendar";
 
 export default function Dashboard() {
   return (
     <div>
-    <MonthCalendar />
+    <Calendar />
     </div>
   );
 }
