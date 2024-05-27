@@ -40,7 +40,7 @@ function DayCalendar({ events }) {
   const currentMinute = getMinutes(currentTime);
   const isToday =
     format(selectedDay, "yyyy-MM-dd") === format(currentTime, "yyyy-MM-dd");
-  const currentTimePosition = (currentHour + currentMinute / 60) * 3; 
+  const currentTimePosition = (currentHour + currentMinute / 60) * 3;
 
   const eventsForSelectedDay = events.filter((event) => {
     const eventStart = parseISO(`${event.startDate}T${event.startTime}`);
@@ -54,7 +54,7 @@ function DayCalendar({ events }) {
 
   return (
     <div className="pt-16">
-      <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-4xl md:px-6">
+      <div className="max-w-full px-4 mx-auto sm:px-7 md:px-6">
         <div className="flex items-center justify-between mb-8">
           <button
             type="button"
@@ -107,10 +107,11 @@ function DayCalendar({ events }) {
         <div className="border p-4 relative">
           <div className="relative">
             {hours.map((hour, index) => (
-              <div key={index} className="flex items-center border-t h-12">
+              <div key={index} className="flex items-center h-12">
                 <div className="w-16 text-right pr-2 text-xs">
                   {format(hour, "HH:mm")}
                 </div>
+                <div className="flex-grow border-t border-gray-300"></div>
               </div>
             ))}
             {eventsForSelectedDay.map((event) => {
@@ -126,7 +127,6 @@ function DayCalendar({ events }) {
               const actualEnd = eventEnd > dayEnd ? dayEnd : eventEnd;
 
               const eventStartHour = getHours(actualStart);
-
               const eventStartMinute = getMinutes(actualStart);
               const startTop = (eventStartHour + eventStartMinute / 60) * 3; // 3rem per hour
               const eventHeight =
@@ -135,7 +135,7 @@ function DayCalendar({ events }) {
               return (
                 <div
                   key={event.id}
-                  className="absolute left-1 w-full pl-16 pr-4 bg-blue-300 bg-opacity-20 text-white text-xs rounded-lg shadow-lg"
+                  className="absolute left-16 right-2 bg-blue-300 bg-opacity-20 text-white text-xs rounded-lg shadow-lg"
                   style={{
                     top: `${startTop}rem`,
                     height: `${eventHeight}rem`,
@@ -152,7 +152,7 @@ function DayCalendar({ events }) {
             })}
             {isToday && (
               <div
-                className="absolute left-0 w-full border-t-2 border-red-500"
+                className="absolute left-16 right-4 border-t-2 border-red-500"
                 style={{ top: `${currentTimePosition}rem` }}
               >
                 <div className="absolute left-16 -mt-1 w-2 h-2 bg-red-500 rounded-full"></div>

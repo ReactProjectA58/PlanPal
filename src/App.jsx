@@ -19,6 +19,7 @@ import ContactsDashboard from "./components/Contacts/ContactsDashboard.jsx";
 import MyEvents from "./components/Events/MyEvents.jsx";
 import PublicEvents from "./components/Events/PublicEvents.jsx";
 import PrivateEvents from "./components/Events/PrivateEvents.jsx";
+import SingleViewEvent from "./components/Events/SingleEventView.jsx";
 
 const HomeWithLoading = withLoading(Home);
 const LoginWithLoading = withLoading(Login);
@@ -67,6 +68,7 @@ function App() {
               <Route path="/my-events" element={<MyEvents />} />
               <Route path="/public-events" element={<PublicEvents />} />
               <Route path="/private-events" element={<PrivateEvents />} />
+              <Route path="/events/:eventId" element={<SingleViewEvent />} />
               <Route path="/profile/:handle" element={<ProfileWithLoading />} />
               <Route path="*" element={<NotFoundWithLoading />} />
             </Routes>

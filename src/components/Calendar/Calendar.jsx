@@ -10,6 +10,7 @@ import { AppContext } from "../../context/AppContext";
 export default function Calendar() {
   const [view, setView] = useState("daily");
   const [events, setEvents] = useState([]); 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { userData, loading: userLoading } = useContext(AppContext);
 
   useEffect(() => {
@@ -22,6 +23,11 @@ export default function Calendar() {
 
     fetchEvents();
   }, [userData, userLoading]);
+
+  const handleViewChange = (newView) => {
+    setView(newView);
+    setIsDropdownOpen(false);
+  };
 
   const renderView = () => {
     switch (view) {
@@ -43,11 +49,28 @@ export default function Calendar() {
   return (
     <div className="calendar-container p-4">
       <div className="view-selector flex gap-2 mb-4">
-        <button className="btn btn-primary" onClick={() => setView('daily')}>Daily</button>
-        <button className="btn btn-primary" onClick={() => setView('weekly')}>Weekly</button>
-        <button className="btn btn-primary" onClick={() => setView('work-week')}>Work Week</button>
-        <button className="btn btn-primary" onClick={() => setView('monthly')}>Monthly</button>
-        <button className="btn btn-primary" onClick={() => setView('yearly')}>Yearly</button>
+        <div className={`dropdown ${isDropdownOpen ? 'open' : ''}`}>
+          <div
+            tabIndex={0}
+            role="button"
+            className="btn m-1"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          >
+            Calendar Views
+          </div>
+          {isDropdownOpen && (
+            <ul
+              tabIndex={0}
+              className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+            >
+              <li><a onClick={() => handleViewChange('daily')}>Daily</a></li>
+              <li><a onClick={() => handleViewChange('weekly')}>Weekly</a></li>
+              <li><a onClick={() => handleViewChange('work-week')}>Work Week</a></li>
+              <li><a onClick={() => handleViewChange('monthly')}>Monthly</a></li>
+              <li><a onClick={() => handleViewChange('yearly')}>Yearly</a></li>
+            </ul>
+          )}
+        </div>
       </div>
       {renderView()}
     </div>

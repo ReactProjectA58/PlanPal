@@ -89,36 +89,34 @@ export default function AllEvents() {
           Private Events
         </button>
       </div>
-      <div className="flex flex-col space-y-2 mt-4">
+      <div className="flex flex-col space-y-6 mt-4">
         {events.length === 0 ? (
           <div className="text-center text-gray-600">No events found.</div>
         ) : (
           events.map((event) => (
-            <div key={event.id} className="card bg-base-100 shadow-xl transform transition-transform hover:scale-105 mt-4 flex flex-row items-center p-2 space-x-2">
-              <figure className="w-1/6">
+            <div key={event.id} className="event-card bg-gray-100 shadow-xl transform transition-transform hover:scale-105 mt-4 flex flex-row items-center p-4 space-x-4 rounded-lg">
+              <figure className="w-1/3">
                 <img
                   src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
                   alt="Event"
-                  className="rounded-xl"
+                  className="rounded-xl w-full h-full object-cover"
                 />
               </figure>
-              <div className="card-body w-5/6 flex flex-col space-y-1">
+              <div className="card-body w-2/3 flex flex-col space-y-2">
                 <h2 className="card-title text-xl font-semibold">{event.title}</h2>
-                <p className="text-gray-700 break-words whitespace-normal overflow-hidden max-h-16 text-sm">
+                <p className="text-gray-700 break-words whitespace-normal overflow-hidden max-h-24 text-sm">
                   {event.description}
                 </p>
-                <p className="text-gray-500 text-sm">Location: {event.location}</p>
-                <p className="text-gray-500 text-sm">
-                  Start: {event.startDate} {event.startTime}
-                </p>
-                <p className="text-gray-500 text-sm">
-                  End: {event.endDate} {event.endTime}
-                </p>
-                <p className="text-gray-500 text-sm">Public: {event.isPublic ? "Yes" : "No"}</p>
-                <p className="text-gray-500 text-sm">Reoccurring: {event.isReoccurring}</p>
-                <p className="text-gray-500 text-sm">Creator: {event.creator}</p>
+                <div className="grid grid-cols-3 gap-4 text-gray-500 text-xs">
+                  <p className="col-span-3">Location: {event.location}</p>
+                  <p>Start: {event.startDate} {event.startTime}</p>
+                  <p>End: {event.endDate} {event.endTime}</p>
+                  <p>Public: {event.isPublic ? "Yes" : "No"}</p>
+                  <p>Reoccurring: {event.isReoccurring}</p>
+                  <p>Creator: {event.creator}</p>
+                </div>
                 <div className="card-actions flex space-x-2">
-                  <button className="btn btn-primary">View more</button>
+                  <button className="btn btn-primary" onClick={() => navigate(`/events/${event.id}`)}>View more</button>
                   {userData.goingToEvents && userData.goingToEvents[event.title] ? (
                     <button className="btn btn-secondary" onClick={() => handleLeaveEvent(event.title)}>
                       Leave Event
