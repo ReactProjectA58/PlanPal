@@ -251,3 +251,26 @@ export const deleteEvent = async (eventId) => {
     return false;
   }
 };
+
+export const getTopEvents = async () => { 
+  const db = getDatabase();
+  const eventsRef = ref(db, 'events/');
+  
+  try {
+    const snapshot = await get(eventsRef);
+    if (snapshot.exists()) {
+      const eventsData = snapshot.val();
+      const events = Object.keys(eventsData).map(key => ({
+        id: key,
+        ...eventsData[key]
+      }));
+
+      return events.sort((a, b) => b.peopleGoing - a.peopleGoing).slice(0, 5);
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    throw new Error("Failed to fetch events");
+  }
+}
