@@ -16,6 +16,7 @@ import SearchBar from "../../SearchBar/SearchBar";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../../context/AppContext";
 import { updateContact } from "../../../services/contacts.service";
+import { themeChecker } from "../../../common/helpers/toast";
 
 export default function ContactPanel({
   isSearching,
@@ -105,9 +106,11 @@ export default function ContactPanel({
       if (isAddedContact(contactHandle)) {
         updatedContacts = addedContacts.filter((c) => c !== contactHandle);
         onRemoveContact(contactHandle);
+        themeChecker(`${contactHandle} removed from Contacts!`);
       } else {
         updatedContacts = [...addedContacts, contactHandle];
         onAddContact(contactHandle);
+        themeChecker(`${contactHandle} added to Contacts!`);
       }
       setAddedContacts(updatedContacts);
       localStorage.setItem("addedContacts", JSON.stringify(updatedContacts));
