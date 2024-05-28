@@ -33,6 +33,9 @@ export default function SideBar() {
           <li>
             <a href="/contacts">Contacts</a>
           </li>
+          <li>
+            <a href="/calendar">Calendar</a>
+          </li>
         </ul>
       </div>
     </div>

@@ -52,14 +52,50 @@ function DayCalendar({ events }) {
     );
   });
 
+  const groupOverlappingEvents = (events) => {
+    const sortedEvents = events.sort(
+      (a, b) => parseISO(`${a.startDate}T${a.startTime}`) - parseISO(`${b.startDate}T${b.startTime}`)
+    );
+
+    const groups = [];
+    let currentGroup = [];
+
+    sortedEvents.forEach((event, index) => {
+      const eventStart = parseISO(`${event.startDate}T${event.startTime}`);
+      if (currentGroup.length === 0) {
+        currentGroup.push(event);
+      } else {
+        const lastEventInGroup = currentGroup[currentGroup.length - 1];
+        const lastEventEnd = parseISO(`${lastEventInGroup.endDate}T${lastEventInGroup.endTime}`);
+
+        if (eventStart < lastEventEnd) {
+          currentGroup.push(event);
+        } else {
+          groups.push(currentGroup);
+          currentGroup = [event];
+        }
+      }
+
+      if (index === sortedEvents.length - 1) {
+        groups.push(currentGroup);
+      }
+    });
+
+    return groups;
+  };
+
+  const eventGroups = groupOverlappingEvents(eventsForSelectedDay);
+
+  const gap = 2; 
+
   return (
-    <div className="pt-16">
-      <div className="max-w-full px-4 mx-auto sm:px-7 md:px-6">
+    <div className="pt-16 w-full">
+      <div className="px-4 mx-auto sm:px-7 md:px-6 max-w-full">
         <div className="flex items-center justify-between mb-8">
           <button
             type="button"
             onClick={previousDay}
-            className="flex items-center justify-center p-2 text-400 hover:text-500"
+            className="flex items-center justify-center p-2 text-gray-400 hover:text-gray-500"
           >
             <span className="sr-only">Previous day</span>
             <svg
@@ -84,7 +120,7 @@ function DayCalendar({ events }) {
           <button
             type="button"
             onClick={nextDay}
-            className="flex items-center justify-center p-2 text-400 hover:text-500"
+            className="flex items-center justify-center p-2 text-gray-400 hover:text-gray-500"
           >
             <span className="sr-only">Next day</span>
             <svg
@@ -104,55 +140,63 @@ function DayCalendar({ events }) {
             </svg>
           </button>
         </div>
-        <div className="border p-4 relative">
+        <div className="border p-4 relative overflow-hidden max-w-full">
           <div className="relative">
             {hours.map((hour, index) => (
-              <div key={index} className="flex items-center h-12">
+              <div key={index} className="flex flex-col justify-start border-t h-12">
                 <div className="w-16 text-right pr-2 text-xs">
                   {format(hour, "HH:mm")}
                 </div>
-                <div className="flex-grow border-t border-gray-300"></div>
               </div>
             ))}
-            {eventsForSelectedDay.map((event) => {
-              const eventStart = parseISO(
-                `${event.startDate}T${event.startTime}`
-              );
-              const eventEnd = parseISO(`${event.endDate}T${event.endTime}`);
+            {eventGroups.map((group) => {
+              const groupLength = group.length;
+              const eventWidth = (100 - gap * (groupLength - 1)) / groupLength;
 
-              const dayStart = startOfDay(selectedDay);
-              const dayEnd = endOfDay(selectedDay);
+              return group.map((event, index) => {
+                const eventStart = parseISO(
+                  `${event.startDate}T${event.startTime}`
+                );
 
-              const actualStart = eventStart < dayStart ? dayStart : eventStart;
-              const actualEnd = eventEnd > dayEnd ? dayEnd : eventEnd;
+                const dayStart = startOfDay(selectedDay);
+                const dayEnd = endOfDay(selectedDay);
 
-              const eventStartHour = getHours(actualStart);
-              const eventStartMinute = getMinutes(actualStart);
-              const startTop = (eventStartHour + eventStartMinute / 60) * 3; // 3rem per hour
-              const eventHeight =
-                (differenceInMinutes(actualEnd, actualStart) / 60) * 3; // 3rem per hour
+                const actualStart =
+                  eventStart < dayStart ? dayStart : eventStart;
+                const actualEnd = parseISO(`${event.endDate}T${event.endTime}`) > dayEnd ? dayEnd : parseISO(`${event.endDate}T${event.endTime}`);
 
-              return (
-                <div
-                  key={event.id}
-                  className="absolute left-16 right-2 bg-blue-300 bg-opacity-20 text-white text-xs rounded-lg shadow-lg"
-                  style={{
-                    top: `${startTop}rem`,
-                    height: `${eventHeight}rem`,
-                  }}
-                >
-                  <div className="px-2 py-1">
-                    <div>{event.title}</div>
-                    <div>
-                      {event.startTime} - {event.endTime}
+                const eventStartHour = getHours(actualStart);
+                const eventStartMinute = getMinutes(actualStart);
+                const startTop = (eventStartHour + eventStartMinute / 60) * 3;
+                const eventHeight =
+                  (differenceInMinutes(actualEnd, actualStart) / 60) * 3;
+
+                const eventLeft = index * (eventWidth + gap);
+
+                return (
+                  <div
+                    key={event.id}
+                    className="absolute pl-16 pr-4 bg-blue-300 bg-opacity-20 text-black text-xs rounded-lg shadow-lg"
+                    style={{
+                      top: `${startTop}rem`,
+                      height: `${eventHeight}rem`,
+                      width: `${eventWidth}%`,
+                      left: `${eventLeft}%`,
+                    }}
+                  >
+                    <div className="px-2 py-1">
+                      <div className="font-semibold">{event.title}</div>
+                      <div>
+                        {event.startTime} - {event.endTime}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
+                );
+              });
             })}
             {isToday && (
               <div
-                className="absolute left-16 right-4 border-t-2 border-red-500"
+                className="absolute left-16 right-2 w-full border-t-2 border-red-500"
                 style={{ top: `${currentTimePosition}rem` }}
               >
                 <div className="absolute left-16 -mt-1 w-2 h-2 bg-red-500 rounded-full"></div>
