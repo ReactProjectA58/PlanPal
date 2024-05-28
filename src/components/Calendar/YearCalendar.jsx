@@ -1,38 +1,47 @@
-import { parse, startOfToday, sub, add, format, startOfMonth, getDaysInMonth, getDay } from "date-fns";
-import { useState } from "react";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import {
+  add,
+  format,
+  getDay,
+  parse,
+  startOfMonth,
+  getDaysInMonth,
+  sub,
+  startOfToday,
+} from 'date-fns';
 
-export default function YearCalendar() {
+export default function YearCalendar({ onDateClick }) {
   const today = startOfToday();
-  const [selectedDay, setSelectedDay] = useState(today);
-  const [currentYear, setCurrentYear] = useState(format(today, "yyyy"));
+  const [currentYear, setCurrentYear] = useState(format(today, 'yyyy'));
 
-  const startOfCurrentYear = parse(currentYear, "yyyy", new Date());
+  const startOfCurrentYear = parse(currentYear, 'yyyy', new Date());
 
   const months = Array.from({ length: 12 }, (_, i) => {
     const monthStart = add(startOfCurrentYear, { months: i });
     const daysInMonth = getDaysInMonth(monthStart);
-    const firstDayOfWeek = (getDay(startOfMonth(monthStart)) + 6) % 7; 
+    const firstDayOfWeek = (getDay(startOfMonth(monthStart)) + 6) % 7;
     const monthDays = Array.from({ length: daysInMonth + firstDayOfWeek }, (_, i) => {
       const day = add(startOfMonth(monthStart), { days: i - firstDayOfWeek });
       return (
         <div
-          key={format(day, "yyyy-MM-dd")}
+          key={format(day, 'yyyy-MM-dd')}
           className={`flex justify-center items-center ${
-            i >= firstDayOfWeek ? "text-gray-700" : "bg-transparent"
+            i >= firstDayOfWeek ? 'text-gray-700 cursor-pointer' : 'bg-transparent'
           }`}
-          onClick={() => i >= firstDayOfWeek && setSelectedDay(day)}
+          onClick={() => i >= firstDayOfWeek && onDateClick(day)}
         >
-          {i >= firstDayOfWeek ? format(day, "d") : ""}
+          {i >= firstDayOfWeek ? format(day, 'd') : ''}
         </div>
       );
     });
 
     return (
-      <div key={format(monthStart, "MMM-yyyy")} >
-        <div className="text-lg font-semibold mb-2">{format(monthStart, "MMMM")}</div>
+      <div key={format(monthStart, 'MMM-yyyy')}>
+        <div className="text-lg font-semibold mb-2">{format(monthStart, 'MMMM')}</div>
         <div className="grid grid-cols-7 gap-1">
-          {["M", "T", "W", "T", "F", "S", "S"].map((day) => (
-            <div key={day} className="text-sm font-semibold text-center">{day}</div>
+          {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => (
+            <div key={index} className="text-sm font-semibold text-center">{day}</div>
           ))}
           {monthDays}
         </div>
@@ -42,14 +51,12 @@ export default function YearCalendar() {
 
   function previousYear() {
     const firstDayPreviousYear = sub(startOfCurrentYear, { years: 1 });
-    setCurrentYear(format(firstDayPreviousYear, "yyyy"));
-    setSelectedDay(sub(selectedDay, { years: 1 }));
+    setCurrentYear(format(firstDayPreviousYear, 'yyyy'));
   }
 
   function nextYear() {
     const firstDayNextYear = add(startOfCurrentYear, { years: 1 });
-    setCurrentYear(format(firstDayNextYear, "yyyy"));
-    setSelectedDay(add(selectedDay, { years: 1 }));
+    setCurrentYear(format(firstDayNextYear, 'yyyy'));
   }
 
   return (
@@ -109,3 +116,7 @@ export default function YearCalendar() {
     </div>
   );
 }
+
+YearCalendar.propTypes = {
+  onDateClick: PropTypes.func.isRequired,
+};
