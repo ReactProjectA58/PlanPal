@@ -33,7 +33,7 @@ export default function Login() {
             setError(response.error);
         } else {
             setAppState({ user: response.user, userData: null });
-            navigate(location.state?.from.pathname || '/');
+            navigate(location.state?.from.pathname || '/events');
         }
     };
 

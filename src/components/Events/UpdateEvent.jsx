@@ -1,10 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState, useContext } from 'react';
-import { getEventById, updateEvent, deleteEvent } from '../../services/event.service.js';
-import { AppContext } from '../../context/AppContext.jsx';
+import { useContext, useEffect, useState } from 'react';
+import { getEventById, updateEvent, deleteEvent, getUserContacts, inviteUser } from '../../services/event.service.js';
 import { validateTitle, validateDescription, validateLocation, validateStartDate, validateEndDate, validateStartTime, validateEndTime } from '../../common/helpers/validationHelpers.js';
 import Button from '../Button.jsx';
 import { GoBackArrow, DeleteEvent } from '../../common/helpers/icons.jsx';
+import { AppContext } from '../../context/AppContext.jsx';
 
 export default function UpdateEvent() {
   const { eventId } = useParams();
@@ -12,6 +12,7 @@ export default function UpdateEvent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [errors, setErrors] = useState({});
+  const [contacts, setContacts] = useState([]);
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
 
@@ -29,6 +30,17 @@ export default function UpdateEvent() {
 
     fetchEvent();
   }, [eventId]);
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      if (userData?.handle) {
+        const contactsData = await getUserContacts(userData.handle);
+        setContacts(contactsData);
+      }
+    };
+
+    fetchContacts();
+  }, [userData]);
 
   const updateEventData = (value, key) => {
     setEvent({
@@ -83,6 +95,20 @@ export default function UpdateEvent() {
         console.error("Error deleting event:", error);
         alert("Failed to delete event. Please try again.");
       }
+    }
+  };
+
+  const handleInviteUser = async (userHandle) => {
+    try {
+      const result = await inviteUser(eventId, userData.handle, userHandle);
+      if (result) {
+        alert(`User ${userHandle} invited successfully`);
+      } else {
+        alert(`Failed to invite user ${userHandle}`);
+      }
+    } catch (error) {
+      console.error("Error inviting user:", error);
+      alert("Failed to invite user. Please try again.");
     }
   };
 
@@ -165,6 +191,22 @@ export default function UpdateEvent() {
         <Button className="btn btn-primary" onClick={handleUpdateEvent}>
           Update Event
         </Button>
+        <details className="dropdown">
+          <summary className="m-1 btn btn-secondary">Invite</summary>
+          <div className="max-h-48 overflow-y-auto mt-2">
+            <ul className="space-y-2">
+              {contacts.length === 0 ? (
+                <li className="p-2">No contacts found.</li>
+              ) : (
+                contacts.map((contact) => (
+                  <li key={contact} className="p-2 hover:bg-gray-200 cursor-pointer">
+                    <a onClick={() => handleInviteUser(contact)}>{contact}</a>
+                  </li>
+                ))
+              )}
+            </ul>
+          </div>
+        </details>
       </div>
     </div>
   );

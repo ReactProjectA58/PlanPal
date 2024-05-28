@@ -57,7 +57,7 @@ export default function PublicEvents() {
 
     const result = await leaveEvent(userData.handle, eventTitle);
     if (result) {
-      alert("You have left the event successfully!");
+      window.confirm("Please confirm you want to leave this event!");
 
       const updatedUserData = {
         ...userData,

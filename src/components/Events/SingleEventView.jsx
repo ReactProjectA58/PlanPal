@@ -64,19 +64,21 @@ export default function SingleEventView() {
       <div className="mb-4">
         <details>
           <summary className="cursor-pointer text-lg font-semibold">Participants</summary>
-          <ul className="mt-2 space-y-2">
-            {event.peopleGoing ? Object.entries(event.peopleGoing).map(([participant, participantData]) => (
-              <li key={participant} className="flex items-center space-x-3">
-                <img src={participantData.avatar || "https://via.placeholder.com/40"} alt="Avatar" className="w-10 h-10 rounded-full" />
-                <div>
-                  <div className="font-semibold">{participantData.name || participant}</div>
-                  <div className="text-sm text-gray-600">@{participant}</div>
-                </div>
-              </li>
-            )) : (
-              <li>No participants yet.</li>
-            )}
-          </ul>
+          <div className="max-h-48 overflow-y-auto mt-2">
+            <ul className="space-y-2">
+              {event.peopleGoing ? Object.entries(event.peopleGoing).map(([participant, participantData], index) => (
+                <li key={participant} className={`flex items-center space-x-3 ${index % 3 === 0 && 'mt-4'}`}>
+                  <img src={participantData.avatar || "https://via.placeholder.com/40"} alt="Avatar" className="w-10 h-10 rounded-full" />
+                  <div>
+                    <div className="font-semibold">{participantData.name || participant}</div>
+                    <div className="text-sm text-gray-600">@{participant}</div>
+                  </div>
+                </li>
+              )) : (
+                <li>No participants yet.</li>
+              )}
+            </ul>
+          </div>
         </details>
       </div>
     </div>

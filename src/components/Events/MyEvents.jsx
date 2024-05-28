@@ -35,6 +35,11 @@ export default function MyEvents() {
       return;
     }
 
+    const confirmLeave = window.confirm("Please confirm you want to leave this event.");
+    if (!confirmLeave) {
+      return; // User canceled the action
+    }
+
     const result = await leaveEvent(userData.handle, eventTitle);
     if (result) {
       alert("You have left the event successfully!");

@@ -1,4 +1,4 @@
-import { ref, push, getDatabase, get, update, remove } from "firebase/database";
+import { ref, push, getDatabase, get, update } from "firebase/database";
 import { db } from "../config/firebase-config";
 
 export const addEvent = async (event) => {
@@ -231,7 +231,27 @@ export const getEventById = async (eventId) => {
 export const updateEvent = async (eventId, eventData) => {
   try {
     const eventRef = ref(db, `events/${eventId}`);
-    await update(eventRef, eventData);
+    const eventSnapshot = await get(eventRef);
+
+    if (!eventSnapshot.exists()) {
+      console.error("Event does not exist");
+      return;
+    }
+
+    const oldEventData = eventSnapshot.val();
+    const oldEventTitle = oldEventData.title;
+    const newEventTitle = eventData.title || oldEventTitle;
+    const peopleGoing = oldEventData.peopleGoing || {};
+
+    const updates = {};
+    updates[`events/${eventId}`] = eventData;
+
+    Object.keys(peopleGoing).forEach(handle => {
+      updates[`users/${handle}/goingToEvents/${oldEventTitle}`] = null;
+      updates[`users/${handle}/goingToEvents/${newEventTitle}`] = true;
+    });
+
+    await update(ref(db), updates);
     console.log("Event updated successfully");
   } catch (error) {
     console.error("Error updating event:", error);
@@ -241,9 +261,25 @@ export const updateEvent = async (eventId, eventData) => {
 
 
 export const deleteEvent = async (eventId) => {
+  const eventRef = ref(db, `events/${eventId}`);
+
   try {
-    const eventRef = ref(db, `events/${eventId}`);
-    await remove(eventRef);
+    const eventSnapshot = await get(eventRef);
+    if (!eventSnapshot.exists()) {
+      console.error("Event does not exist");
+      return false;
+    }
+
+    const eventTitle = eventSnapshot.val().title;
+    const peopleGoing = eventSnapshot.val().peopleGoing || {};
+
+    const updates = Object.keys(peopleGoing).reduce((acc, handle) => {
+      acc[`users/${handle}/goingToEvents/${eventTitle}`] = null;
+      return acc;
+    }, {});
+    updates[`events/${eventId}`] = null;
+
+    await update(ref(db), updates);
     console.log("Event deleted successfully");
     return true;
   } catch (error) {
@@ -251,6 +287,7 @@ export const deleteEvent = async (eventId) => {
     return false;
   }
 };
+
 
 export const getTopEvents = async () => { 
   const db = getDatabase();
@@ -274,3 +311,67 @@ export const getTopEvents = async () => {
     throw new Error("Failed to fetch events");
   }
 }
+
+export const getUserContacts = async (userHandle) => {
+  const userRef = ref(db, `users/${userHandle}/contacts`);
+  const snapshot = await get(userRef);
+  const contacts = snapshot.val() || {};
+  return Object.keys(contacts);
+}
+
+export const inviteUser = async (eventId, invitingUserHandle, userToInviteHandle) => {
+  const eventRef = ref(db, `events/${eventId}`);
+
+  try {
+    const eventSnapshot = await get(eventRef);
+    if (!eventSnapshot.exists()) {
+      console.error("Event does not exist");
+      return false;
+    }
+
+    const eventTitle = eventSnapshot.val().title;
+
+    const userContacts = await getUserContacts(invitingUserHandle);
+
+    if (!userContacts.includes(userToInviteHandle)) {
+      console.error("User to invite is not in the contacts list");
+      return false;
+    }
+
+    const updates = {};
+    updates[`events/${eventId}/peopleGoing/${userToInviteHandle}`] = true;
+    updates[`users/${userToInviteHandle}/goingToEvents/${eventTitle}`] = true;
+
+    await update(ref(db), updates);
+    console.log("User invited successfully");
+    return true;
+  } catch (error) {
+    console.error("Error inviting user:", error);
+    return false;
+  }
+};
+
+export const uninviteUser = async (eventId, userHandle) => {
+  const eventRef = ref(db, `events/${eventId}`);
+
+  try {
+    const eventSnapshot = await get(eventRef);
+    if (!eventSnapshot.exists()) {
+      console.error("Event does not exist");
+      return false;
+    }
+
+    const eventTitle = eventSnapshot.val().title;
+
+    const updates = {};
+    updates[`events/${eventId}/peopleGoing/${userHandle}`] = null;
+    updates[`users/${userHandle}/goingToEvents/${eventTitle}`] = null;
+
+    await update(ref(db), updates);
+    console.log("User disinvited successfully");
+    return true;
+  } catch (error) {
+    console.error("Error disinviting user:", error);
+    return false;
+  }
+};

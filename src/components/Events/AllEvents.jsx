@@ -56,7 +56,7 @@ export default function AllEvents() {
 
     const result = await leaveEvent(userData.handle, eventTitle);
     if (result) {
-      alert("You have left the event successfully!");
+      window.confirm("Please confirm you want to leave this event!");
 
       const updatedUserData = {
         ...userData,
@@ -95,7 +95,7 @@ export default function AllEvents() {
           <div className="text-center text-gray-600">No events found.</div>
         ) : (
           events.map((event) => (
-            <div key={event.id} className="event-card bg-gray-100 shadow-xl transform transition-transform hover:scale-105 mt-4 flex flex-row items-center p-4 space-x-4 rounded-lg">
+            <div key={event.id} className="event-card shadow-xl transform transition-transform hover:scale-105 mt-4 flex flex-row items-center p-4 space-x-4 rounded-lg">
               <figure className="w-1/3">
                 <img
                   src={event.cover || EVENT_COVER_BY_DEFAULT}
