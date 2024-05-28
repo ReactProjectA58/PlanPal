@@ -25,8 +25,6 @@ export default function ContactPanel({
   setClearSearch,
   searchQuery,
   searchResults,
-  isChecked,
-  setIsChecked,
   contactLists,
   allContacts,
   onAddContact,
@@ -102,33 +100,29 @@ export default function ContactPanel({
   };
 
   const handleToggleContact = (contactHandle) => {
-    let allAddedContacts = [];
     if (currentView === "My Contacts") {
+      let updatedContacts = [];
       if (isAddedContact(contactHandle)) {
+        updatedContacts = addedContacts.filter((c) => c !== contactHandle);
         onRemoveContact(contactHandle);
-        allAddedContacts = addedContacts.filter((c) => c !== contactHandle);
       } else {
+        updatedContacts = [...addedContacts, contactHandle];
         onAddContact(contactHandle);
-        allAddedContacts = [...addedContacts, contactHandle];
       }
-      setAddedContacts(allAddedContacts);
-      localStorage.setItem("addedContacts", JSON.stringify(allAddedContacts));
+      setAddedContacts(updatedContacts);
+      localStorage.setItem("addedContacts", JSON.stringify(updatedContacts));
     } else {
       const currentList = contactLists.find(
         (list) => list.title === currentView
       );
       if (currentList) {
-        const updatedContacts = { ...currentList.contacts };
-        if (updatedContacts[contactHandle]) {
-          delete updatedContacts[contactHandle];
+        const updatedListContacts = { ...(currentList.contacts || {}) };
+        if (updatedListContacts[contactHandle]) {
+          delete updatedListContacts[contactHandle];
         } else {
-          updatedContacts[contactHandle] = true;
+          updatedListContacts[contactHandle] = true;
         }
-        updateContact(
-          currentList.key,
-          { handle: contactHandle },
-          updatedContacts
-        );
+        updateContact(currentList.key, updatedListContacts);
       }
     }
   };
@@ -146,9 +140,10 @@ export default function ContactPanel({
         (list) => list.title === currentView
       );
       if (currentContactList) {
-        const mappedListContacts = Object.keys(currentContactList.contacts)
-          .map((contactHandle) =>
-            allContacts.find((contact) => contact.handle === contactHandle)
+        const currentListContacts = currentContactList.contacts || {};
+        const mappedListContacts = Object.keys(currentListContacts)
+          .map((handle) =>
+            allContacts.find((contact) => contact.handle === handle)
           )
           .filter(Boolean);
         setCurrentListContacts(mappedListContacts);
