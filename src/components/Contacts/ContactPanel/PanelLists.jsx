@@ -7,6 +7,8 @@ import {
 } from "../../../services/contacts.service";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../../context/AppContext";
+import { ToastContainer } from "react-toastify";
+import { themeChecker } from "../../../common/helpers/toast";
 
 export default function PanelLists({ setCurrentView, list, allContacts }) {
   const { userData } = useContext(AppContext);
@@ -18,6 +20,7 @@ export default function PanelLists({ setCurrentView, list, allContacts }) {
   }, [list.contacts]);
 
   const handleDelete = (id) => {
+    themeChecker("Contact list deleted!");
     deleteContactList(id, userData.handle);
     setCurrentView("My Contacts");
   };
@@ -28,8 +31,10 @@ export default function PanelLists({ setCurrentView, list, allContacts }) {
 
     if (updatedContacts[user]) {
       delete updatedContacts[user];
+      themeChecker(`${contact.handle} removed from ${list.title}!`);
     } else {
       updatedContacts[user] = true;
+      themeChecker(`${contact.handle} added to ${list.title}!`);
     }
 
     setContacts(updatedContacts);
@@ -54,7 +59,7 @@ export default function PanelLists({ setCurrentView, list, allContacts }) {
             <div tabIndex={0} role="button" className="btn-ghost">
               <Plus />
             </div>
-            <ul className="dropdown-content grid menu p-2 shadow bg-base-100 rounded-box overflow-y-scroll h-auto max-h-48 z-50">
+            <ul className="dropdown-content grid menu p-2 shadow bg-base-100 rounded-box overflow-auto h-auto max-h-48 z-50">
               <li className="menu-title">
                 <span>Contacts</span>
               </li>

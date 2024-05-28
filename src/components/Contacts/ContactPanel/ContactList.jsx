@@ -19,7 +19,7 @@ export default function ContactList({
   }, [contactLists, visibleContacts]);
 
   return (
-    <div>
+    <div className="overflow-auto h-60">
       <ul className="mb-4 p-4 bg-transparent rounded-lg shadow-xl">
         <span
           className={`text-sm cursor-pointer tracking-wider `}

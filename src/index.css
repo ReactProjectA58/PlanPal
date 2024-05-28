@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --toastify-color-dark: #1c131be5;
+  --toastify-color-progress-dark: #c59f60;
+  --toastify-text-color-dark: #c59f60;
+
+  --toastify-color-light: #cbcbcb;
+  --toastify-color-progress-light: #000000;
+  --toastify-text-color-light: #000000;
+}

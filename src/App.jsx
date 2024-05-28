@@ -22,6 +22,7 @@ import PrivateEvents from "./components/Events/PrivateEvents.jsx";
 import SingleViewEvent from "./components/Events/SingleEventView.jsx";
 import UpdateEvent from "./components/Events/UpdateEvent.jsx";
 import Calendar from "./components/Calendar/Calendar.jsx";
+import { ToastContainer } from "react-toastify";
 
 const HomeWithLoading = withLoading(Home);
 const LoginWithLoading = withLoading(Login);
@@ -55,15 +56,22 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ToastContainer newestOnTop />
       <AppContext.Provider value={{ ...appState, setAppState }}>
         <div className="flex flex-col justify-between max-w-full">
           <Header />
           <div className="container mx-auto min-h-screen min-w-min">
             <Routes>
-              <Route path="/" element={user ? <DashboardWithLoading /> : <HomeWithLoading />} />
+              <Route
+                path="/"
+                element={user ? <DashboardWithLoading /> : <HomeWithLoading />}
+              />
               <Route path="/login" element={<LoginWithLoading />} />
               <Route path="/register" element={<RegisterWithLoading />} />
-              <Route path="/contacts" element={<ContactsDashboardWithLoading />} />
+              <Route
+                path="/contacts"
+                element={<ContactsDashboardWithLoading />}
+              />
               <Route path="/dashboard" element={<DashboardWithLoading />} />
               <Route path="/create-event" element={<CreateEventForm />} />
               <Route path="/calendar" element={<Calendar />} />
