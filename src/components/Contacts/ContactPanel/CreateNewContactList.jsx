@@ -4,6 +4,8 @@ import { createContactList } from "../../../services/contacts.service";
 import { useForm } from "react-hook-form";
 import { AppContext } from "../../../context/AppContext";
 import { MAX_TITLE_LENGTH } from "../../../common/constants";
+import { themeChecker } from "../../../common/helpers/toast";
+import { ToastContainer } from "react-toastify";
 
 export default function CreateNewContactList() {
   const { userData } = useContext(AppContext);
@@ -13,6 +15,7 @@ export default function CreateNewContactList() {
     const { title } = data;
     if (title !== "" && title.length <= MAX_TITLE_LENGTH) {
       createContactList(title, userData?.handle);
+      themeChecker("Contact list created!");
     }
     reset();
   };
@@ -29,6 +32,7 @@ export default function CreateNewContactList() {
         {" "}
         <Plus />
       </button>
+      <ToastContainer />
     </form>
   );
 }
