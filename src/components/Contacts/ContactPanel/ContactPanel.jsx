@@ -15,7 +15,7 @@ import ContactList from "./ContactList";
 import SearchBar from "../../SearchBar/SearchBar";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../../context/AppContext";
-import { faCmplid } from "@fortawesome/free-brands-svg-icons";
+import { updateContact } from "../../../services/contacts.service";
 
 export default function ContactPanel({
   isSearching,
@@ -36,6 +36,7 @@ export default function ContactPanel({
   const [isOpen, setIsOpen] = useState(false);
   const [isArrowUp, setIsArrowUp] = useState(false);
   const [addedContacts, setAddedContacts] = useState([]);
+  const [currentListContacts, setCurrentListContacts] = useState([]);
   const navigate = useNavigate();
 
   const toggleCollapsePlus = () => {
@@ -48,18 +49,38 @@ export default function ContactPanel({
 
   const getContacts = () => {
     if (isSearching) {
-      return searchResults;
+      return searchResults || [];
     } else if (currentView === "My Contacts") {
       const mappedAddedContacts = addedContacts
         .map((contactHandle) =>
-          allContacts.find((contact) => {
-            return contact.handle === contactHandle;
-          })
+          allContacts.find((contact) => contact.handle === contactHandle)
         )
         .filter(Boolean);
       return mappedAddedContacts;
+    } else {
+      const currentList = contactLists.find(
+        (list) => list.title === currentView
+      );
+      if (currentList) {
+        return Object.keys(currentList.contacts || {})
+          .map((handle) =>
+            allContacts.find((contact) => contact.handle === handle)
+          )
+          .filter(Boolean);
+      }
     }
     return [];
+  };
+
+  const getTooltip = (contactHandle) => {
+    if (currentView === "My Contacts") {
+      return isAddedContact(contactHandle) ? "Remove user" : "Add user";
+    } else {
+      const tooltip = isAddedContact(contactHandle)
+        ? "Remove contact"
+        : "Add contact ";
+      return `${tooltip}`;
+    }
   };
 
   const isLoggedInUser = (contactHandle) => {
@@ -82,15 +103,34 @@ export default function ContactPanel({
 
   const handleToggleContact = (contactHandle) => {
     let allAddedContacts = [];
-    if (isAddedContact(contactHandle)) {
-      onRemoveContact(contactHandle);
-      allAddedContacts = addedContacts.filter((c) => c !== contactHandle);
+    if (currentView === "My Contacts") {
+      if (isAddedContact(contactHandle)) {
+        onRemoveContact(contactHandle);
+        allAddedContacts = addedContacts.filter((c) => c !== contactHandle);
+      } else {
+        onAddContact(contactHandle);
+        allAddedContacts = [...addedContacts, contactHandle];
+      }
+      setAddedContacts(allAddedContacts);
+      localStorage.setItem("addedContacts", JSON.stringify(allAddedContacts));
     } else {
-      onAddContact(contactHandle);
-      allAddedContacts = [...addedContacts, contactHandle];
+      const currentList = contactLists.find(
+        (list) => list.title === currentView
+      );
+      if (currentList) {
+        const updatedContacts = { ...currentList.contacts };
+        if (updatedContacts[contactHandle]) {
+          delete updatedContacts[contactHandle];
+        } else {
+          updatedContacts[contactHandle] = true;
+        }
+        updateContact(
+          currentList.key,
+          { handle: contactHandle },
+          updatedContacts
+        );
+      }
     }
-    setAddedContacts(allAddedContacts);
-    localStorage.setItem("addedContacts", JSON.stringify(allAddedContacts));
   };
 
   useEffect(() => {
@@ -99,6 +139,24 @@ export default function ContactPanel({
       setAddedContacts(JSON.parse(storedContacts));
     }
   }, []);
+
+  useEffect(() => {
+    if (currentView !== "My Contacts") {
+      const currentContactList = contactLists.find(
+        (list) => list.title === currentView
+      );
+      if (currentContactList) {
+        const mappedListContacts = Object.keys(currentContactList.contacts)
+          .map((contactHandle) =>
+            allContacts.find((contact) => contact.handle === contactHandle)
+          )
+          .filter(Boolean);
+        setCurrentListContacts(mappedListContacts);
+      } else {
+        setCurrentListContacts([]);
+      }
+    }
+  }, [currentView, contactLists, allContacts]);
 
   return (
     <div>
@@ -128,78 +186,79 @@ export default function ContactPanel({
 
       <div className={getContacts().length > 3 ? "overflow-y-scroll h-96" : ""}>
         <ul>
-          {getContacts().map((contact, index) => (
-            <li
-              key={index}
-              className="mb-4 p-4 bg-transparent rounded-lg shadow-xl"
-            >
-              {contact && (
-                <div className="overflow-x-auto">
-                  <table className="table w-full">
-                    <thead>
-                      <tr></tr>
-                    </thead>
-                    <tbody>
-                      <tr className="flex justify-between">
-                        <td className="flex items-center gap-3 w-1/3">
-                          <div className="avatar">
-                            <div className="mask mask-squircle w-20 h-16">
-                              <img
-                                src={contact.avatar}
-                                alt="Avatar"
-                                className="object-cover w-full h-full"
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <div className="font-bold">
-                              {contact.firstName} {contact.lastName}
-                            </div>
-                            <div className="text-sm opacity-50">Bulgaria</div>
-                          </div>
-                        </td>
-                        <td className="flex flex-col items-center justify-center text-center w-1/5">
-                          {contact.handle} <br />
-                          <span className="badge badge-ghost badge-sm">
-                            {contact.email}
-                          </span>
-                        </td>
-                        {!isLoggedInUser(contact.handle) && (
-                          <td className="flex items-center justify-center mr-6">
-                            <div
-                              className="tooltip"
-                              data-tip={
-                                isAddedContact(contact.handle)
-                                  ? "Remove user"
-                                  : "Add user"
-                              }
-                            >
-                              <label className="swap">
-                                <input
-                                  type="checkbox"
-                                  checked={isAddedContact(contact.handle)}
-                                  onChange={() =>
-                                    handleToggleContact(contact.handle)
-                                  }
+          {getContacts().length === 0 ? (
+            <li>No contacts added to this list</li>
+          ) : (
+            getContacts().map((contact, index) => (
+              <li
+                key={index}
+                className="mb-4 p-4 bg-transparent rounded-lg shadow-xl"
+              >
+                {contact && (
+                  <div className="overflow-x-auto">
+                    <table className="table w-full">
+                      <thead>
+                        <tr></tr>
+                      </thead>
+                      <tbody>
+                        <tr className="flex justify-between">
+                          <td className="flex items-center gap-3 w-1/3">
+                            <div className="avatar">
+                              <div className="mask mask-squircle w-20 h-16">
+                                <img
+                                  src={contact.avatar}
+                                  alt="Avatar"
+                                  className="object-cover w-full h-full"
                                 />
-                                {isAddedContact(contact.handle) ? (
-                                  <Minus />
-                                ) : (
-                                  <Plus />
-                                )}
-                              </label>
+                              </div>
+                            </div>
+                            <div>
+                              <div className="font-bold">
+                                {contact.firstName} {contact.lastName}
+                              </div>
+                              <div className="text-sm opacity-50">Bulgaria</div>
                             </div>
                           </td>
-                        )}
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </li>
-          ))}
+                          <td className="flex flex-col items-center justify-center text-center w-1/5">
+                            {contact.handle} <br />
+                            <span className="badge badge-ghost badge-sm">
+                              {contact.email}
+                            </span>
+                          </td>
+                          {!isLoggedInUser(contact.handle) && (
+                            <td className="flex items-center justify-center mr-9">
+                              <div
+                                className="tooltip break-all"
+                                data-tip={getTooltip(contact.handle)}
+                              >
+                                <label className="swap">
+                                  <input
+                                    type="checkbox"
+                                    checked={isAddedContact(contact.handle)}
+                                    onChange={() =>
+                                      handleToggleContact(contact.handle)
+                                    }
+                                  />
+                                  {isAddedContact(contact.handle) ? (
+                                    <Minus />
+                                  ) : (
+                                    <Plus />
+                                  )}
+                                </label>
+                              </div>
+                            </td>
+                          )}
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </li>
+            ))
+          )}
         </ul>
       </div>
+
       <div className="collapse bg-base-200 mb-2">
         <input
           type="checkbox"

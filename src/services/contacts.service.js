@@ -68,14 +68,9 @@ export const removeContact = (handle, contactName) => {
   return update(ref(db), updates);
 };
 
-export const updateContact = (
-  contactListKey,
-  contactToUpdate,
-  updateStatus
-) => {
-  const user = contactToUpdate.handle.toLowerCase();
+export const updateContact = (contactListKey, updatedContacts) => {
   const updates = {};
-  updates[`contactLists/${contactListKey}/contacts/${user}`] = updateStatus;
+  updates[`contactLists/${contactListKey}/contacts`] = updatedContacts;
 
   return update(ref(db), updates);
 };

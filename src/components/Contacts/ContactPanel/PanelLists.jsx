@@ -1,22 +1,21 @@
 import PropTypes from "prop-types";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Plus, TrashBin } from "../../../common/helpers/icons";
 import {
   deleteContactList,
-  removeContact,
   updateContact,
 } from "../../../services/contacts.service";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../../context/AppContext";
 
-export default function PanelLists({
-  setCurrentView,
-  list,
-  renderedContacts,
-  allContacts,
-}) {
+export default function PanelLists({ setCurrentView, list, allContacts }) {
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
+  const [contacts, setContacts] = useState(list.contacts || {});
+
+  useEffect(() => {
+    setContacts(list.contacts || {});
+  }, [list.contacts]);
 
   const handleDelete = (id) => {
     deleteContactList(id, userData.handle);
@@ -25,22 +24,23 @@ export default function PanelLists({
 
   const handleUpdateList = (listKey, contact) => {
     const user = contact.handle.toLowerCase();
-    const updatedContacts = { ...list.contacts };
+    const updatedContacts = { ...contacts };
 
-    if (user in updatedContacts) {
+    if (updatedContacts[user]) {
       delete updatedContacts[user];
     } else {
       updatedContacts[user] = true;
     }
 
-    updateContact(listKey, contact, updatedContacts);
+    setContacts(updatedContacts);
+    updateContact(listKey, updatedContacts);
   };
 
   return (
     <ul className="mb-4 p-4 bg-transparent rounded-lg shadow-xl">
       <div className="flex items-center justify-between py-2">
         <span
-          className={`text-sm cursor-pointer tracking-wider`}
+          className="text-sm cursor-pointer tracking-wider"
           onClick={() => {
             setCurrentView(list.title);
             navigate("/contacts");
@@ -50,50 +50,40 @@ export default function PanelLists({
         </span>
 
         <div className="flex gap-4">
-          <div className="dropdown dropdown-left dropdown-end">
+          <div className="dropdown dropdown-left dropdown-end ">
             <div tabIndex={0} role="button" className="btn-ghost">
               <Plus />
             </div>
-            <ul className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box overflow-y-scroll h-52">
+            <ul className="dropdown-content grid menu p-2 shadow bg-base-100 rounded-box overflow-y-scroll h-auto max-h-48 z-50">
               <li className="menu-title">
                 <span>Contacts</span>
               </li>
               {allContacts && allContacts.length > 0 ? (
-                allContacts?.map((contact) => {
-                  const matchedContact = allContacts.find(
-                    (c) => c.handle === contact?.handle
-                  );
-                  return matchedContact ? (
-                    <li key={matchedContact.handle}>
+                allContacts.map((contact) => {
+                  const isContactInList =
+                    contacts && contacts[contact.handle.toLowerCase()];
+                  return (
+                    <li key={contact.handle}>
                       <label className="label cursor-pointer">
                         <input
                           type="checkbox"
                           className="checkbox checkbox-md"
-                          defaultChecked={
-                            list.contacts &&
-                            list.contacts[matchedContact.handle.toLowerCase()]
-                          }
-                          onChange={() =>
-                            handleUpdateList(list.key, matchedContact)
-                          }
+                          checked={isContactInList}
+                          onChange={() => handleUpdateList(list.key, contact)}
                         />
                         <span className="label-text ml-2">
-                          {matchedContact.handle}{" "}
+                          {contact.handle}
                         </span>
                       </label>
                     </li>
-                  ) : null;
+                  );
                 })
               ) : (
                 <li className="text-center py-2">No contacts available</li>
               )}
             </ul>
           </div>
-          <button
-            onClick={() => {
-              handleDelete(list.key);
-            }}
-          >
+          <button onClick={() => handleDelete(list.key)}>
             <TrashBin />
           </button>
         </div>
