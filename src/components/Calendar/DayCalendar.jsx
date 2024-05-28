@@ -13,16 +13,17 @@ import {
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-function DayCalendar({ events }) {
-  const [selectedDay, setSelectedDay] = useState(new Date());
+function DayCalendar({ events, selectedDate, onDateChange }) {
   const [currentTime, setCurrentTime] = useState(new Date());
 
   function previousDay() {
-    setSelectedDay(sub(selectedDay, { days: 1 }));
+    const newSelectedDate = sub(selectedDate, { days: 1 });
+    onDateChange(newSelectedDate);
   }
 
   function nextDay() {
-    setSelectedDay(add(selectedDay, { days: 1 }));
+    const newSelectedDate = add(selectedDate, { days: 1 });
+    onDateChange(newSelectedDate);
   }
 
   useEffect(() => {
@@ -33,22 +34,22 @@ function DayCalendar({ events }) {
   }, []);
 
   const hours = Array.from({ length: 24 }, (_, i) =>
-    setHours(startOfDay(selectedDay), i)
+    setHours(startOfDay(selectedDate), i)
   );
 
   const currentHour = getHours(currentTime);
   const currentMinute = getMinutes(currentTime);
   const isToday =
-    format(selectedDay, "yyyy-MM-dd") === format(currentTime, "yyyy-MM-dd");
+    format(selectedDate, "yyyy-MM-dd") === format(currentTime, "yyyy-MM-dd");
   const currentTimePosition = (currentHour + currentMinute / 60) * 3;
 
   const eventsForSelectedDay = events.filter((event) => {
     const eventStart = parseISO(`${event.startDate}T${event.startTime}`);
     const eventEnd = parseISO(`${event.endDate}T${event.endTime}`);
     return (
-      format(eventStart, "yyyy-MM-dd") === format(selectedDay, "yyyy-MM-dd") ||
-      format(eventEnd, "yyyy-MM-dd") === format(selectedDay, "yyyy-MM-dd") ||
-      (eventStart < startOfDay(selectedDay) && eventEnd > endOfDay(selectedDay))
+      format(eventStart, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd") ||
+      format(eventEnd, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd") ||
+      (eventStart < startOfDay(selectedDate) && eventEnd > endOfDay(selectedDate))
     );
   });
 
@@ -115,7 +116,7 @@ function DayCalendar({ events }) {
             </svg>
           </button>
           <h2 className="text-lg font-semibold">
-            {format(selectedDay, "EEEE, MMMM d, yyyy")}
+            {format(selectedDate, "EEEE, MMMM d, yyyy")}
           </h2>
           <button
             type="button"
@@ -158,8 +159,8 @@ function DayCalendar({ events }) {
                   `${event.startDate}T${event.startTime}`
                 );
 
-                const dayStart = startOfDay(selectedDay);
-                const dayEnd = endOfDay(selectedDay);
+                const dayStart = startOfDay(selectedDate);
+                const dayEnd = endOfDay(selectedDate);
 
                 const actualStart =
                   eventStart < dayStart ? dayStart : eventStart;
@@ -211,6 +212,8 @@ function DayCalendar({ events }) {
 
 DayCalendar.propTypes = {
   events: PropTypes.array.isRequired,
+  selectedDate: PropTypes.instanceOf(Date).isRequired,
+  onDateChange: PropTypes.func.isRequired,
 };
 
 export default DayCalendar;

@@ -9,8 +9,9 @@ import { AppContext } from "../../context/AppContext";
 
 export default function Calendar() {
   const [view, setView] = useState("daily");
-  const [events, setEvents] = useState([]); 
+  const [events, setEvents] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const { userData, loading: userLoading } = useContext(AppContext);
 
   useEffect(() => {
@@ -29,18 +30,23 @@ export default function Calendar() {
     setIsDropdownOpen(false);
   };
 
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    setView('daily');
+  };
+
   const renderView = () => {
     switch (view) {
       case "daily":
-        return <DayCalendar events={events} />;
+        return <DayCalendar events={events} selectedDate={selectedDate} onDateChange={handleDateChange} />;
       case "weekly":
-        return <WeekCalendar events={events} />;
+        return <WeekCalendar events={events} onDateClick={handleDateChange} />;
       case "work-week":
         return <WorkWeekCalendar />;
       case "monthly":
-        return <MonthCalendar />;
+        return <MonthCalendar events={events} onDateClick={handleDateChange} />;
       case "yearly":
-        return <YearCalendar />;
+        return <YearCalendar events={events} onDateClick={handleDateChange} />;
       default:
         return <MonthCalendar />;
     }
