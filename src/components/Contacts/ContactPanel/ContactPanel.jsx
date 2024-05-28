@@ -187,7 +187,9 @@ export default function ContactPanel({
       <div className={getContacts().length > 3 ? "overflow-y-scroll h-96" : ""}>
         <ul>
           {getContacts().length === 0 ? (
-            <li>No contacts added to this list</li>
+            <p className="flex justify-center m-4">
+              No contacts added to this list
+            </p>
           ) : (
             getContacts().map((contact, index) => (
               <li
