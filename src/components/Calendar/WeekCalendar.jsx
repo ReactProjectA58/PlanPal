@@ -15,7 +15,7 @@ import {
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-function WeekCalendar({ events }) {
+function WeekCalendar({ events, onDateClick }) {
   const [selectedWeek, setSelectedWeek] = useState(
     startOfWeek(new Date(), { weekStartsOn: 1 })
   );
@@ -125,7 +125,11 @@ function WeekCalendar({ events }) {
               ))}
             </div>
             {daysOfWeek.map((day, dayIndex) => (
-              <div key={dayIndex} className="relative border-r w-full">
+              <div
+                key={dayIndex}
+                className="relative border-r w-full cursor-pointer"
+                onClick={() => onDateClick(day)}
+              >
                 <div className="flex flex-col items-center justify-center border-b bg-gray-100 py-2 h-12">
                   <h3 className="text-sm">{format(day, "EEE, MMM d")}</h3>
                 </div>
@@ -150,7 +154,7 @@ function WeekCalendar({ events }) {
                           eventEnd > endOfDay(day))
                       );
                     })
-                    .map((event) => {
+                    .map((event, index) => {
                       const eventStart = parseISO(
                         `${event.startDate}T${event.startTime}`
                       );
@@ -174,8 +178,8 @@ function WeekCalendar({ events }) {
 
                       return (
                         <div
-                          key={event.id}
-                          className="absolute left-0 right-0 mx-1 bg-blue-300 bg-opacity-20 text-white text-xs rounded-lg shadow-lg"
+                          key={index}
+                          className="absolute left-0 right-0 m-1 bg-blue-500 text-white text-xs rounded px-1 py-0.5"
                           style={{
                             top: `${startTop}rem`,
                             height: `${eventHeight}rem`,
@@ -212,6 +216,7 @@ function WeekCalendar({ events }) {
 
 WeekCalendar.propTypes = {
   events: PropTypes.array.isRequired,
+  onDateClick: PropTypes.func.isRequired,
 };
 
 export default WeekCalendar;

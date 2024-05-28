@@ -11,12 +11,13 @@ import {
   startOfToday,
 } from 'date-fns'
 import { useState } from 'react'
+import PropTypes from 'prop-types';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function MonthCalendar() {
+export default function MonthCalendar({ onDateClick }) {
   const today = startOfToday()
   const [selectedDay, setSelectedDay] = useState(today)
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
@@ -36,6 +37,11 @@ export default function MonthCalendar() {
     const firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 })
     setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
   }
+
+  const handleDayClick = (day) => {
+    setSelectedDay(day);
+    onDateClick(day);
+  };
 
   return (
     <div className="pt-16">
@@ -88,8 +94,8 @@ export default function MonthCalendar() {
           </button>
         </div>
         <div className="grid grid-cols-7 gap-1 text-center">
-        {["M", "T", "W", "T", "F", "S", "S"].map((day) => (
-            <div key={day} className="text-sm font-semibold">{day}</div>
+          {["M", "T", "W", "T", "F", "S", "S"].map((day, index) => (
+            <div key={index} className="text-sm font-semibold">{day}</div>
           ))}
           {days.map((day, dayIdx) => (
             <div
@@ -116,6 +122,7 @@ export default function MonthCalendar() {
                     'text-400',
                   'mx-auto flex h-8 w-8 items-center justify-center'
                 )}
+                onClick={() => handleDayClick(day)}
               >
                 <time dateTime={format(day, 'yyyy-MM-dd')}>
                   {format(day, 'd')}
@@ -129,6 +136,10 @@ export default function MonthCalendar() {
   )
 }
 
+MonthCalendar.propTypes = {
+  onDateClick: PropTypes.func.isRequired,
+};
+
 const colStartClasses = [
   '',
   'col-start-1',
@@ -137,4 +148,4 @@ const colStartClasses = [
   'col-start-4',
   'col-start-5',
   'col-start-6',
-]
+];
