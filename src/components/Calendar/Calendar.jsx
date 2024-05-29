@@ -42,7 +42,7 @@ export default function Calendar() {
       case "weekly":
         return <WeekCalendar events={events} onDateClick={handleDateChange} />;
       case "work-week":
-        return <WorkWeekCalendar />;
+        return <WorkWeekCalendar events={events} onDateClick={handleDateChange} />;
       case "monthly":
         return <MonthCalendar events={events} onDateClick={handleDateChange} />;
       case "yearly":

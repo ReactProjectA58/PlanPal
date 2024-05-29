@@ -179,7 +179,7 @@ function WeekCalendar({ events, onDateClick }) {
                       return (
                         <div
                           key={index}
-                          className="absolute left-0 right-0 m-1 bg-blue-500 text-white text-xs rounded px-1 py-0.5"
+                          className="absolute left-0 right-0 m-1 bg-blue-500 bg-opacity-20 text-white text-xs rounded px-1 py-0.5"
                           style={{
                             top: `${startTop}rem`,
                             height: `${eventHeight}rem`,
