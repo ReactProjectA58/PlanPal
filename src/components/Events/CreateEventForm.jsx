@@ -5,7 +5,13 @@ import { uploadCover } from "../../services/upload.service.js";
 import Button from "../Button.jsx";
 import { AppContext } from "../../context/AppContext.jsx";
 import { validateTitle, validateDescription, validateLocation, validateStartDate, validateEndDate, validateStartTime, validateEndTime } from "../../common/helpers/validationHelpers.js";
-import { GoBackArrow } from "../../common/helpers/icons.jsx"; 
+import { GoBackArrow } from "../../common/helpers/icons.jsx";
+import {
+  EVENT_SPORTS_COVER,
+  EVENT_ENTERTAINMENT_COVER,
+  EVENT_CULTURE_AND_SCIENCE_COVER,
+  EVENT_COVER_BY_DEFAULT
+} from "../../common/constants.js";
 
 export default function CreateEvent() {
   const [event, setEvent] = useState({
@@ -49,8 +55,21 @@ export default function CreateEvent() {
     setCoverFile(e.target.files[0]);
   };
 
+  const getDefaultCoverByCategory = (category) => {
+    switch (category) {
+      case "Sports":
+        return EVENT_SPORTS_COVER;
+      case "Entertainment":
+        return EVENT_ENTERTAINMENT_COVER;
+      case "Culture & Science":
+        return EVENT_CULTURE_AND_SCIENCE_COVER;
+      default:
+        return EVENT_COVER_BY_DEFAULT;
+    }
+  };
+
   const createEvent = async () => {
-    const { title, description, location, startDate, startTime, endDate, endTime } = event;
+    const { title, description, location, startDate, startTime, endDate, endTime, category } = event;
 
     const validationErrors = {
       title: validateTitle(title),
@@ -76,6 +95,8 @@ export default function CreateEvent() {
       let coverURL = "";
       if (coverFile) {
         coverURL = await uploadCover(event.title, coverFile);
+      } else {
+        coverURL = getDefaultCoverByCategory(category);
       }
 
       const newEvent = await addEvent({
@@ -102,23 +123,6 @@ export default function CreateEvent() {
     } catch (error) {
       console.error("Error creating event:", error);
       alert("Failed to create event. Please try again.");
-    }
-  };
-
-  const handleInviteUser = async (userHandle) => {
-    try {
-      const result = await inviteUser(event.id, userData.handle, userHandle);
-      if (result) {
-        alert(`${userHandle} was successfully invited.`);
-        if (inviteRef.current) {
-          inviteRef.current.open = false;
-        }
-      } else {
-        alert(`Failed to invite user ${userHandle}`);
-      }
-    } catch (error) {
-      console.error("Error inviting user:", error);
-      alert("Failed to invite user. Please try again.");
     }
   };
 
@@ -204,6 +208,7 @@ export default function CreateEvent() {
             <option value="Entertainment">Entertainment</option>
             <option value="Sports">Sports</option>
             <option value="Culture & Science">Culture & Science</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -221,22 +226,6 @@ export default function CreateEvent() {
             accept="image/*"
             onChange={handleFileChange}
           />
-          {/* <details className="dropdown" ref={inviteRef}>
-            <summary className="m-1 btn btn-secondary">Invite</summary>
-            <div className="max-h-48 overflow-y-auto mt-2">
-              <ul className="space-y-2">
-                {contacts.length === 0 ? (
-                  <li className="p-2">No contacts found.</li>
-                ) : (
-                  contacts.map((contact) => (
-                    <li key={contact} className="p-2 hover:bg-gray-200 cursor-pointer">
-                      <a onClick={() => handleInviteUser(contact)}>{contact}</a>
-                    </li>
-                  ))
-                )}
-              </ul>
-            </div>
-          </details> */}
         </div>
       </div>
     </div>

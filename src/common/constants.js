@@ -19,3 +19,6 @@ export const MAX_DESCRIPTION_LENGTH = 500;
 export const LIGHT_THEME = "autumn";
 export const DARK_THEME = "coffee";
 export const EVENT_COVER_BY_DEFAULT = "https://images.pexels.com/photos/431722/pexels-photo-431722.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
+export const EVENT_SPORTS_COVER = "https://images.pexels.com/photos/3763871/pexels-photo-3763871.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
+export const EVENT_ENTERTAINMENT_COVER = "https://images.pexels.com/photos/668295/pexels-photo-668295.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
+export const EVENT_CULTURE_AND_SCIENCE_COVER = "https://images.pexels.com/photos/5499564/pexels-photo-5499564.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
