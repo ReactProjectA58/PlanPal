@@ -56,6 +56,9 @@ export default function SingleEventView() {
         <span className="font-semibold">Address:</span> {event.location}
       </div>
       <div className="mb-4">
+        <span className="font-semibold">Category:</span> {event.category}
+      </div>
+      <div className="mb-4">
         <img src={event.cover || EVENT_COVER_BY_DEFAULT} alt="Event" className="rounded-xl w-half" />
       </div>
       <div className="mb-4">

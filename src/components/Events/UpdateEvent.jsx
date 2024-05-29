@@ -1,10 +1,11 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
-import { getEventById, updateEvent, deleteEvent, getUserContacts, inviteUser } from '../../services/event.service.js';
+import { useContext, useEffect, useState, useRef } from 'react';
+import { getEventById, updateEvent, deleteEvent, getUserContacts, inviteUser, uninviteUser } from '../../services/event.service.js';
 import { validateTitle, validateDescription, validateLocation, validateStartDate, validateEndDate, validateStartTime, validateEndTime } from '../../common/helpers/validationHelpers.js';
 import Button from '../Button.jsx';
 import { GoBackArrow, DeleteEvent } from '../../common/helpers/icons.jsx';
 import { AppContext } from '../../context/AppContext.jsx';
+import { uploadCover } from '../../services/upload.service.js';
 
 export default function UpdateEvent() {
   const { eventId } = useParams();
@@ -15,6 +16,9 @@ export default function UpdateEvent() {
   const [contacts, setContacts] = useState([]);
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
+  const inviteRef = useRef(null);
+  const uninviteRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -102,13 +106,49 @@ export default function UpdateEvent() {
     try {
       const result = await inviteUser(eventId, userData.handle, userHandle);
       if (result) {
-        alert(`User ${userHandle} invited successfully`);
+        alert(`${userHandle} was successfully invited.`);
+        if (inviteRef.current) {
+          inviteRef.current.open = false;
+        }
       } else {
         alert(`Failed to invite user ${userHandle}`);
       }
     } catch (error) {
       console.error("Error inviting user:", error);
       alert("Failed to invite user. Please try again.");
+    }
+  };
+
+  const handleUninviteUser = async (userHandle) => {
+    try {
+      const result = await uninviteUser(eventId, userHandle);
+      if (result) {
+        alert(`${userHandle} was successfully kicked out.`);
+        if (uninviteRef.current) {
+          uninviteRef.current.open = false;
+        }
+      } else {
+        alert(`Failed to uninvite user ${userHandle}`);
+      }
+    } catch (error) {
+      console.error("Error uninviting user:", error);
+      alert("Failed to uninvite user. Please try again.");
+    }
+  };
+
+  const handleUpdateCover = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      try {
+        const coverURL = await uploadCover(event.title, file);
+        const updatedEvent = { ...event, cover: coverURL };
+        await updateEvent(eventId, updatedEvent);
+        setEvent(updatedEvent);
+        alert("Cover image updated successfully.");
+      } catch (error) {
+        console.error("Error updating cover image:", error);
+        alert("Failed to update cover image. Please try again.");
+      }
     }
   };
 
@@ -121,11 +161,52 @@ export default function UpdateEvent() {
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">Update Event</h1>
         <div className="flex items-center space-x-2">
+          <details className="dropdown" ref={inviteRef}>
+            <summary className="m-1 btn btn-secondary">Invite</summary>
+            <div className="max-h-48 overflow-y-auto mt-2">
+              <ul className="space-y-2">
+                {contacts.length === 0 ? (
+                  <li className="p-2">No contacts found.</li>
+                ) : (
+                  contacts.map((contact) => (
+                    <li key={contact} className="p-2 hover:bg-gray-200 cursor-pointer">
+                      <a onClick={() => handleInviteUser(contact)}>{contact}</a>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
+          </details>
+          <details className="dropdown" ref={uninviteRef}>
+            <summary className="m-1 btn btn-secondary">Uninvite</summary>
+            <div className="max-h-48 overflow-y-auto mt-2">
+              <ul className="space-y-2">
+                {Object.keys(event.peopleGoing || {}).filter(handle => handle !== event.creator).length === 0 ? (
+                  <li className="p-2">No participants to uninvite.</li>
+                ) : (
+                  Object.keys(event.peopleGoing || {}).filter(handle => handle !== event.creator).map((participant) => (
+                    <li key={participant} className="p-2 hover:bg-gray-200 cursor-pointer">
+                      <a onClick={() => handleUninviteUser(participant)}>{participant}</a>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
+          </details>
+          <Button className="btn btn-secondary" onClick={() => fileInputRef.current.click()}>
+            Update Cover
+          </Button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+            accept="image/*"
+            onChange={handleUpdateCover}
+          />
           <DeleteEvent onClick={handleDeleteEvent} />
           <GoBackArrow onClick={() => navigate(`/events/${eventId}`)} />
         </div>
       </div>
-
       {[
         { label: "Title", key: "title", type: "text" },
         { label: "Start Date", key: "startDate", type: "date" },
@@ -172,7 +253,7 @@ export default function UpdateEvent() {
         />
       </div>
       <div className="flex items-center space-x-2 mb-4">
-        <label htmlFor="reoccurring-option" className="font-semibold">Reoccurring Option:</label>
+        <label htmlFor="reoccurring-option" className="font-semibold">Reoccurring:</label>
         <select
           id="reoccurring-option"
           value={event.isReoccurring}
@@ -186,27 +267,24 @@ export default function UpdateEvent() {
           <option value="Never">Never</option>
         </select>
       </div>
+      <div className="flex items-center space-x-2 mb-4">
+        <label htmlFor="category-option" className="font-semibold">Category:</label>
+        <select
+          id="category-option"
+          value={event.category}
+          onChange={(e) => updateEventData(e.target.value, "category")}
+          className="border rounded p-2"
+        >
+          <option value="Entertainment">Entertainment</option>
+          <option value="Sport">Sport</option>
+          <option value="Culture & Science">Culture & Science</option>
+        </select>
+      </div>
 
       <div className="flex space-x-4">
         <Button className="btn btn-primary" onClick={handleUpdateEvent}>
           Update Event
         </Button>
-        <details className="dropdown">
-          <summary className="m-1 btn btn-secondary">Invite</summary>
-          <div className="max-h-48 overflow-y-auto mt-2">
-            <ul className="space-y-2">
-              {contacts.length === 0 ? (
-                <li className="p-2">No contacts found.</li>
-              ) : (
-                contacts.map((contact) => (
-                  <li key={contact} className="p-2 hover:bg-gray-200 cursor-pointer">
-                    <a onClick={() => handleInviteUser(contact)}>{contact}</a>
-                  </li>
-                ))
-              )}
-            </ul>
-          </div>
-        </details>
       </div>
     </div>
   );

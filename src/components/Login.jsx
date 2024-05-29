@@ -3,6 +3,8 @@ import Button from "../components/Button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { loginUser } from "../services/auth.service";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";   
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"; // Import icons directly
 
 export default function Login() {
     const { user, setAppState } = useContext(AppContext);
@@ -11,6 +13,7 @@ export default function Login() {
         password: '',
     });
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -44,6 +47,10 @@ export default function Login() {
         });
     };
 
+    const toggleShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
     return (
         <div className="container mx-auto">
             <h1 className="text-3xl font-semibold mb-4">Login</h1>
@@ -59,15 +66,24 @@ export default function Login() {
                     className="input input-bordered"
                 />
                 <label htmlFor="password" className="text-lg">Password </label>
-                <input 
-                    placeholder="Enter Your Password"
-                    value={form.password} 
-                    onChange={updateForm('password')} 
-                    type="password" 
-                    name="password" 
-                    id="password" 
-                    className="input input-bordered"
-                />
+                <div className="relative">
+                    <input 
+                        placeholder="Enter Your Password"
+                        value={form.password} 
+                        onChange={updateForm('password')} 
+                        type={showPassword ? "text" : "password"} 
+                        name="password" 
+                        id="password" 
+                        className="input input-bordered w-full"
+                    />
+                    <button
+                        type="button"
+                        onClick={toggleShowPassword}
+                        className="absolute right-2 top-2"
+                    >
+                        <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                    </button>
+                </div>
             </div>
             {error && <div className="text-red-500 mt-2">{error}</div>}
             <Button onClick={login} className="btn btn-primary mt-4">Login</Button>

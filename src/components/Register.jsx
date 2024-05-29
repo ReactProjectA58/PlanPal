@@ -5,22 +5,26 @@ import { useNavigate } from "react-router-dom";
 import { createUserHandle } from "../services/users.service";
 import Button from "./Button";
 import { validateRegister } from "../common/helpers/validationHelpers";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"; // Import icons directly
 
 export default function Register() {
   const [form, setForm] = useState({
-  firstName: "",
-  lastName: "",
-  phoneNumber: "",
-  email: "",
-  avatar: "",
-  password: "",
-  confirmPassword: "",
-  address: "",
-  userName: "",
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    email: "",
+    avatar: "",
+    password: "",
+    confirmPassword: "",
+    address: "",
+    userName: "",
   });
   const [errors, setErrors] = useState({});
   const { user, setAppState } = useContext(AppContext);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -33,6 +37,14 @@ export default function Register() {
       ...form,
       [prop]: e.target.value,
     });
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   const register = async () => {
@@ -149,16 +161,25 @@ export default function Register() {
         <label htmlFor="password" className="text-lg">
           Password{" "}
         </label>
-        <input
-          placeholder="Enter Your Password"
-          value={form.password}
-          onChange={updateForm("password")}
-          type="password"
-          id="password"
-          className={`input input-bordered ${
-            errors.password ? "border-red-500" : ""
-          }`}
-        />
+        <div className="relative">
+          <input
+            placeholder="Enter Your Password"
+            value={form.password}
+            onChange={updateForm("password")}
+            type={showPassword ? "text" : "password"}
+            id="password"
+            className={`input input-bordered w-full ${
+              errors.password ? "border-red-500" : ""
+            }`}
+          />
+          <button
+            type="button"
+            onClick={toggleShowPassword}
+            className="absolute right-2 top-2"
+          >
+            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+          </button>
+        </div>
         {errors.password && (
           <span className="text-red-500">{errors.password}</span>
         )}
@@ -166,16 +187,25 @@ export default function Register() {
         <label htmlFor="confirmPassword" className="text-lg">
           Confirm Password{" "}
         </label>
-        <input
-          placeholder="Confirm Your Password"
-          value={form.confirmPassword}
-          onChange={updateForm("confirmPassword")}
-          type="password"
-          id="confirmPassword"
-          className={`input input-bordered ${
-            errors.confirmPassword ? "border-red-500" : ""
-          }`}
-        />
+        <div className="relative">
+          <input
+            placeholder="Confirm Your Password"
+            value={form.confirmPassword}
+            onChange={updateForm("confirmPassword")}
+            type={showConfirmPassword ? "text" : "password"}
+            id="confirmPassword"
+            className={`input input-bordered w-full ${
+              errors.confirmPassword ? "border-red-500" : ""
+            }`}
+          />
+          <button
+            type="button"
+            onClick={toggleShowConfirmPassword}
+            className="absolute right-2 top-2"
+          >
+            <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
+          </button>
+        </div>
         {errors.confirmPassword && (
           <span className="text-red-500">{errors.confirmPassword}</span>
         )}

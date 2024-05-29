@@ -375,3 +375,44 @@ export const uninviteUser = async (eventId, userHandle) => {
     return false;
   }
 };
+
+export const getContactListById = async (listId) => {
+  const listRef = ref(db, `contactLists/${listId}/contacts`);
+  const snapshot = await get(listRef);
+  return snapshot.val() || {};
+};
+
+export const inviteList = async (eventId, invitingUserHandle, listId) => {
+  const eventRef = ref(db, `events/${eventId}`);
+
+  try {
+    const eventSnapshot = await get(eventRef);
+    if (!eventSnapshot.exists()) {
+      console.error("Event does not exist");
+      return false;
+    }
+
+    const eventTitle = eventSnapshot.val().title;
+
+    const contacts = await getContactListById(listId);
+
+    if (!contacts || Object.keys(contacts).length === 0) {
+      console.error("No contacts found in the specified list.");
+      return false;
+    }
+
+    const updates = {};
+
+    Object.keys(contacts).forEach(userToInviteHandle => {
+      updates[`events/${eventId}/peopleGoing/${userToInviteHandle}`] = true;
+      updates[`users/${userToInviteHandle}/goingToEvents/${eventTitle}`] = true;
+    });
+
+    await update(ref(db), updates);
+    console.log("Users from the contact list invited successfully");
+    return true;
+  } catch (error) {
+    console.error("Error inviting users from the contact list:", error);
+    return false;
+  }
+};

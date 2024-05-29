@@ -19,6 +19,8 @@ import {
   faUserGroup,
   faPenToSquare,
   faCircleArrowLeft,
+  faEye,
+  faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -72,23 +74,23 @@ export const Moon = () => {
     );
   };
   
-  export const Sun = () => {
-    return (
-      <FontAwesomeIcon
-      icon={faSun}
-      className="swap-on fill-current w-10 h-10"
-      style={{ width: "20px", height: "20px" }}
-      />
-    );
-  };
-  
-  export const Contacts = () => {
-    return <FontAwesomeIcon icon={faChevronLeft} size={"lg"} />;
-  };    
-  
-  export const GoBack = () => {
-    return <FontAwesomeIcon icon={faUserGroup} size={"lg"} />;
-  };  
+export const Sun = () => {
+  return (
+    <FontAwesomeIcon
+    icon={faSun}
+    className="swap-on fill-current w-10 h-10"
+    style={{ width: "20px", height: "20px" }}
+    />
+  );
+};
+
+export const Contacts = () => {
+  return <FontAwesomeIcon icon={faChevronLeft} size={"lg"} />;
+};    
+
+export const GoBack = () => {
+  return <FontAwesomeIcon icon={faUserGroup} size={"lg"} />;
+};  
   
 // eslint-disable-next-line react/prop-types
 export const GoBackArrow = ({ onClick }) => {
@@ -116,7 +118,6 @@ export const DeleteEvent = ({ onClick }) => {
     </div>
   );
 };
-
 
 export const Plus = () => {
     return (
@@ -182,3 +183,4 @@ export const TrashBin = () => {
   return <FontAwesomeIcon icon={faTrash} size={"lg"} />;
 };  
 
+export { faEye, faEyeSlash };

@@ -107,6 +107,7 @@ export default function MyEvents() {
                   <p>Public: {event.isPublic ? "Yes" : "No"}</p>
                   <p>Reoccurring: {event.isReoccurring}</p>
                   <p>Creator: {event.creator}</p>
+                  <p>Category: {event.category}</p>
                 </div>
                 <div className="card-actions flex space-x-2">
                   <button

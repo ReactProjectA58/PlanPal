@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
-import { addEvent } from "../../services/event.service.js";
+import { useContext, useEffect, useRef, useState } from "react";
+import { addEvent, getUserContacts, inviteUser } from "../../services/event.service.js";
 import { uploadCover } from "../../services/upload.service.js";
 import Button from "../Button.jsx";
 import { AppContext } from "../../context/AppContext.jsx";
@@ -17,12 +17,26 @@ export default function CreateEvent() {
     location: "",
     description: "",
     isPublic: false,
-    isReoccurring: "never", 
+    isReoccurring: "never",
+    category: "Entertainment", // Added category field
   });
   const [coverFile, setCoverFile] = useState(null);
   const [errors, setErrors] = useState({});
+  const [contacts, setContacts] = useState([]);
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
+  const inviteRef = useRef(null);
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      if (userData?.handle) {
+        const contactsData = await getUserContacts(userData.handle);
+        setContacts(contactsData);
+      }
+    };
+
+    fetchContacts();
+  }, [userData]);
 
   const updateEvent = (value, key) => {
     setEvent({
@@ -37,7 +51,7 @@ export default function CreateEvent() {
 
   const createEvent = async () => {
     const { title, description, location, startDate, startTime, endDate, endTime } = event;
-    
+
     const validationErrors = {
       title: validateTitle(title),
       description: validateDescription(description),
@@ -64,12 +78,12 @@ export default function CreateEvent() {
         coverURL = await uploadCover(event.title, coverFile);
       }
 
-      await addEvent({
+      const newEvent = await addEvent({
         ...event,
         creator: userData.handle,
         cover: coverURL,
       });
-    
+
       setEvent({
         title: "",
         startDate: "",
@@ -79,15 +93,33 @@ export default function CreateEvent() {
         location: "",
         description: "",
         isPublic: false,
-        isReoccurring: "never", 
+        isReoccurring: "never",
+        category: "Entertainment", // Reset category field
       });
       setCoverFile(null);
-    
-      navigate("/my-events");
+
+      navigate(`/events/${newEvent.id}`);
     } catch (error) {
       console.error("Error creating event:", error);
       alert("Failed to create event. Please try again.");
-    }    
+    }
+  };
+
+  const handleInviteUser = async (userHandle) => {
+    try {
+      const result = await inviteUser(event.id, userData.handle, userHandle);
+      if (result) {
+        alert(`${userHandle} was successfully invited.`);
+        if (inviteRef.current) {
+          inviteRef.current.open = false;
+        }
+      } else {
+        alert(`Failed to invite user ${userHandle}`);
+      }
+    } catch (error) {
+      console.error("Error inviting user:", error);
+      alert("Failed to invite user. Please try again.");
+    }
   };
 
   return (
@@ -147,7 +179,7 @@ export default function CreateEvent() {
           </label>
         </div>
         <div className="event-reoccurring-option">
-          <label htmlFor="reoccurring-option">Reoccurring Option:</label>
+          <label htmlFor="reoccurring-option">Reoccurring:</label>
           <select
             id="reoccurring-option"
             value={event.isReoccurring}
@@ -158,7 +190,20 @@ export default function CreateEvent() {
             <option value="Monthly">Monthly</option>
             <option value="Yearly">Yearly</option>
             <option value="Indefinitely">Indefinitely</option>
-            <option value="Never">Never</option> 
+            <option value="Never">Never</option>
+          </select>
+        </div>
+        <div className="event-category">
+          <label htmlFor="category">Category:</label>
+          <select
+            id="category"
+            value={event.category}
+            onChange={(e) => updateEvent(e.target.value, "category")}
+            className="category-option-style"
+          >
+            <option value="Entertainment">Entertainment</option>
+            <option value="Sports">Sports</option>
+            <option value="Culture & Science">Culture & Science</option>
           </select>
         </div>
 
@@ -176,6 +221,22 @@ export default function CreateEvent() {
             accept="image/*"
             onChange={handleFileChange}
           />
+          {/* <details className="dropdown" ref={inviteRef}>
+            <summary className="m-1 btn btn-secondary">Invite</summary>
+            <div className="max-h-48 overflow-y-auto mt-2">
+              <ul className="space-y-2">
+                {contacts.length === 0 ? (
+                  <li className="p-2">No contacts found.</li>
+                ) : (
+                  contacts.map((contact) => (
+                    <li key={contact} className="p-2 hover:bg-gray-200 cursor-pointer">
+                      <a onClick={() => handleInviteUser(contact)}>{contact}</a>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
+          </details> */}
         </div>
       </div>
     </div>
