@@ -12,9 +12,11 @@ import {
 } from "date-fns";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 
 function DayCalendar({ events, selectedDate, onDateChange }) {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const navigate = useNavigate();
 
   function previousDay() {
     const newSelectedDate = sub(selectedDate, { days: 1 });
@@ -177,13 +179,14 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
                 return (
                   <div
                     key={event.id}
-                    className="absolute pl-16 pr-4 bg-blue-300 bg-opacity-20 text-black text-xs rounded-lg shadow-lg"
+                    className="absolute pl-16 pr-4 bg-blue-300 bg-opacity-20 text-black text-xs rounded-lg shadow-lg cursor-pointer"
                     style={{
                       top: `${startTop}rem`,
                       height: `${eventHeight}rem`,
                       width: `${eventWidth}%`,
                       left: `${eventLeft}%`,
                     }}
+                    onClick={() => navigate(`/events/${event.id}`)}
                   >
                     <div className="px-2 py-1">
                       <div className="font-semibold">{event.title}</div>
