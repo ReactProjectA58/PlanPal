@@ -23,6 +23,35 @@ export default function ContactsDashboard() {
   const [allUsers, setAllUsers] = useState([]);
   const location = useLocation();
 
+  const handleAddContact = (contactHandle) => {
+    addContact(userData.handle, contactHandle)
+      .then(() => {
+        const foundUser = allUsers.find(
+          (user) => user.handle === contactHandle
+        );
+
+        if (foundUser) {
+          setAllContacts((prevContacts) => [...prevContacts, foundUser]);
+        }
+      })
+      .catch((error) => {
+        console.error("Error adding contact:", error);
+      });
+  };
+
+  const handleRemoveContact = (contactHandle) => {
+    removeContact(userData.handle, contactHandle)
+      .then(() => {
+        console.log("Contact removed");
+        setAllContacts((prevContacts) =>
+          prevContacts.filter((contact) => contact.handle !== contactHandle)
+        );
+      })
+      .catch((error) => {
+        console.error("Error removing contact:", error);
+      });
+  };
+
   useEffect(() => {
     let unsubscribe;
     if (userData) {
@@ -79,37 +108,8 @@ export default function ContactsDashboard() {
     }
   }, [location.search]);
 
-  const handleAddContact = (contactHandle) => {
-    addContact(userData.handle, contactHandle)
-      .then(() => {
-        const foundUser = allUsers.find(
-          (user) => user.handle === contactHandle
-        );
-
-        if (foundUser) {
-          setAllContacts((prevContacts) => [...prevContacts, foundUser]);
-        }
-      })
-      .catch((error) => {
-        console.error("Error adding contact:", error);
-      });
-  };
-
-  const handleRemoveContact = (contactHandle) => {
-    removeContact(userData.handle, contactHandle)
-      .then(() => {
-        console.log("Contact removed");
-        setAllContacts((prevContacts) =>
-          prevContacts.filter((contact) => contact.handle !== contactHandle)
-        );
-      })
-      .catch((error) => {
-        console.error("Error removing contact:", error);
-      });
-  };
-
   return (
-    <div>
+    <>
       <ContactPanel
         isSearching={isSearching}
         currentView={currentView}
@@ -125,6 +125,6 @@ export default function ContactsDashboard() {
         onAddContact={handleAddContact}
         onRemoveContact={handleRemoveContact}
       />
-    </div>
+    </>
   );
 }

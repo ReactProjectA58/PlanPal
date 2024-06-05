@@ -52,18 +52,18 @@ export default function ContactPanel({
     } else if (currentView === "My Contacts") {
       const mappedAddedContacts = addedContacts
         .map((contactHandle) =>
-          allContacts.find((contact) => contact.handle === contactHandle)
+          allContacts.find((contact) => contact?.handle === contactHandle)
         )
         .filter(Boolean);
       return mappedAddedContacts;
     } else {
       const currentList = contactLists.find(
-        (list) => list.title === currentView
+        (list) => list?.title === currentView
       );
       if (currentList) {
         return Object.keys(currentList.contacts || {})
           .map((handle) =>
-            allContacts.find((contact) => contact.handle === handle)
+            allContacts.find((contact) => contact?.handle === handle)
           )
           .filter(Boolean);
       }
@@ -158,10 +158,10 @@ export default function ContactPanel({
 
   return (
     <div>
+      {/* separate component */}
       <h1 className="text-3xl rounded-lg shadow-2xl max-w-fit mx-auto my-auto p-4">
         Contacts Dashboard
       </h1>
-
       <div className="flex justify-between items-center flex-col md:flex-row p-3">
         <div className="flex items-center justify-between mb-4 md:mb-0">
           {isSearching ? (
@@ -181,7 +181,9 @@ export default function ContactPanel({
           clearSearch={clearSearch}
         />
       </div>
+      {/* separate component */}
 
+      {/* separate component */}
       <div className={getContacts().length > 3 ? "overflow-y-scroll h-96" : ""}>
         <ul>
           {getContacts().length === 0 ? (
@@ -189,75 +191,80 @@ export default function ContactPanel({
               No contacts added to this list
             </p>
           ) : (
-            getContacts().map((contact, index) => (
-              <li
-                key={index}
-                className="mb-4 p-4 bg-transparent rounded-lg shadow-xl"
-              >
-                {contact && (
-                  <div className="overflow-x-auto">
-                    <table className="table w-full">
-                      <thead>
-                        <tr></tr>
-                      </thead>
-                      <tbody>
-                        <tr className="flex justify-between">
-                          <td className="flex items-center gap-3 w-1/3">
-                            <div className="avatar">
-                              <div className="mask mask-squircle w-20 h-16">
-                                <img
-                                  src={contact.avatar}
-                                  alt="Avatar"
-                                  className="object-cover w-full h-full"
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <div className="font-bold">
-                                {contact.firstName} {contact.lastName}
-                              </div>
-                              <div className="text-sm opacity-50">Bulgaria</div>
-                            </div>
-                          </td>
-                          <td className="flex flex-col items-center justify-center text-center w-1/5">
-                            {contact.handle} <br />
-                            <span className="badge badge-ghost badge-sm">
-                              {contact.email}
-                            </span>
-                          </td>
-                          {!isLoggedInUser(contact.handle) && (
-                            <td className="flex items-center justify-center mr-9">
-                              <div
-                                className="tooltip break-all"
-                                data-tip={getTooltip(contact.handle)}
-                              >
-                                <label className="swap">
-                                  <input
-                                    type="checkbox"
-                                    checked={isAddedContact(contact.handle)}
-                                    onChange={() =>
-                                      handleToggleContact(contact.handle)
-                                    }
+            getContacts().map((contact) => {
+              return (
+                <li
+                  key={contact.uid}
+                  className="mb-4 p-4 bg-transparent rounded-lg shadow-xl"
+                >
+                  {contact && (
+                    <div className="overflow-x-auto">
+                      <table className="table w-full">
+                        <thead>
+                          <tr></tr>
+                        </thead>
+                        <tbody>
+                          <tr className="flex justify-between">
+                            <td className="flex items-center gap-3 w-1/3">
+                              <div className="avatar">
+                                <div className="mask mask-squircle w-20 h-16">
+                                  <img
+                                    src={contact.avatar}
+                                    alt="Avatar"
+                                    className="object-cover w-full h-full"
                                   />
-                                  {isAddedContact(contact.handle) ? (
-                                    <Minus />
-                                  ) : (
-                                    <Plus />
-                                  )}
-                                </label>
+                                </div>
+                              </div>
+                              <div>
+                                <div className="font-bold">
+                                  {contact.firstName} {contact.lastName}
+                                </div>
+                                <div className="text-sm opacity-50">
+                                  Bulgaria
+                                </div>
                               </div>
                             </td>
-                          )}
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </li>
-            ))
+                            <td className="flex flex-col items-center justify-center text-center w-1/5">
+                              {contact.handle} <br />
+                              <span className="badge badge-ghost badge-sm">
+                                {contact.email}
+                              </span>
+                            </td>
+                            {!isLoggedInUser(contact.handle) && (
+                              <td className="flex items-center justify-center mr-9">
+                                <div
+                                  className="tooltip break-all"
+                                  data-tip={getTooltip(contact.handle)}
+                                >
+                                  <label className="swap">
+                                    <input
+                                      type="checkbox"
+                                      checked={isAddedContact(contact.handle)}
+                                      onChange={() =>
+                                        handleToggleContact(contact.handle)
+                                      }
+                                    />
+                                    {isAddedContact(contact.handle) ? (
+                                      <Minus />
+                                    ) : (
+                                      <Plus />
+                                    )}
+                                  </label>
+                                </div>
+                              </td>
+                            )}
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </li>
+              );
+            })
           )}
         </ul>
       </div>
+      {/* separate component */}
 
       <div className="collapse bg-base-200 mb-2">
         <input
@@ -282,7 +289,6 @@ export default function ContactPanel({
           />
         </div>
       </div>
-
       <div>
         <div className="collapse bg-base-200">
           <input

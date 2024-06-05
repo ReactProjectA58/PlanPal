@@ -13,15 +13,15 @@ import { themeChecker } from "../../../common/helpers/toast";
 export default function PanelLists({ setCurrentView, list, allContacts }) {
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
-  const [contacts, setContacts] = useState(list.contacts || {});
+  const [contacts, setContacts] = useState(list?.contacts || {});
 
   useEffect(() => {
-    setContacts(list.contacts || {});
-  }, [list.contacts]);
+    setContacts(list?.contacts || {});
+  }, [list?.contacts]);
 
   const handleDelete = (id) => {
     themeChecker("Contact list deleted!");
-    deleteContactList(id, userData.handle);
+    deleteContactList(id, userData?.handle);
     setCurrentView("My Contacts");
   };
 
@@ -68,7 +68,7 @@ export default function PanelLists({ setCurrentView, list, allContacts }) {
                   const isContactInList =
                     contacts && contacts[contact.handle.toLowerCase()];
                   return (
-                    <li key={contact.handle}>
+                    <li key={contact?.handle}>
                       <label className="label cursor-pointer">
                         <input
                           type="checkbox"

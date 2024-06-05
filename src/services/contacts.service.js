@@ -9,31 +9,33 @@ import {
 } from "firebase/database";
 import { db } from "../config/firebase-config";
 
-export const createContactList = (title, user) => {
-  const creator = user.toLowerCase();
-  push(ref(db, "contactLists"), {
-    title,
-    creator,
-  })
-    .then((list) => {
-      const contactListKey = list.key;
-      const updates = {};
-      updates[`users/${creator}/contactLists/${contactListKey}`] = true;
-      updates[`contactLists/${contactListKey}/key/`] = contactListKey;
-      return update(ref(db), updates);
-    })
-    .catch((error) => {
-      console.error("Error creating list", error);
-    });
+export const createContactList = async (title, user) => {
+  try {
+    const creator = user.toLowerCase();
+    const list = await push(ref(db, "contactLists"), { title, creator });
+    const contactListKey = list.key;
+    const updates = {
+      [`users/${creator}/contactLists/${contactListKey}`]: true,
+      [`contactLists/${contactListKey}/key/`]: contactListKey,
+    };
+    await update(ref(db), updates);
+  } catch (error) {
+    console.error("Error creating list", error);
+  }
 };
 
-export const deleteContactList = (listId, user) => {
+export const deleteContactList = async (listId, user) => {
   const creator = user.toLowerCase();
-  const updates = {};
-  updates[`contactLists/${listId}`] = null;
-  updates[`users/${creator}/contactLists/${listId}`] = null;
+  const updates = {
+    [`contactLists/${listId}`]: null,
+    [`users/${creator}/contactLists/${listId}`]: null,
+  };
 
-  return update(ref(db), updates);
+  try {
+    await update(ref(db), updates);
+  } catch (error) {
+    console.error("Error deleting contact list", error);
+  }
 };
 
 export const contactListsListener = (user, callBack) => {
@@ -50,27 +52,42 @@ export const contactListsListener = (user, callBack) => {
   });
 };
 
-export const addContact = (handle, contactName) => {
-  const updates = {};
+export const addContact = async (handle, contactName) => {
   const user = handle.toLowerCase();
   const contact = contactName.toLowerCase();
-  updates[`users/${user}/contacts/${contact}`] = true;
+  const updates = {
+    [`users/${user}/contacts/${contact}`]: true,
+  };
 
-  return update(ref(db), updates);
+  try {
+    await update(ref(db), updates);
+  } catch (error) {
+    console.error("Error adding contact", error);
+  }
 };
 
-export const removeContact = (handle, contactName) => {
-  const updates = {};
+export const removeContact = async (handle, contactName) => {
   const user = handle.toLowerCase();
   const contact = contactName.toLowerCase();
-  updates[`users/${user}/contacts/${contact}`] = null;
+  const updates = {
+    [`users/${user}/contacts/${contact}`]: null,
+  };
 
-  return update(ref(db), updates);
+  try {
+    await update(ref(db), updates);
+  } catch (error) {
+    console.error("Error removing contact", error);
+  }
 };
 
-export const updateContact = (contactListKey, updatedContacts) => {
-  const updates = {};
-  updates[`contactLists/${contactListKey}/contacts`] = updatedContacts;
+export const updateContact = async (contactListKey, updatedContacts) => {
+  const updates = {
+    [`contactLists/${contactListKey}/contacts`]: updatedContacts,
+  };
 
-  return update(ref(db), updates);
+  try {
+    await update(ref(db), updates);
+  } catch (error) {
+    console.error("Error updating contact", error);
+  }
 };
