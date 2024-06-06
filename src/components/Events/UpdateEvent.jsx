@@ -103,6 +103,14 @@ export default function UpdateEvent() {
   };
 
   const handleInviteUser = async (userHandle) => {
+    if (event.peopleGoing && event.peopleGoing[userHandle]) {
+      alert("This user is already invited to this event!");
+      if (inviteRef.current) {
+        inviteRef.current.open = false;
+      }
+      return;
+    }
+
     try {
       const result = await inviteUser(eventId, userData.handle, userHandle);
       if (result) {

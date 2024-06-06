@@ -437,3 +437,12 @@ export const getContactLists = async (userHandle) => {
     throw new Error("Failed to fetch contact lists");
   }
 };
+
+export const sortByCategory = async (category) => {
+  const eventsRef = ref(db, 'events');
+  const snapshot = await get(eventsRef);
+  const events = snapshot.val() || {};
+
+  const filteredEvents = Object.values(events).filter(event => event.category === category);
+  return filteredEvents;
+};
