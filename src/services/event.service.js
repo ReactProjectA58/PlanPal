@@ -416,3 +416,24 @@ export const inviteList = async (eventId, invitingUserHandle, listId) => {
     return false;
   }
 };
+
+export const getContactLists = async (userHandle) => {
+  const db = getDatabase();
+  const contactListsRef = ref(db, `contactLists`);
+  try {
+    const snapshot = await get(contactListsRef);
+    if (snapshot.exists()) {
+      const contactListsData = snapshot.val();
+      const userLists = Object.keys(contactListsData).filter(key => contactListsData[key].creator === userHandle);
+      return userLists.map(key => ({
+        id: key,
+        ...contactListsData[key]
+      }));
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching contact lists:", error);
+    throw new Error("Failed to fetch contact lists");
+  }
+};

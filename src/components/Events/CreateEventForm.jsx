@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
-import { addEvent, getUserContacts, inviteUser } from "../../services/event.service.js";
+import { addEvent, getUserContacts, inviteUser, getContactLists, getContactListById, inviteList } from "../../services/event.service.js";
 import { uploadCover } from "../../services/upload.service.js";
 import Button from "../Button.jsx";
 import { AppContext } from "../../context/AppContext.jsx";
@@ -37,11 +37,13 @@ export default function CreateEvent() {
   const [coverFile, setCoverFile] = useState(null);
   const [errors, setErrors] = useState({});
   const [contacts, setContacts] = useState([]);
-  const [invitedUsers, setInvitedUsers] = useState([]);
+  const [contactLists, setContactLists] = useState([]);
+  const [invitedUsers, setInvitedUsers] = useState([]); // Ensure this is initialized as an array
   const [description, setDescription] = useState("");
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
   const inviteRef = useRef(null);
+  const inviteListRef = useRef(null);
   const reoccurringRef = useRef(null);
   const categoryRef = useRef(null);
   const [isReoccurringOpen, setIsReoccurringOpen] = useState(false);
@@ -59,7 +61,10 @@ export default function CreateEvent() {
         setIsCategoryOpen(false);
       }
       if (inviteRef.current && !inviteRef.current.contains(event.target)) {
-        inviteRef.current.removeAttribute('open');
+        inviteRef.current.removeAttribute("open");
+      }
+      if (inviteListRef.current && !inviteListRef.current.contains(event.target)) {
+        inviteListRef.current.removeAttribute("open");
       }
     }
 
@@ -67,7 +72,7 @@ export default function CreateEvent() {
     return () => {
       window.removeEventListener("click", handleClickOutside);
     };
-  }, [reoccurringRef, categoryRef, inviteRef]);
+  }, [reoccurringRef, categoryRef, inviteRef, inviteListRef]);
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -77,7 +82,15 @@ export default function CreateEvent() {
       }
     };
 
+    const fetchContactLists = async () => {
+      if (userData?.handle) {
+        const listsData = await getContactLists(userData.handle);
+        setContactLists(listsData);
+      }
+    };
+
     fetchContacts();
+    fetchContactLists();
   }, [userData]);
 
   const updateEvent = (value, key) => {
@@ -102,6 +115,19 @@ export default function CreateEvent() {
   const handleInviteUser = (userHandle) => {
     setInvitedUsers((prevUsers) => [...prevUsers, userHandle]);
     alert(`${userHandle} was successfully added to the invite list.`);
+    if (inviteRef.current) {
+      inviteRef.current.removeAttribute("open");
+    }
+  };
+
+  const handleInviteList = async (listId, listTitle) => {
+    const contacts = await getContactListById(listId);
+    const newUsers = Object.keys(contacts);
+    setInvitedUsers((prevUsers) => [...prevUsers, ...newUsers]);
+    alert(`Everybody from ${listTitle} was added to the invite list`);
+    if (inviteListRef.current) {
+      inviteListRef.current.removeAttribute("open");
+    }
   };
 
   const recurrenceOptions = [
@@ -370,7 +396,7 @@ export default function CreateEvent() {
           Upload Cover
         </Button>
         <details className="dropdown" ref={inviteRef}>
-          <summary className="font-bold py-2 px-4 rounded cursor-pointer">Invite Contact</summary>
+          <summary className="font-bold py-2 px-4 rounded cursor-pointer bg-gray-700 text-white">Invite Contact</summary>
           <div className="max-h-48 overflow-y-auto mt-2">
             <ul className="space-y-2">
               {contacts.length === 0 ? (
@@ -379,6 +405,22 @@ export default function CreateEvent() {
                 contacts.map((contact) => (
                   <li key={contact} className="p-2 hover:bg-gray-200 cursor-pointer">
                     <a onClick={() => handleInviteUser(contact)}>{contact}</a>
+                  </li>
+                ))
+              )}
+            </ul>
+          </div>
+        </details>
+        <details className="dropdown" ref={inviteListRef}>
+          <summary className="font-bold py-2 px-4 rounded cursor-pointer bg-gray-700 text-white">Invite List</summary>
+          <div className="max-h-48 overflow-y-auto mt-2">
+            <ul className="space-y-2">
+              {contactLists.length === 0 ? (
+                <li className="p-2">No contact lists found.</li>
+              ) : (
+                contactLists.map((list) => (
+                  <li key={list.id} className="p-2 hover:bg-gray-200 cursor-pointer">
+                    <a onClick={() => handleInviteList(list.id, list.title)}>{list.title}</a>
                   </li>
                 ))
               )}
