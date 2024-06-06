@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
-import { addEvent, getUserContacts } from "../../services/event.service.js";
+import { addEvent, getUserContacts, inviteUser } from "../../services/event.service.js";
 import { uploadCover } from "../../services/upload.service.js";
 import Button from "../Button.jsx";
 import { AppContext } from "../../context/AppContext.jsx";
@@ -37,29 +37,29 @@ export default function CreateEvent() {
   const [coverFile, setCoverFile] = useState(null);
   const [errors, setErrors] = useState({});
   const [contacts, setContacts] = useState([]);
+  const [invitedUsers, setInvitedUsers] = useState([]);
   const [description, setDescription] = useState("");
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
-
+  const inviteRef = useRef(null);
   const reoccurringRef = useRef(null);
   const categoryRef = useRef(null);
   const [isReoccurringOpen, setIsReoccurringOpen] = useState(false);
-  const [selectedReoccurringOption, setSelectedReoccurringOption] =
-    useState(false);
+  const [selectedReoccurringOption, setSelectedReoccurringOption] = useState(false);
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [coverPreview, setCoverPreview] = useState(null);
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (
-        reoccurringRef.current &&
-        !reoccurringRef.current.contains(event.target)
-      ) {
+      if (reoccurringRef.current && !reoccurringRef.current.contains(event.target)) {
         setIsReoccurringOpen(false);
       }
       if (categoryRef.current && !categoryRef.current.contains(event.target)) {
         setIsCategoryOpen(false);
+      }
+      if (inviteRef.current && !inviteRef.current.contains(event.target)) {
+        inviteRef.current.removeAttribute('open');
       }
     }
 
@@ -67,7 +67,7 @@ export default function CreateEvent() {
     return () => {
       window.removeEventListener("click", handleClickOutside);
     };
-  }, [reoccurringRef, categoryRef]);
+  }, [reoccurringRef, categoryRef, inviteRef]);
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -99,6 +99,11 @@ export default function CreateEvent() {
     }
   };
 
+  const handleInviteUser = (userHandle) => {
+    setInvitedUsers((prevUsers) => [...prevUsers, userHandle]);
+    alert(`${userHandle} was successfully added to the invite list.`);
+  };
+
   const recurrenceOptions = [
     { value: "never", label: "Never" },
     { value: "weekly", label: "Weekly" },
@@ -128,16 +133,7 @@ export default function CreateEvent() {
   };
 
   const createEvent = async () => {
-    const {
-      title,
-      description,
-      location,
-      startDate,
-      startTime,
-      endDate,
-      endTime,
-      category,
-    } = event;
+    const { title, description, location, startDate, startTime, endDate, endTime, category } = event;
 
     const validationErrors = {
       title: validateTitle(title),
@@ -167,11 +163,18 @@ export default function CreateEvent() {
         coverURL = getDefaultCoverByCategory(category);
       }
 
-      const newEvent = await addEvent({
-        ...event,
-        creator: userData.handle,
-        cover: coverURL,
-      });
+      const newEvent = await addEvent(
+        {
+          ...event,
+          creator: userData.handle,
+          cover: coverURL,
+        },
+        invitedUsers
+      );
+
+      for (const userHandle of invitedUsers) {
+        await inviteUser(newEvent.id, userData.handle, userHandle);
+      }
 
       setEvent({
         title: "",
@@ -186,6 +189,7 @@ export default function CreateEvent() {
         category: "Entertainment",
       });
       setCoverFile(null);
+      setInvitedUsers([]);
 
       navigate(`/events/${newEvent.id}`);
     } catch (error) {
@@ -207,24 +211,19 @@ export default function CreateEvent() {
           { label: "Location", key: "location", type: "text" },
         ].map(({ label, key, type }) => (
           <div key={key} className="mb-4 px-2 w-full sm:w-1/2">
-            <label
-              htmlFor={`input-${key}`}
-              className="block text-sm font-medium"
-            >
+            <label htmlFor={`input-${key}`} className="block text-sm font-medium">
               {label} <span className="text-red-500">*</span>:
             </label>
-            <div className=" mt-1">
+            <div className="mt-1">
               <input
                 type={type}
                 value={event[key]}
                 onChange={(e) => updateEvent(e.target.value, key)}
                 name={`input-${key}`}
                 id={`input-${key}`}
-                className="shadow-sm  block w-full sm:text-sm rounded-md"
+                className="shadow-sm block w-full sm:text-sm rounded-md"
               />
-              {errors[key] && (
-                <div className="text-red-500 text-sm">{errors[key]}</div>
-              )}
+              {errors[key] && <div className="text-red-500 text-sm">{errors[key]}</div>}
             </div>
           </div>
         ))}
@@ -238,73 +237,62 @@ export default function CreateEvent() {
           { label: "End Time", key: "endTime", type: "time" },
         ].map(({ label, key, type }) => (
           <div key={key} className="mb-4 px-2 w-full sm:w-1/2">
-            <label
-              htmlFor={`input-${key}`}
-              className="block text-sm font-medium"
-            >
+            <label htmlFor={`input-${key}`} className="block text-sm font-medium">
               {label} <span className="text-red-500">*</span>:
             </label>
-            <div className=" mt-1">
+            <div className="mt-1">
               <input
                 type={type}
                 value={event[key]}
                 onChange={(e) => updateEvent(e.target.value, key)}
                 name={`input-${key}`}
                 id={`input-${key}`}
-                className="shadow-sm  block w-full sm:text-sm rounded-md"
+                className="shadow-sm block w-full sm:text-sm rounded-md"
               />
-              {errors[key] && (
-                <div className="text-red-500 text-sm">{errors[key]}</div>
-              )}
+              {errors[key] && <div className="text-red-500 text-sm">{errors[key]}</div>}
             </div>
           </div>
         ))}
       </div>
 
       <div className="mb-4">
-        <label
-          htmlFor="input-description"
-          className="block text-sm font-medium "
-        >
+        <label htmlFor="input-description" className="block text-sm font-medium">
           Description:
         </label>
         <div className="mt-1">
-          <textarea className="textarea textarea-bordered textarea-sm w-full"></textarea>
-
-          {errors.description && (
-            <div className="text-red-500 text-sm">{errors.description}</div>
-          )}
+          <textarea
+            className="textarea textarea-bordered textarea-sm w-full"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          ></textarea>
+          {errors.description && <div className="text-red-500 text-sm">{errors.description}</div>}
         </div>
       </div>
+
       <div className="mb-4">
-        <label className="block text-sm font-medium ">Public Event:</label>
+        <label className="block text-sm font-medium">Public Event:</label>
         <div className="mt-1">
           <input
             type="checkbox"
             checked={event.isPublic}
             onChange={(e) => updateEvent(e.target.checked, "isPublic")}
-            className="h-4 w-4   rounded"
+            className="h-4 w-4 rounded"
           />
         </div>
       </div>
 
       <div className="mb-4" ref={reoccurringRef}>
-        <label
-          htmlFor="reoccurring-option"
-          className="block text-sm font-medium"
-        >
+        <label htmlFor="reoccurring-option" className="block text-sm font-medium">
           Reoccurring:
         </label>
         <div className="mt-1 relative">
           <button
             type="button"
-            className="w-full rounded-md shadow-sm pl-3 pr-10 py-2 text-left   sm:text-sm"
+            className="w-full rounded-md shadow-sm pl-3 pr-10 py-2 text-left sm:text-sm"
             onClick={() => setIsReoccurringOpen(!isReoccurringOpen)}
           >
             <span className="block truncate">
-              {selectedReoccurringOption
-                ? selectedReoccurringOption.label
-                : "Select Occurrence"}
+              {selectedReoccurringOption ? selectedReoccurringOption.label : "Select Occurrence"}
             </span>
             <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
               <ArrowDown />
@@ -331,7 +319,7 @@ export default function CreateEvent() {
       </div>
 
       <div className="mb-4 relative" ref={categoryRef}>
-        <label htmlFor="category" className="block text-sm font-medium ">
+        <label htmlFor="category" className="block text-sm font-medium">
           Category:
         </label>
         <div className="mt-1 relative">
@@ -342,9 +330,7 @@ export default function CreateEvent() {
             onClick={() => setIsCategoryOpen(!isCategoryOpen)}
           >
             <span className="block truncate">
-              {selectedCategoryOption
-                ? selectedCategoryOption.label
-                : "Select Category"}
+              {selectedCategoryOption ? selectedCategoryOption.label : "Select Category"}
             </span>
             <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
               <ArrowDown />
@@ -372,11 +358,7 @@ export default function CreateEvent() {
 
       <div>
         {coverPreview && (
-          <img
-            src={coverPreview}
-            alt="Cover Preview"
-            className="w-96 h-64 object-cover rounded mb-2"
-          />
+          <img src={coverPreview} alt="Cover Preview" className="w-96 h-64 object-cover rounded mb-2" />
         )}
       </div>
 
@@ -384,25 +366,26 @@ export default function CreateEvent() {
         <Button className="font-bold py-2 px-4 rounded" onClick={createEvent}>
           Create
         </Button>
-        <Button
-          onClick={() => document.getElementById("cover-upload").click()}
-          className="font-bold py-2 px-4 rounded"
-        >
+        <Button onClick={() => document.getElementById("cover-upload").click()} className="font-bold py-2 px-4 rounded">
           Upload Cover
         </Button>
-        <Button
-          className="font-bold py-2 px-4 rounded"
-          onClick={() => console.log("Invite user clicked")}
-        >
-          Invite Contact
-        </Button>
-        <input
-          type="file"
-          id="cover-upload"
-          style={{ display: "none" }}
-          accept="image/*"
-          onChange={handleFileChange}
-        />
+        <details className="dropdown" ref={inviteRef}>
+          <summary className="font-bold py-2 px-4 rounded cursor-pointer">Invite Contact</summary>
+          <div className="max-h-48 overflow-y-auto mt-2">
+            <ul className="space-y-2">
+              {contacts.length === 0 ? (
+                <li className="p-2">No contacts found.</li>
+              ) : (
+                contacts.map((contact) => (
+                  <li key={contact} className="p-2 hover:bg-gray-200 cursor-pointer">
+                    <a onClick={() => handleInviteUser(contact)}>{contact}</a>
+                  </li>
+                ))
+              )}
+            </ul>
+          </div>
+        </details>
+        <input type="file" id="cover-upload" style={{ display: "none" }} accept="image/*" onChange={handleFileChange} />
       </div>
     </div>
   );
