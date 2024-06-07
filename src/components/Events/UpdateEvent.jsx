@@ -6,6 +6,7 @@ import Button from '../Button.jsx';
 import { GoBackArrow, DeleteEvent } from '../../common/helpers/icons.jsx';
 import { AppContext } from '../../context/AppContext.jsx';
 import { uploadCover } from '../../services/upload.service.js';
+import './styles.css'; // Import your CSS file here
 
 export default function UpdateEvent() {
   const { eventId } = useParams();
@@ -171,7 +172,7 @@ export default function UpdateEvent() {
         <div className="flex items-center space-x-2">
           <details className="dropdown" ref={inviteRef}>
             <summary className="m-1 btn btn-secondary">Invite</summary>
-            <div className="max-h-48 overflow-y-auto mt-2">
+            <div className="dropdown-content max-h-48 overflow-y-auto mt-2">
               <ul className="space-y-2">
                 {contacts.length === 0 ? (
                   <li className="p-2">No contacts found.</li>
@@ -187,7 +188,7 @@ export default function UpdateEvent() {
           </details>
           <details className="dropdown" ref={uninviteRef}>
             <summary className="m-1 btn btn-secondary">Uninvite</summary>
-            <div className="max-h-48 overflow-y-auto mt-2">
+            <div className="dropdown-content max-h-48 overflow-y-auto mt-2">
               <ul className="space-y-2">
                 {Object.keys(event.peopleGoing || {}).filter(handle => handle !== event.creator).length === 0 ? (
                   <li className="p-2">No participants to uninvite.</li>

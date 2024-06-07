@@ -1,9 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useRef } from 'react';
 import { getEventById } from '../../services/event.service.js';
 import { AppContext } from '../../context/AppContext.jsx';
 import { GoBackArrow, Edit } from '../../common/helpers/icons.jsx';
 import { EVENT_COVER_BY_DEFAULT } from '../../common/constants.js';
+import './styles.css'; // Import your CSS file here
 
 export default function SingleEventView() {
   const { eventId } = useParams();
@@ -12,6 +13,7 @@ export default function SingleEventView() {
   const [error, setError] = useState(null);
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
+  const participantsRef = useRef(null);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -27,6 +29,19 @@ export default function SingleEventView() {
 
     fetchEvent();
   }, [eventId]);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (participantsRef.current && !participantsRef.current.contains(event.target)) {
+        participantsRef.current.removeAttribute("open");
+      }
+    }
+
+    window.addEventListener("click", handleClickOutside);
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, [participantsRef]);
 
   if (loading) return <div className="text-center mt-10">Loading...</div>;
   if (error) return <div className="text-center text-red-500 mt-10">{error}</div>;
@@ -64,10 +79,10 @@ export default function SingleEventView() {
       <div className="mb-4">
         <span className="font-semibold">Description:</span> {event.description}
       </div>
-      <div className="mb-4">
+      <div className="mb-4 categories-dropdown" ref={participantsRef}>
         <details>
           <summary className="cursor-pointer text-lg font-semibold">Participants</summary>
-          <div className="max-h-48 overflow-y-auto mt-2">
+          <div className="dropdown-menu-up max-h-48 overflow-y-auto mt-2">
             <ul className="space-y-2">
               {event.peopleGoing ? Object.entries(event.peopleGoing).map(([participant, participantData], index) => (
                 <li key={participant} className={`flex items-center space-x-3 ${index % 3 === 0 && 'mt-4'}`}>

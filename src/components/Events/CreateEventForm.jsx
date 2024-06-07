@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
-import { addEvent, getUserContacts, inviteUser, getContactLists, getContactListById, inviteList } from "../../services/event.service.js";
+import { addEvent, getUserContacts, inviteUser, getContactLists, getContactListById } from "../../services/event.service.js";
 import { uploadCover } from "../../services/upload.service.js";
 import Button from "../Button.jsx";
 import { AppContext } from "../../context/AppContext.jsx";
@@ -20,6 +20,7 @@ import {
   EVENT_CULTURE_AND_SCIENCE_COVER,
   EVENT_COVER_BY_DEFAULT,
 } from "../../common/constants.js";
+import './styles.css'
 
 export default function CreateEvent() {
   const [event, setEvent] = useState({
@@ -38,7 +39,7 @@ export default function CreateEvent() {
   const [errors, setErrors] = useState({});
   const [contacts, setContacts] = useState([]);
   const [contactLists, setContactLists] = useState([]);
-  const [invitedUsers, setInvitedUsers] = useState([]); // Ensure this is initialized as an array
+  const [invitedUsers, setInvitedUsers] = useState([]);
   const [description, setDescription] = useState("");
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
@@ -397,7 +398,7 @@ export default function CreateEvent() {
         </Button>
         <details className="dropdown" ref={inviteRef}>
           <summary className="font-bold py-2 px-4 rounded cursor-pointer bg-gray-700 text-white">Invite Contact</summary>
-          <div className="max-h-48 overflow-y-auto mt-2">
+          <div className="dropdown-menu-up max-h-48 overflow-y-auto mt-2">
             <ul className="space-y-2">
               {contacts.length === 0 ? (
                 <li className="p-2">No contacts found.</li>
@@ -413,7 +414,7 @@ export default function CreateEvent() {
         </details>
         <details className="dropdown" ref={inviteListRef}>
           <summary className="font-bold py-2 px-4 rounded cursor-pointer bg-gray-700 text-white">Invite List</summary>
-          <div className="max-h-48 overflow-y-auto mt-2">
+          <div className="dropdown-menu-up max-h-48 overflow-y-auto mt-2">
             <ul className="space-y-2">
               {contactLists.length === 0 ? (
                 <li className="p-2">No contact lists found.</li>

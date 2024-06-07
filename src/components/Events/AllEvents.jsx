@@ -8,6 +8,7 @@ import {
 import { AppContext } from "../../context/AppContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
+import "./styles.css"; // Import your CSS file
 
 export default function AllEvents() {
   const [events, setEvents] = useState([]);
@@ -118,9 +119,9 @@ export default function AllEvents() {
             Private Events
           </button>
         </div>
-        <details className="dropdown" ref={categoriesRef}>
+        <details className="dropdown categories-dropdown" ref={categoriesRef}>
           <summary className="btn btn-secondary">Categories</summary>
-          <div className="max-h-48 overflow-y-auto mt-2">
+          <div className="dropdown-menu">
             <ul className="space-y-2">
               {categories.map((category) => (
                 <li key={category} className="p-2 hover:bg-gray-200 cursor-pointer">
@@ -159,7 +160,7 @@ export default function AllEvents() {
                   <p>Public: {event.isPublic ? "Yes" : "No"}</p>
                   <p>Reoccurring: {event.isReoccurring}</p>
                   <p>Creator: {event.creator}</p>
-                  <p>Category: {event.category}</p>
+                  <p className="col-span-3 text-right">Category: {event.category}</p>
                 </div>
                 <div className="card-actions flex space-x-2">
                   <button
