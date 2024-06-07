@@ -160,7 +160,7 @@ export default function AllEvents() {
                   <p>Public: {event.isPublic ? "Yes" : "No"}</p>
                   <p>Reoccurring: {event.isReoccurring}</p>
                   <p>Creator: {event.creator}</p>
-                  <p className="col-span-3 text-right">Category: {event.category}</p>
+                  <p>Category: {event.category}</p>
                 </div>
                 <div className="card-actions flex space-x-2">
                   <button

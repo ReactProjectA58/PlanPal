@@ -48,7 +48,8 @@ export default function CreateEvent() {
   const reoccurringRef = useRef(null);
   const categoryRef = useRef(null);
   const [isReoccurringOpen, setIsReoccurringOpen] = useState(false);
-  const [selectedReoccurringOption, setSelectedReoccurringOption] = useState(false);
+  const [selectedReoccurringOption, setSelectedReoccurringOption] = useState(null);
+  const [finalDate, setFinalDate] = useState("");
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [coverPreview, setCoverPreview] = useState(null);
@@ -335,6 +336,9 @@ export default function CreateEvent() {
                     setSelectedReoccurringOption(option);
                     setIsReoccurringOpen(false);
                     updateEvent(option.value, "isReoccurring");
+                    if (["weekly", "monthly", "yearly"].includes(option.value)) {
+                      setFinalDate(""); // Reset finalDate if it's one of the recurring options
+                    }
                   }}
                 >
                   <span className="block truncate">{option.label}</span>
@@ -343,6 +347,23 @@ export default function CreateEvent() {
             </div>
           )}
         </div>
+        {(selectedReoccurringOption && ["weekly", "monthly", "yearly"].includes(selectedReoccurringOption.value)) && (
+          <div className="mt-4">
+            <label htmlFor="final-date" className="block text-sm font-medium">
+              Final Date:
+            </label>
+            <input
+              type="date"
+              id="final-date"
+              className="mt-1 block w-full rounded-md shadow-sm sm:text-sm"
+              value={finalDate}
+              onChange={(e) => {
+                setFinalDate(e.target.value);
+                updateEvent(e.target.value, "finalDate");
+              }}
+            />
+          </div>
+        )}
       </div>
 
       <div className="mb-4 relative" ref={categoryRef}>
