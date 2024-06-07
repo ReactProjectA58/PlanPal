@@ -8,7 +8,7 @@ import {
 export default function Footer() {
   return (
     <footer className="bg-primary-800 text-white  ">
-      <footer className="footer bg-base-300 text-base-content  bottom-0 p-3 flex justify-around">
+      <footer className="footer bg-base-300 text-base-content  bottom-0 p-3 flex justify-around backdrop-blur-lg bg-white/10">
         <nav>
           <h6 className=" font-semibold text-gray-600 uppercase ">Team 03</h6>
           <div className="grid grid-flow-col gap-4 mt-1">

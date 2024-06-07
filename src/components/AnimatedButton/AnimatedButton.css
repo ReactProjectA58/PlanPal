@@ -1,0 +1,85 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Montserrat", sans-serif;
+}
+.btn-container {
+  display: flex;
+  justify-content: center;
+}
+.btn {
+  position: relative;
+  display: inline-block;
+  padding: 12px 36px;
+  margin: 10px;
+  color: #fff;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  box-sizing: border-box;
+}
+.btn--ripple {
+  background: linear-gradient(90deg, #c9aaaa, #9d87ff);
+  overflow: hidden;
+}
+.btn--ripple span {
+  position: absolute;
+  background: #fff;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 50%;
+  animation: rippleAnimation 1s linear infinite;
+}
+@keyframes rippleAnimation {
+  0% {
+    width: 0px;
+    height: 0px;
+    opacity: 0.5;
+  }
+  100% {
+    width: 500px;
+    height: 500px;
+    opacity: 0;
+  }
+}
+.btn--hoverEffect2 {
+  display: inline-block;
+  z-index: 1;
+  color: #ff3c83;
+}
+.btn--hoverEffect2:hover {
+  color: #fff;
+}
+.btn--hoverEffect2::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  right: 50%;
+  bottom: 0;
+  opacity: 0;
+  transition: 0.5s all ease;
+  box-sizing: border-box;
+}
+.btn--hoverEffect2:hover::before {
+  border-radius: 4px;
+  transition: 0.5s all ease;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    /* rgba(131, 58, 180, 1),
+    rgba(253, 29, 29, 1),
+    rgba(252, 176, 69, 1) */
+      #b5c3d6,
+    #9a9ab9,
+    #d4b8b5
+  );
+  opacity: 1;
+  z-index: -1;
+}

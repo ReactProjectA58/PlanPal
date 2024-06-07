@@ -5,6 +5,8 @@ import { logoutUser } from "../services/auth.service";
 import { DARK_THEME, LIGHT_THEME } from "../common/constants";
 import { Moon, Sun } from "../common/helpers/icons";
 import SideBar from "./Sidebar/Sidebar";
+import AnimatedButton from "./AnimatedButton/AnimatedButton";
+import HomeButton from "./AnimatedButton/HomeButton";
 
 export default function Header() {
   const { user, userData, setAppState } = useContext(AppContext);
@@ -30,15 +32,16 @@ export default function Header() {
 
   return (
     <div
-      className={`navbar bg-base-300 min-w-full flex justify-between items-center ${
-        location.pathname === "/" ? "fixed top-0 left-0 w-full z-50" : ""
+      className={`navbar bg-base-300 min-w-full flex justify-between items-center backdrop-blur-lg bg-white/10 z-50 ${
+        location.pathname === "/"
+          ? "fixed top-0 left-0 w-full z-50 backdrop-blur-lg bg-white/10"
+          : ""
       }`}
     >
       <div className="flex items-center">
         {user && <SideBar />}
-        <NavLink to="/" className="btn btn-ghost normal-case text-xl">
-          Home
-        </NavLink>
+
+        <HomeButton />
       </div>
 
       <div className="flex items-center">
@@ -59,18 +62,7 @@ export default function Header() {
           </>
         ) : (
           <>
-            <NavLink
-              to="/login"
-              className="btn btn-ghost normal-case text-xl mr-4"
-            >
-              Login
-            </NavLink>
-            <NavLink
-              to="/register"
-              className="btn btn-ghost normal-case text-xl"
-            >
-              Register
-            </NavLink>
+            <AnimatedButton />
           </>
         )}
         <label className="swap swap-rotate ml-4">

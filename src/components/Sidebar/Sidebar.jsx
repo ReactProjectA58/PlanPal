@@ -2,8 +2,8 @@ import { Burger, CancelBurger } from "../../common/helpers/icons";
 
 export default function SideBar() {
   return (
-    <div className="drawer z-50 w-max">
-      <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+    <div className="drawer w-max z-50">
+      <input id="my-drawer" type="checkbox" className="drawer-toggle " />
 
       <label
         className="btn btn-circle swap swap-rotate z-10 relative  "
@@ -24,9 +24,9 @@ export default function SideBar() {
           <br />
           <br />
           <br />
-          <li>
+          {/* <li>
             <a href="/dashboard">Dashboard</a>
-          </li>
+          </li> */}
           <li>
             <a href="/events">Events</a>
           </li>
