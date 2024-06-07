@@ -268,11 +268,11 @@ export default function UpdateEvent() {
           onChange={(e) => updateEventData(e.target.value, "isReoccurring")}
           className="border rounded p-2"
         >
-          <option value="Weekly">Weekly</option>
-          <option value="Monthly">Monthly</option>
-          <option value="Yearly">Yearly</option>
-          <option value="Indefinitely">Indefinitely</option>
-          <option value="Never">Never</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+          <option value="yearly">Yearly</option>
+          <option value="indefinitely">Indefinitely</option>
+          <option value="never">Never</option>
         </select>
       </div>
       <div className="flex items-center space-x-2 mb-4">

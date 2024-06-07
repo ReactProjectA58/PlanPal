@@ -3,12 +3,21 @@ import {
   add,
   sub,
   startOfDay,
+  endOfDay,
   setHours,
   getHours,
   getMinutes,
   parseISO,
   differenceInMinutes,
-  endOfDay,
+  isSameDay,
+  isSameMonth,
+  isSameYear,
+  addWeeks,
+  addMonths,
+  addYears,
+  addMinutes,
+  startOfMonth,
+  startOfYear
 } from "date-fns";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
@@ -17,6 +26,8 @@ import { useNavigate } from "react-router-dom";
 function DayCalendar({ events, selectedDate, onDateChange }) {
   const [currentTime, setCurrentTime] = useState(new Date());
   const navigate = useNavigate();
+
+  const GAP_SIZE = 0.5; 
 
   function previousDay() {
     const newSelectedDate = sub(selectedDate, { days: 1 });
@@ -45,51 +56,97 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
     format(selectedDate, "yyyy-MM-dd") === format(currentTime, "yyyy-MM-dd");
   const currentTimePosition = (currentHour + currentMinute / 60) * 3;
 
+  const handleRecurringEvents = () => {
+    const recurringEvents = [];
+
+    events.forEach((event) => {
+      if (event.isReoccurring) {
+        let eventStart = parseISO(`${event.startDate}T${event.startTime}`);
+        let eventEnd = parseISO(`${event.endDate}T${event.endTime}`);
+        const eventDuration = differenceInMinutes(eventEnd, eventStart);
+
+        switch (event.isReoccurring) {
+          case "weekly":
+            while (eventStart < startOfDay(selectedDate)) {
+              eventStart = addWeeks(eventStart, 1);
+              eventEnd = addMinutes(eventStart, eventDuration);
+            }
+            if (isSameDay(eventStart, selectedDate)) {
+              recurringEvents.push({
+                ...event,
+                startDate: format(eventStart, "yyyy-MM-dd"),
+                endDate: format(eventEnd, "yyyy-MM-dd"),
+              });
+            }
+            break;
+          case "monthly":
+            while (eventStart < startOfDay(selectedDate)) {
+              eventStart = addMonths(eventStart, 1);
+              eventEnd = addMinutes(eventStart, eventDuration);
+            }
+            if (isSameDay(eventStart, selectedDate)) {
+              recurringEvents.push({
+                ...event,
+                startDate: format(eventStart, "yyyy-MM-dd"),
+                endDate: format(eventEnd, "yyyy-MM-dd"),
+              });
+            }
+            break;
+          case "yearly":
+            while (eventStart < startOfDay(selectedDate)) {
+              eventStart = addYears(eventStart, 1);
+              eventEnd = addMinutes(eventStart, eventDuration);
+            }
+            if (isSameDay(eventStart, selectedDate)) {
+              recurringEvents.push({
+                ...event,
+                startDate: format(eventStart, "yyyy-MM-dd"),
+                endDate: format(eventEnd, "yyyy-MM-dd"),
+              });
+            }
+            break;
+          default:
+            break;
+        }
+      }
+    });
+
+    return recurringEvents;
+  };
+
+  const recurringEventsForSelectedDay = handleRecurringEvents();
+
   const eventsForSelectedDay = events.filter((event) => {
     const eventStart = parseISO(`${event.startDate}T${event.startTime}`);
     const eventEnd = parseISO(`${event.endDate}T${event.endTime}`);
     return (
-      format(eventStart, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd") ||
-      format(eventEnd, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd") ||
+      (format(eventStart, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd")) ||
+      (format(eventEnd, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd")) ||
       (eventStart < startOfDay(selectedDate) && eventEnd > endOfDay(selectedDate))
     );
   });
 
-  const groupOverlappingEvents = (events) => {
-    const sortedEvents = events.sort(
-      (a, b) => parseISO(`${a.startDate}T${a.startTime}`) - parseISO(`${b.startDate}T${b.startTime}`)
-    );
+  const allEventsForSelectedDay = [
+    ...eventsForSelectedDay.filter((event) => {
+      return !recurringEventsForSelectedDay.some((recurringEvent) => {
+        return recurringEvent.eventId === event.eventId;
+      });
+    }),
+    ...recurringEventsForSelectedDay,
+  ];
 
-    const groups = [];
-    let currentGroup = [];
-
-    sortedEvents.forEach((event, index) => {
-      const eventStart = parseISO(`${event.startDate}T${event.startTime}`);
-      if (currentGroup.length === 0) {
-        currentGroup.push(event);
-      } else {
-        const lastEventInGroup = currentGroup[currentGroup.length - 1];
-        const lastEventEnd = parseISO(`${lastEventInGroup.endDate}T${lastEventInGroup.endTime}`);
-
-        if (eventStart < lastEventEnd) {
-          currentGroup.push(event);
-        } else {
-          groups.push(currentGroup);
-          currentGroup = [event];
-        }
-      }
-
-      if (index === sortedEvents.length - 1) {
-        groups.push(currentGroup);
-      }
-    });
-
-    return groups;
+  const getCategoryColor = (category) => {
+    switch (category) {
+      case "Sports":
+        return "bg-green-300 bg-opacity-20";
+      case "Culture & Science":
+        return "bg-blue-300 bg-opacity-20";
+      case "Entertainment":
+        return "bg-yellow-300 bg-opacity-20";
+      default:
+        return "bg-gray-300 bg-opacity-20";
+    }
   };
-
-  const eventGroups = groupOverlappingEvents(eventsForSelectedDay);
-
-  const gap = 2; 
 
   return (
     <div className="pt-16 w-full">
@@ -152,51 +209,45 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
                 </div>
               </div>
             ))}
-            {eventGroups.map((group) => {
-              const groupLength = group.length;
-              const eventWidth = (100 - gap * (groupLength - 1)) / groupLength;
+            {allEventsForSelectedDay.map((event, index) => {
+              const eventStart = parseISO(`${event.startDate}T${event.startTime}`);
+              const eventEnd = parseISO(`${event.endDate}T${event.endTime}`);
 
-              return group.map((event, index) => {
-                const eventStart = parseISO(
-                  `${event.startDate}T${event.startTime}`
-                );
+              const eventStartHour = eventStart < startOfDay(selectedDate) ? 0 : getHours(eventStart);
+              const eventStartMinute = eventStart < startOfDay(selectedDate) ? 0 : getMinutes(eventStart);
+              const startTop = (eventStartHour + eventStartMinute / 60) * 3;
 
-                const dayStart = startOfDay(selectedDate);
-                const dayEnd = endOfDay(selectedDate);
+              const eventEndHour = eventEnd > endOfDay(selectedDate) ? 24 : getHours(eventEnd);
+              const eventEndMinute = eventEnd > endOfDay(selectedDate) ? 0 : getMinutes(eventEnd);
+              const eventHeight = (eventEndHour + eventEndMinute / 60) * 3 - startTop;
 
-                const actualStart =
-                  eventStart < dayStart ? dayStart : eventStart;
-                const actualEnd = parseISO(`${event.endDate}T${event.endTime}`) > dayEnd ? dayEnd : parseISO(`${event.endDate}T${event.endTime}`);
+              const eventLeft = index * ((100 / allEventsForSelectedDay.length) + GAP_SIZE);
+              const eventWidth = (100 / allEventsForSelectedDay.length) - GAP_SIZE;
 
-                const eventStartHour = getHours(actualStart);
-                const eventStartMinute = getMinutes(actualStart);
-                const startTop = (eventStartHour + eventStartMinute / 60) * 3;
-                const eventHeight =
-                  (differenceInMinutes(actualEnd, actualStart) / 60) * 3;
+              const categoryColor = getCategoryColor(event.category);
 
-                const eventLeft = index * (eventWidth + gap);
-
-                return (
-                  <div
-                    key={event.id}
-                    className="absolute pl-16 pr-4 bg-blue-300 bg-opacity-20 text-black text-xs rounded-lg shadow-lg cursor-pointer"
-                    style={{
-                      top: `${startTop}rem`,
-                      height: `${eventHeight}rem`,
-                      width: `${eventWidth}%`,
-                      left: `${eventLeft}%`,
-                    }}
-                    onClick={() => navigate(`/events/${event.id}`)}
-                  >
-                    <div className="px-2 py-1">
-                      <div className="font-semibold">{event.title}</div>
-                      <div>
-                        {event.startTime} - {event.endTime}
-                      </div>
+              return (
+                <div
+                  key={event.id}
+                  className={`absolute pl-16 pr-4 text-black text-xs rounded-lg shadow-lg cursor-pointer ${categoryColor}`}
+                  style={{
+                    top: `${startTop}rem`,
+                    height: `${eventHeight}rem`,
+                    width: `${eventWidth}%`,
+                    left: `${eventLeft}%`,
+                    marginLeft: `${GAP_SIZE / 2}rem`,
+                    marginRight: `${GAP_SIZE / 2}rem`,
+                  }}
+                  onClick={() => navigate(`/events/${event.id}`)}
+                >
+                  <div className="px-2 py-1">
+                    <div className="font-semibold">{event.title}</div>
+                    <div>
+                      {event.startTime} - {event.endTime}
                     </div>
                   </div>
-                );
-              });
+                </div>
+              );
             })}
             {isToday && (
               <div
