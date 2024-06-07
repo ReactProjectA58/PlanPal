@@ -11,7 +11,7 @@ import {
   startOfToday,
 } from 'date-fns';
 
-export default function YearCalendar({ onDateClick }) {
+export default function YearCalendar({ onDateClick, events }) {
   const today = startOfToday();
   const [currentYear, setCurrentYear] = useState(format(today, 'yyyy'));
 
@@ -23,6 +23,8 @@ export default function YearCalendar({ onDateClick }) {
     const firstDayOfWeek = (getDay(startOfMonth(monthStart)) + 6) % 7;
     const monthDays = Array.from({ length: daysInMonth + firstDayOfWeek }, (_, i) => {
       const day = add(startOfMonth(monthStart), { days: i - firstDayOfWeek });
+      const eventsForDay = events.filter(event => format(event.startDate, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd'));
+      const hasEvents = eventsForDay.length > 0;
       return (
         <div
           key={format(day, 'yyyy-MM-dd')}
@@ -30,6 +32,7 @@ export default function YearCalendar({ onDateClick }) {
             i >= firstDayOfWeek ? 'text-gray-700 cursor-pointer' : 'bg-transparent'
           }`}
           onClick={() => i >= firstDayOfWeek && onDateClick(day)}
+          style={hasEvents ? { backgroundColor: 'red', color: 'white', borderRadius: '50%', width: '32px', height: '32px' } : {}}
         >
           {i >= firstDayOfWeek ? format(day, 'd') : ''}
         </div>
@@ -119,4 +122,5 @@ export default function YearCalendar({ onDateClick }) {
 
 YearCalendar.propTypes = {
   onDateClick: PropTypes.func.isRequired,
+  events: PropTypes.array.isRequired,
 };
