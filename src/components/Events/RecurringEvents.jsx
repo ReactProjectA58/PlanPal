@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   addWeeks,
   addMonths,
@@ -6,9 +5,6 @@ import {
   addMinutes,
   parseISO,
   differenceInMinutes,
-  isSameDay,
-  isSameMonth,
-  isSameYear,
   startOfDay,
   startOfMonth,
   startOfYear,
@@ -25,14 +21,20 @@ const RecurringEvents = ({ events, selectedDate }) => {
       let eventStart = parseISO(`${event.startDate}T${event.startTime}`);
       let eventEnd = parseISO(`${event.endDate}T${event.endTime}`);
       const eventDuration = differenceInMinutes(eventEnd, eventStart);
+      const finalDate = event.finalDate ? parseISO(event.finalDate) : null;
 
       switch (event.isReoccurring) {
         case "weekly":
           while (eventStart < startOfWeek(selectedDate)) {
             eventStart = addWeeks(eventStart, 1);
             eventEnd = addMinutes(eventStart, eventDuration);
+            if (finalDate && eventStart > finalDate) break;
           }
-          if (eventStart <= endOfDay(selectedDate) && eventEnd >= startOfDay(selectedDate)) {
+          if (
+            eventStart <= endOfDay(selectedDate) &&
+            eventEnd >= startOfDay(selectedDate) &&
+            (!finalDate || eventStart <= finalDate)
+          ) {
             recurringEvents.push({
               ...event,
               startDate: eventStart.toISOString().split("T")[0],
@@ -44,8 +46,13 @@ const RecurringEvents = ({ events, selectedDate }) => {
           while (eventStart < startOfMonth(selectedDate)) {
             eventStart = addMonths(eventStart, 1);
             eventEnd = addMinutes(eventStart, eventDuration);
+            if (finalDate && eventStart > finalDate) break;
           }
-          if (eventStart <= endOfDay(selectedDate) && eventEnd >= startOfDay(selectedDate)) {
+          if (
+            eventStart <= endOfDay(selectedDate) &&
+            eventEnd >= startOfDay(selectedDate) &&
+            (!finalDate || eventStart <= finalDate)
+          ) {
             recurringEvents.push({
               ...event,
               startDate: eventStart.toISOString().split("T")[0],
@@ -57,8 +64,13 @@ const RecurringEvents = ({ events, selectedDate }) => {
           while (eventStart < startOfYear(selectedDate)) {
             eventStart = addYears(eventStart, 1);
             eventEnd = addMinutes(eventStart, eventDuration);
+            if (finalDate && eventStart > finalDate) break;
           }
-          if (eventStart <= endOfDay(selectedDate) && eventEnd >= startOfDay(selectedDate)) {
+          if (
+            eventStart <= endOfDay(selectedDate) &&
+            eventEnd >= startOfDay(selectedDate) &&
+            (!finalDate || eventStart <= finalDate)
+          ) {
             recurringEvents.push({
               ...event,
               startDate: eventStart.toISOString().split("T")[0],
