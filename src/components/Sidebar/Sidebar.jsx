@@ -28,13 +28,24 @@ export default function SideBar() {
             <a href="/dashboard">Dashboard</a>
           </li> */}
           <li>
-            <a href="/events">Events</a>
+            <a href="/calendar" className="btn flex justify-start">
+              Calendar
+            </a>
           </li>
           <li>
-            <a href="/contacts">Contacts</a>
+            <a href="/events" className="btn flex justify-start">
+              Events
+            </a>
           </li>
           <li>
-            <a href="/calendar">Calendar</a>
+            <a href="/contacts" className="btn flex justify-start">
+              Contacts
+            </a>
+          </li>
+          <li>
+            <a href="/about" className="btn flex justify-start">
+              About us
+            </a>
           </li>
         </ul>
       </div>

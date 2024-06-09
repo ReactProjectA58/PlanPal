@@ -33,6 +33,13 @@ const ProfileWithLoading = withLoading(Profile);
 const NotFoundWithLoading = withLoading(NotFound);
 const DashboardWithLoading = withLoading(Dashboard);
 const AboutUsWithLoading = withLoading(AboutUs);
+const CalendarWithLoading = withLoading(Calendar);
+const CreateEventWithLoading = withLoading(CreateEventForm);
+const AllEventsWithLoading = withLoading(AllEvents);
+const MyEventsWithLoading = withLoading(MyEvents);
+const PublicEventsWithLoading = withLoading(PublicEvents);
+const PrivateEventsWithLoading = withLoading(PrivateEvents);
+const SingleViewEventWithLoading = withLoading(SingleViewEvent);
 
 function App() {
   const [appState, setAppState] = useState({
@@ -75,14 +82,26 @@ function App() {
                 element={<ContactsDashboardWithLoading />}
               />
               <Route path="/dashboard" element={<DashboardWithLoading />} />
-              <Route path="/create-event" element={<CreateEventForm />} />
-              <Route path="/calendar" element={<Calendar />} />
+              <Route
+                path="/create-event"
+                element={<CreateEventWithLoading />}
+              />
+              <Route path="/calendar" element={<CalendarWithLoading />} />
               <Route path="/update-event/:eventId" element={<UpdateEvent />} />
-              <Route path="/events" element={<AllEvents />} />
-              <Route path="/my-events" element={<MyEvents />} />
-              <Route path="/public-events" element={<PublicEvents />} />
-              <Route path="/private-events" element={<PrivateEvents />} />
-              <Route path="/events/:eventId" element={<SingleViewEvent />} />
+              <Route path="/events" element={<AllEventsWithLoading />} />
+              <Route path="/my-events" element={<MyEventsWithLoading />} />
+              <Route
+                path="/public-events"
+                element={<PublicEventsWithLoading />}
+              />
+              <Route
+                path="/private-events"
+                element={<PrivateEventsWithLoading />}
+              />
+              <Route
+                path="/events/:eventId"
+                element={<SingleViewEventWithLoading />}
+              />
               <Route path="/profile/:handle" element={<ProfileWithLoading />} />
               <Route path="/about" element={<AboutUsWithLoading />} />
               <Route path="*" element={<NotFoundWithLoading />} />

@@ -87,7 +87,7 @@ export default function PublicEvents() {
   return (
     <div className="events-container relative px-4 py-8">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-4xl font-bold text-gray-800">Public Events</h1>
+        <h1 className="text-4xl text-center font-bold ">Public Events</h1>
         <GoBackArrow onClick={() => navigate("/events")} />
       </div>
       <div className="flex flex-col space-y-6 mt-4">
@@ -138,7 +138,7 @@ export default function PublicEvents() {
                   {userData.goingToEvents &&
                   userData.goingToEvents[event.title] ? (
                     <button
-                      className="btn btn-secondary"
+                      className="btn"
                       onClick={() => handleLeaveEvent(event.title)}
                     >
                       Leave Event

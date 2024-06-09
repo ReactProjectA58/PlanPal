@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { logoutUser } from "../services/auth.service";
 import { DARK_THEME, LIGHT_THEME } from "../common/constants";
@@ -14,9 +14,18 @@ export default function Header() {
     localStorage.getItem("theme") ? localStorage.getItem("theme") : LIGHT_THEME
   );
   const location = useLocation();
-
+  const navigate = useNavigate();
   const handleToggle = (e) => {
     e.target.checked ? setTheme(DARK_THEME) : setTheme(LIGHT_THEME);
+  };
+
+  const handleClick = () => {
+    navigate(`/profile/${userData ? userData.handle : ""}`);
+  };
+
+  const logout = async () => {
+    await logoutUser();
+    setAppState({ user: null, userData: null });
   };
 
   useEffect(() => {
@@ -24,11 +33,6 @@ export default function Header() {
     const localTheme = localStorage.getItem("theme");
     document.querySelector("html").setAttribute("data-theme", localTheme);
   }, [theme]);
-
-  const logout = async () => {
-    await logoutUser();
-    setAppState({ user: null, userData: null });
-  };
 
   return (
     <div
@@ -47,18 +51,12 @@ export default function Header() {
       <div className="flex items-center">
         {user ? (
           <>
-            <NavLink
-              to={`/profile/${userData ? userData.handle : ""}`}
-              className="btn btn-ghost normal-case text-xl"
-            >
+            <button className="btn btn-primary" onClick={handleClick}>
               Profile
-            </NavLink>
-            <NavLink
-              onClick={logout}
-              className="btn btn-ghost normal-case text-xl"
-            >
+            </button>
+            <button className="btn btn-secondary" onClick={logout}>
               Logout
-            </NavLink>
+            </button>
           </>
         ) : (
           <>

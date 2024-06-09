@@ -1,0 +1,31 @@
+section.carousel-container {
+  position: relative;
+  height: 10vh;
+  color: white;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-line {
+  display: flex;
+  width: fit-content;
+  position: absolute;
+  will-change: transform;
+}
+
+.carousel-image {
+  --tile-margin: 1vw;
+  flex: none;
+  width: 6vh;
+  height: 6vh;
+  margin: var(--tile-margin);
+  background-size: cover;
+  background-position: 50% 50%;
+  cursor: pointer;
+}
+
+.carousel-image:hover {
+  transform: scale(1.1);
+}

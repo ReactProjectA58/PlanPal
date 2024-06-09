@@ -8,7 +8,7 @@ export default function withLoading(Component) {
     useEffect(() => {
       const timer = setTimeout(() => {
         setLoading(false);
-      }, 600);
+      }, 400);
 
       return () => clearTimeout(timer);
     }, []);

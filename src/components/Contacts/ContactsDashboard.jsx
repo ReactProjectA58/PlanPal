@@ -79,7 +79,7 @@ export default function ContactsDashboard() {
         unsubscribe();
       }
     };
-  }, [userData?.contacts]);
+  }, [userData]);
 
   useEffect(() => {
     let unsubscribe;

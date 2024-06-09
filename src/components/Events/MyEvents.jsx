@@ -39,7 +39,9 @@ export default function MyEvents() {
       return;
     }
 
-    const confirmLeave = window.confirm("Please confirm you want to leave this event.");
+    const confirmLeave = window.confirm(
+      "Please confirm you want to leave this event."
+    );
     if (!confirmLeave) {
       return; // User canceled the action
     }
@@ -67,9 +69,7 @@ export default function MyEvents() {
 
   return (
     <div className="events-container relative px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
-        My Events
-      </h1>
+      <h1 className="text-4xl font-bold mb-8">My Events</h1>
       <div className="absolute top-0 right-0 mt-4 mr-4 z-10">
         <GoBackArrow onClick={() => navigate("/events")} />
       </div>
@@ -93,7 +93,7 @@ export default function MyEvents() {
                 <h2 className="card-title text-xl font-semibold">
                   {event.title}
                 </h2>
-                <p className="text-gray-700 break-words whitespace-normal overflow-hidden max-h-24 text-sm">
+                <p className="text-gray-500 break-words whitespace-normal overflow-hidden max-h-24 text-sm">
                   {event.description}
                 </p>
                 <div className="grid grid-cols-3 gap-4 text-gray-500 text-xs">
@@ -117,7 +117,7 @@ export default function MyEvents() {
                     View more
                   </button>
                   <button
-                    className="btn btn-secondary"
+                    className="btn"
                     onClick={() => handleLeaveEvent(event.title)}
                   >
                     Leave Event

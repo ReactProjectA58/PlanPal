@@ -159,7 +159,7 @@ export default function ContactPanel({
   return (
     <div>
       {/* separate component */}
-      <h1 className="text-3xl rounded-lg shadow-2xl max-w-fit mx-auto my-auto p-4">
+      <h1 className="text-3xl rounded-lg glass max-w-fit mx-auto my-auto p-4 mt-5">
         Contacts Dashboard
       </h1>
       <div className="flex justify-between items-center flex-col md:flex-row p-3">

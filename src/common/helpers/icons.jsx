@@ -1,4 +1,4 @@
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import {
   faAddressCard,
   faBars,
@@ -26,6 +26,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const GithubIcon = () => {
   return <FontAwesomeIcon icon={faGithub} size="2x" />;
+};
+
+export const LinkedInIcon = () => {
+  return <FontAwesomeIcon icon={faLinkedin} size="2x" />;
 };
 
 export const GithubIssues = () => {
@@ -70,32 +74,32 @@ export const Moon = () => {
       icon={faMoon}
       className="swap-off fill-current w-10 h-10"
       style={{ width: "20px", height: "20px" }}
-      />
-    );
-  };
-  
+    />
+  );
+};
+
 export const Sun = () => {
   return (
     <FontAwesomeIcon
-    icon={faSun}
-    className="swap-on fill-current w-10 h-10"
-    style={{ width: "20px", height: "20px" }}
+      icon={faSun}
+      className="swap-on fill-current w-10 h-10"
+      style={{ width: "20px", height: "20px" }}
     />
   );
 };
 
 export const Contacts = () => {
   return <FontAwesomeIcon icon={faChevronLeft} size={"lg"} />;
-};    
+};
 
 export const GoBack = () => {
   return <FontAwesomeIcon icon={faUserGroup} size={"lg"} />;
-};  
-  
+};
+
 // eslint-disable-next-line react/prop-types
 export const GoBackArrow = ({ onClick }) => {
   return (
-    <div onClick={onClick} style={{ cursor: 'pointer', fontSize: '2em' }}>
+    <div onClick={onClick} style={{ cursor: "pointer", fontSize: "2em" }}>
       <FontAwesomeIcon icon={faCircleArrowLeft} />
     </div>
   );
@@ -104,7 +108,7 @@ export const GoBackArrow = ({ onClick }) => {
 // eslint-disable-next-line react/prop-types
 export const Edit = ({ onClick }) => {
   return (
-    <div onClick={onClick} style={{ cursor: 'pointer', fontSize: '2em' }}>
+    <div onClick={onClick} style={{ cursor: "pointer", fontSize: "2em" }}>
       <FontAwesomeIcon icon={faPenToSquare} />
     </div>
   );
@@ -113,21 +117,21 @@ export const Edit = ({ onClick }) => {
 // eslint-disable-next-line react/prop-types
 export const DeleteEvent = ({ onClick }) => {
   return (
-    <div onClick={onClick} style={{ cursor: 'pointer', fontSize: '2em' }}>
+    <div onClick={onClick} style={{ cursor: "pointer", fontSize: "2em" }}>
       <FontAwesomeIcon icon={faTrash} />
     </div>
   );
 };
 
 export const Plus = () => {
-    return (
-      <FontAwesomeIcon
+  return (
+    <FontAwesomeIcon
       className="swap-off fill-current"
       icon={faSquarePlus}
       size={"xl"}
-    />  
-  );  
-};  
+    />
+  );
+};
 
 export const Minus = () => {
   return (
@@ -135,9 +139,9 @@ export const Minus = () => {
       className="swap-on fill-current"
       icon={faSquareMinus}
       size={"xl"}
-    />  
-  );  
-};  
+    />
+  );
+};
 
 export const PlusToggle = () => {
   return (
@@ -145,9 +149,9 @@ export const PlusToggle = () => {
       icon={faPlus}
       className="swap-off fill-current"
       size={"1x"}
-    />  
-  );  
-};  
+    />
+  );
+};
 
 export const MinusToggle = () => {
   return (
@@ -155,9 +159,9 @@ export const MinusToggle = () => {
       icon={faMinus}
       className="swap-on fill-current"
       size={"1x"}
-    />  
-  );  
-};  
+    />
+  );
+};
 
 export const ArrowUp = () => {
   return (
@@ -165,9 +169,9 @@ export const ArrowUp = () => {
       icon={faChevronUp}
       className="swap on fill-current"
       size={"1x"}
-    />  
-  );  
-};  
+    />
+  );
+};
 
 export const ArrowDown = () => {
   return (
@@ -175,12 +179,10 @@ export const ArrowDown = () => {
       icon={faChevronDown}
       className="swap on fill-current"
       size={"1x"}
-    />  
-  );  
-};  
+    />
+  );
+};
 
 export const TrashBin = () => {
   return <FontAwesomeIcon icon={faTrash} size={"lg"} />;
-};  
-
-export { faEye, faEyeSlash };
+};

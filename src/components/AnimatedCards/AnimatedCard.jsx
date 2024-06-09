@@ -1,9 +1,12 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import gsap from "gsap";
 import Kaloyan from "../../assets/me.png";
 // import Milen from "../../assets/me2.png";
 // import Yordan from "../../assets/me3.png";
 import "./AnimatedCard.css";
+import { useGSAP } from "@gsap/react";
+import AnimatedCarousel from "../AnimatedCarousel/AnimatedCarousel";
+import { GithubIcon, LinkedInIcon } from "../../common/helpers/icons";
 
 const cardData = [
   {
@@ -13,6 +16,8 @@ const cardData = [
 
     name: "Kaloyan Kostov",
     title: "Junior Frontend Developer",
+    linkedin: "https://www.linkedin.com/in/kaloyan-kostov-82b04926a/",
+    github: "https://github.com/kkkostov",
   },
   {
     // profilePic: Milen,
@@ -20,6 +25,8 @@ const cardData = [
       "I'm an enthusiastic junior developer specializing in JavaScript and React. I enjoy creating dynamic web applications and strive to deliver high-quality solutions.",
     name: "Milen",
     title: "Junior Frontend Developer",
+    linkedin: "https://www.linkedin.com/",
+    github: "https://github.com/",
   },
   {
     // profilePic: Yordan,
@@ -27,13 +34,15 @@ const cardData = [
       "I'm an enthusiastic junior developer specializing in JavaScript and React. I enjoy creating dynamic web applications and strive to deliver high-quality solutions.",
     name: "Yordan",
     title: "Junior Frontend Developer",
+    linkedin: "https://www.linkedin.com/",
+    github: "https://github.com/",
   },
 ];
 
 const AnimatedCard = () => {
   const cardsRef = useRef([]);
 
-  useEffect(() => {
+  useGSAP(() => {
     cardsRef.current.forEach((card) => {
       card.addEventListener("mousemove", (event) => {
         const mouseX = -(window.innerWidth / 2 - event.pageX) / 30;
@@ -63,17 +72,29 @@ const AnimatedCard = () => {
       {cardData.map((data, index) => (
         <div className="perspective" key={index}>
           <div className="card" ref={(el) => (cardsRef.current[index] = el)}>
-            <div className="quote-icon">@</div>
+            <div>
+              <AnimatedCarousel />
+            </div>
+
             <p className="description">{data.description}</p>
             <div
               className="thumb"
               style={{ backgroundImage: `url(${data.profilePic})` }}
             ></div>
+
+            <div className="social-icons flex gap-2">
+              <a href={data.linkedin} target="_blank">
+                <LinkedInIcon />
+              </a>
+              <a href={data.github} target="_blank">
+                <GithubIcon />
+              </a>
+            </div>
+
             <div className="text-container">
               <h2>{data.name}</h2>
               <span>{data.title}</span>
             </div>
-            <div className="social-icons"></div>
           </div>
         </div>
       ))}

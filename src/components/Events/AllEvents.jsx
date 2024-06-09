@@ -14,7 +14,11 @@ export default function AllEvents() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { userData, loading: userLoading, setAppState } = useContext(AppContext);
+  const {
+    userData,
+    loading: userLoading,
+    setAppState,
+  } = useContext(AppContext);
   const navigate = useNavigate();
   const categoriesRef = useRef(null);
 
@@ -102,7 +106,7 @@ export default function AllEvents() {
   return (
     <div className="events-container relative px-4 py-8">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-4xl font-bold text-gray-800">All Events</h1>
+        <h1 className="text-4xl font-bold ">All Events</h1>
       </div>
       <div className="flex justify-between mb-8">
         <div className="flex space-x-4">
@@ -110,12 +114,12 @@ export default function AllEvents() {
             <button className="btn btn-primary">Create Event</button>
           </a>
           <a href="/my-events">
-            <button className="btn btn-secondary">My Events</button>
+            <button className="btn">My Events</button>
           </a>
-          <button className="btn btn-secondary" onClick={() => navigate("/public-events")}>
+          <button className="btn " onClick={() => navigate("/public-events")}>
             Public Events
           </button>
-          <button className="btn btn-secondary" onClick={() => navigate("/private-events")}>
+          <button className="btn" onClick={() => navigate("/private-events")}>
             Private Events
           </button>
         </div>
@@ -124,8 +128,13 @@ export default function AllEvents() {
           <div className="dropdown-menu">
             <ul className="space-y-2">
               {categories.map((category) => (
-                <li key={category} className="p-2 hover:bg-gray-200 cursor-pointer">
-                  <a onClick={() => handleSortByCategory(category)}>{category}</a>
+                <li
+                  key={category}
+                  className="p-2 hover:bg-gray-200 cursor-pointer"
+                >
+                  <a onClick={() => handleSortByCategory(category)}>
+                    {category}
+                  </a>
                 </li>
               ))}
             </ul>
@@ -149,14 +158,20 @@ export default function AllEvents() {
                 />
               </figure>
               <div className="card-body w-2/3 flex flex-col space-y-2">
-                <h2 className="card-title text-xl font-semibold">{event.title}</h2>
-                <p className="text-gray-700 break-words whitespace-normal overflow-hidden max-h-24 text-sm">
+                <h2 className="card-title text-xl font-semibold">
+                  {event.title}
+                </h2>
+                <p className="text-gray-500 break-words whitespace-normal overflow-hidden max-h-24 text-sm">
                   {event.description}
                 </p>
                 <div className="grid grid-cols-3 gap-4 text-gray-500 text-xs">
                   <p className="col-span-3">Location: {event.location}</p>
-                  <p>Start: {event.startDate} {event.startTime}</p>
-                  <p>End: {event.endDate} {event.endTime}</p>
+                  <p>
+                    Start: {event.startDate} {event.startTime}
+                  </p>
+                  <p>
+                    End: {event.endDate} {event.endTime}
+                  </p>
                   <p>Public: {event.isPublic ? "Yes" : "No"}</p>
                   <p>Reoccurring: {event.isReoccurring}</p>
                   <p>Creator: {event.creator}</p>
@@ -169,9 +184,10 @@ export default function AllEvents() {
                   >
                     View more
                   </button>
-                  {userData.goingToEvents && userData.goingToEvents[event.title] ? (
+                  {userData.goingToEvents &&
+                  userData.goingToEvents[event.title] ? (
                     <button
-                      className="btn btn-secondary"
+                      className="btn"
                       onClick={() => handleLeaveEvent(event.title)}
                     >
                       Leave Event
