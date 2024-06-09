@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import RecurringEvents from "../Events/RecurringEvents";
 import {
   add,
   eachDayOfInterval,
@@ -10,8 +13,6 @@ import {
   parse,
   startOfToday,
 } from "date-fns";
-import { useState } from "react";
-import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFutbol,
@@ -30,20 +31,19 @@ export default function MonthCalendar({ onDateClick, events }) {
   const [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
   const firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
 
-  const days = eachDayOfInterval({
-    start: firstDayCurrentMonth,
-    end: endOfMonth(firstDayCurrentMonth),
-  });
+  useEffect(() => {
+    setCurrentMonth(format(selectedDay, "MMM-yyyy"));
+  }, [selectedDay]);
 
-  function previousMonth() {
+  const previousMonth = () => {
     const firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
-  }
+  };
 
-  function nextMonth() {
+  const nextMonth = () => {
     const firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 });
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
-  }
+  };
 
   const handleDayClick = (day) => {
     setSelectedDay(day);
@@ -51,10 +51,23 @@ export default function MonthCalendar({ onDateClick, events }) {
   };
 
   const getEventsForDay = (day) => {
-    return events.filter((event) => {
-      return isEqual(parse(event.startDate, "yyyy-MM-dd", new Date()), day);
-    });
+    const recurringEventsForSelectedDay = RecurringEvents({ events, selectedDate: day });
+    const eventsForSelectedDay = events.filter((event) =>
+      isEqual(parse(event.startDate, "yyyy-MM-dd", new Date()), day)
+    );
+  
+    const allEventsForSelectedDay = [
+      ...eventsForSelectedDay.filter((event) => {
+        return !recurringEventsForSelectedDay.some((recurringEvent) => {
+          return recurringEvent.eventId === event.eventId;
+        });
+      }),
+      ...recurringEventsForSelectedDay,
+    ];
+  
+    return allEventsForSelectedDay;
   };
+  
 
   const getEventIcon = (category) => {
     const iconMap = {
@@ -71,9 +84,13 @@ export default function MonthCalendar({ onDateClick, events }) {
       "Culture & Science": "rgba(0, 0, 255, 0.4)",
       Entertainment: "rgba(255, 255, 0, 0.4)",
     };
-
     return colorMap[category] || "rgba(128, 128, 128, 0.4)";
   };
+
+  const days = eachDayOfInterval({
+    start: firstDayCurrentMonth,
+    end: endOfMonth(firstDayCurrentMonth),
+  });
 
   return (
     <div className="pt-16 h-full w-full">
@@ -162,7 +179,7 @@ export default function MonthCalendar({ onDateClick, events }) {
                       key={index}
                       icon={getEventIcon(event.category)}
                       style={{ color: getCategoryColor(event.category) }}
-                      className="text-lg  mx-1"
+                      className="text-lg mx-1"
                     />
                   ))}
                 </div>
