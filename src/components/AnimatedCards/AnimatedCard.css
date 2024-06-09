@@ -1,0 +1,71 @@
+.profile-card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  gap: 100px;
+  min-height: 200px;
+}
+
+.perspective {
+  perspective: 1000px;
+}
+
+.card {
+  width: 350px;
+  height: auto;
+  margin: auto;
+  box-shadow: 0 70px 120px -80px #000000;
+  transform-style: preserve-3d;
+  transition: transform 0.05s linear;
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.thumb {
+  background-size: cover;
+  height: 150px;
+  width: 150px;
+  border-radius: 25%;
+  margin: 20px auto;
+  position: relative;
+}
+
+.description {
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.text-container {
+  padding: 15px;
+  text-align: center;
+}
+
+.text-container h2 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.text-container span {
+  display: block;
+  margin-top: 10px;
+  font-size: 1em;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.social-icons a {
+  font-size: 1.5rem;
+  margin: 0 10px;
+  transition: color 0.3s;
+}
+
+.social-icons a:hover {
+  color: #4cb0b0;
+}

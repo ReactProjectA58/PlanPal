@@ -86,9 +86,7 @@ export default function PrivateEvents() {
 
   return (
     <div className="events-container relative px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
-        Private Events
-      </h1>
+      <h1 className="text-4xl font-bold mb-8 ">Private Events</h1>
       <div className="absolute top-0 right-0 mt-4 mr-4 z-10">
         <GoBackArrow onClick={() => navigate("/events")} />
       </div>
@@ -114,7 +112,7 @@ export default function PrivateEvents() {
                 <h2 className="card-title text-xl font-semibold">
                   {event.title}
                 </h2>
-                <p className="text-gray-700 break-words whitespace-normal overflow-hidden max-h-24 text-sm">
+                <p className="text-gray-500 break-words whitespace-normal overflow-hidden max-h-24 text-sm">
                   {event.description}
                 </p>
                 <div className="grid grid-cols-3 gap-4 text-gray-500 text-xs">
@@ -140,7 +138,7 @@ export default function PrivateEvents() {
                   {userData.goingToEvents &&
                   userData.goingToEvents[event.title] ? (
                     <button
-                      className="btn btn-secondary"
+                      className="btn"
                       onClick={() => handleLeaveEvent(event.title)}
                     >
                       Leave Event

@@ -32,17 +32,25 @@ export default function Calendar() {
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    setView('daily');
+    setView("daily");
   };
 
   const renderView = () => {
     switch (view) {
       case "daily":
-        return <DayCalendar events={events} selectedDate={selectedDate} onDateChange={handleDateChange} />;
+        return (
+          <DayCalendar
+            events={events}
+            selectedDate={selectedDate}
+            onDateChange={handleDateChange}
+          />
+        );
       case "weekly":
         return <WeekCalendar events={events} onDateClick={handleDateChange} />;
       case "work-week":
-        return <WorkWeekCalendar events={events} onDateClick={handleDateChange} />;
+        return (
+          <WorkWeekCalendar events={events} onDateClick={handleDateChange} />
+        );
       case "monthly":
         return <MonthCalendar events={events} onDateClick={handleDateChange} />;
       case "yearly":
@@ -55,11 +63,11 @@ export default function Calendar() {
   return (
     <div className="calendar-container p-4">
       <div className="view-selector flex gap-2 mb-4">
-        <div className={`dropdown ${isDropdownOpen ? 'open' : ''}`}>
+        <div className={`dropdown ${isDropdownOpen ? "open" : ""}`}>
           <div
             tabIndex={0}
             role="button"
-            className="btn m-1"
+            className="btn btn-secondary"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
             Calendar Views
@@ -69,11 +77,21 @@ export default function Calendar() {
               tabIndex={0}
               className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
             >
-              <li><a onClick={() => handleViewChange('daily')}>Daily</a></li>
-              <li><a onClick={() => handleViewChange('weekly')}>Weekly</a></li>
-              <li><a onClick={() => handleViewChange('work-week')}>Work Week</a></li>
-              <li><a onClick={() => handleViewChange('monthly')}>Monthly</a></li>
-              <li><a onClick={() => handleViewChange('yearly')}>Yearly</a></li>
+              <li>
+                <a onClick={() => handleViewChange("daily")}>Daily</a>
+              </li>
+              <li>
+                <a onClick={() => handleViewChange("weekly")}>Weekly</a>
+              </li>
+              <li>
+                <a onClick={() => handleViewChange("work-week")}>Work Week</a>
+              </li>
+              <li>
+                <a onClick={() => handleViewChange("monthly")}>Monthly</a>
+              </li>
+              <li>
+                <a onClick={() => handleViewChange("yearly")}>Yearly</a>
+              </li>
             </ul>
           )}
         </div>

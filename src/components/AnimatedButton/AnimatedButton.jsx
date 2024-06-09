@@ -46,7 +46,7 @@ function AnimatedButton() {
         Join us
       </button>
       <button
-        className="btn btn--ripple"
+        className="btn btn--ripple btn-primary"
         id="ripple"
         onClick={() => navigate("/login")}
       >

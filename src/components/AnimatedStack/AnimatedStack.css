@@ -44,6 +44,7 @@ body {
 .card-content {
   width: 30%;
   justify-content: center;
+  color: #555;
 }
 
 .card-image {

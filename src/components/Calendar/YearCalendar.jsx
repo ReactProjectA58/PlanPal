@@ -10,6 +10,7 @@ import {
   sub,
   startOfToday,
 } from 'date-fns';
+import RecurringEvents from '../Events/RecurringEvents';
 
 export default function YearCalendar({ onDateClick, events }) {
   const today = startOfToday();
@@ -24,19 +25,35 @@ export default function YearCalendar({ onDateClick, events }) {
     const monthDays = Array.from({ length: daysInMonth + firstDayOfWeek }, (_, i) => {
       const day = add(startOfMonth(monthStart), { days: i - firstDayOfWeek });
       const eventsForDay = events.filter(event => format(event.startDate, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd'));
-      const hasEvents = eventsForDay.length > 0;
-      return (
-        <div
-          key={format(day, 'yyyy-MM-dd')}
-          className={`flex justify-center items-center ${
-            i >= firstDayOfWeek ? 'text-gray-700 cursor-pointer' : 'bg-transparent'
-          }`}
-          onClick={() => i >= firstDayOfWeek && onDateClick(day)}
-          style={hasEvents ? { backgroundColor: 'red', color: 'white', borderRadius: '50%', width: '32px', height: '32px' } : {}}
-        >
-          {i >= firstDayOfWeek ? format(day, 'd') : ''}
-        </div>
-      );
+      const recurringEventsForDay = RecurringEvents({ events, selectedDate: day });
+      const hasEvents = eventsForDay.length > 0 || recurringEventsForDay.length > 0;
+
+      if (hasEvents) {
+        return (
+          <div
+            key={format(day, 'yyyy-MM-dd')}
+            className={`flex justify-center items-center ${
+              i >= firstDayOfWeek ? 'text-gray-700 cursor-pointer' : 'bg-transparent'
+            }`}
+            onClick={() => i >= firstDayOfWeek && onDateClick(day)}
+            style={i >= firstDayOfWeek ? { backgroundColor: 'red', color: 'white', borderRadius: '50%', width: '32px', height: '32px' } : {}}
+          >
+            {i >= firstDayOfWeek ? format(day, 'd') : ''}
+          </div>
+        );
+      } else {
+        return (
+          <div
+            key={format(day, 'yyyy-MM-dd')}
+            className={`flex justify-center items-center ${
+              i >= firstDayOfWeek ? 'text-gray-700 cursor-pointer' : 'bg-transparent'
+            }`}
+            onClick={() => i >= firstDayOfWeek && onDateClick(day)}
+          >
+            {i >= firstDayOfWeek ? format(day, 'd') : ''}
+          </div>
+        );
+      }
     });
 
     return (

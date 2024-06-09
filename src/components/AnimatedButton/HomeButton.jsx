@@ -42,7 +42,11 @@ function HomeButton() {
   };
 
   return (
-    <button className="btn btn--ripple" id="home-ripple" onClick={handleClick}>
+    <button
+      className="btn btn--ripple btn-primary"
+      id="home-ripple"
+      onClick={handleClick}
+    >
       PlanPal
     </button>
   );

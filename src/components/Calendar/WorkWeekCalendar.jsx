@@ -110,7 +110,7 @@ function WorkWeekCalendar({ events, onDateClick }) {
         <div className="relative border w-full">
           <div className="grid grid-cols-6">
             <div className="border-r w-full">
-              <div className="h-12 flex flex-col items-center justify-center border-b bg-gray-100 py-2">
+              <div className="h-12 flex flex-col items-center justify-center border-b glass py-2">
                 <h3 className="text-sm">Hours</h3>
               </div>
               {hours.map((hour, index) => (
@@ -130,7 +130,7 @@ function WorkWeekCalendar({ events, onDateClick }) {
                 className="relative border-r w-full cursor-pointer"
                 onClick={() => onDateClick(day)}
               >
-                <div className="flex flex-col items-center justify-center border-b bg-gray-100 py-2 h-12">
+                <div className="flex flex-col items-center justify-center border-b glass py-2 h-12">
                   <h3 className="text-sm">{format(day, "EEE, MMM d")}</h3>
                 </div>
                 <div className="relative">
