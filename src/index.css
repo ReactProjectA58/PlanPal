@@ -25,7 +25,9 @@
 
 input[type="text"],
 input[type="date"],
-input[type="time"] {
+input[type="time"],
+input[type="password"],
+input[type="email"] {
   background-color: #f0f0f0;
   color: black;
 }
