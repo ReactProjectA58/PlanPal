@@ -2,7 +2,6 @@ import {
   addWeeks,
   addMonths,
   addYears,
-  addMinutes,
   parseISO,
   differenceInMinutes,
   startOfDay,
@@ -10,8 +9,9 @@ import {
   startOfYear,
   endOfDay,
   startOfWeek,
+  addMinutes,
 } from "date-fns";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const RecurringEvents = ({ events, selectedDate }) => {
   const recurringEvents = [];
@@ -33,6 +33,7 @@ const RecurringEvents = ({ events, selectedDate }) => {
           if (
             eventStart <= endOfDay(selectedDate) &&
             eventEnd >= startOfDay(selectedDate) &&
+            eventStart >= startOfWeek(selectedDate) &&
             (!finalDate || eventStart <= finalDate)
           ) {
             recurringEvents.push({
@@ -51,6 +52,7 @@ const RecurringEvents = ({ events, selectedDate }) => {
           if (
             eventStart <= endOfDay(selectedDate) &&
             eventEnd >= startOfDay(selectedDate) &&
+            eventStart >= startOfMonth(selectedDate) &&
             (!finalDate || eventStart <= finalDate)
           ) {
             recurringEvents.push({
@@ -69,6 +71,7 @@ const RecurringEvents = ({ events, selectedDate }) => {
           if (
             eventStart <= endOfDay(selectedDate) &&
             eventEnd >= startOfDay(selectedDate) &&
+            eventStart >= startOfYear(selectedDate) &&
             (!finalDate || eventStart <= finalDate)
           ) {
             recurringEvents.push({
