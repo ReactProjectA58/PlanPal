@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import PropTypes from "prop-types";
 
-// Fix default icon issue with leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 
 L.Icon.Default.mergeOptions({
@@ -13,12 +13,11 @@ L.Icon.Default.mergeOptions({
 });
 
 const Map = ({ address }) => {
-  const [position, setPosition] = useState([51.505, -0.09]); // Default to London
+  const [position, setPosition] = useState([42.6977, 23.3219]); 
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (address) {
-      // Geocode the address to get the latitude and longitude
       const geocode = async (address) => {
         try {
           const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
@@ -28,9 +27,7 @@ const Map = ({ address }) => {
           const data = await response.json();
           if (data && data.length > 0) {
             setPosition([data[0].lat, data[0].lon]);
-          } else {
-            throw new Error("No results found for the given address");
-          }
+          } 
         } catch (err) {
           setError(err.message);
           console.error("Geocoding error:", err);
@@ -54,6 +51,10 @@ const Map = ({ address }) => {
       </MapContainer>
     </div>
   );
+};
+
+Map.propTypes = {
+  address: PropTypes.string.isRequired,
 };
 
 export default Map;
