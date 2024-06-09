@@ -1,6 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
-import { addEvent, getUserContacts, inviteUser, getContactLists, getContactListById } from "../../services/event.service.js";
+import {
+  addEvent,
+  getUserContacts,
+  inviteUser,
+  getContactLists,
+  getContactListById,
+} from "../../services/event.service.js";
 import { uploadCover } from "../../services/upload.service.js";
 import Button from "../Button.jsx";
 import { AppContext } from "../../context/AppContext.jsx";
@@ -20,8 +26,8 @@ import {
   EVENT_CULTURE_AND_SCIENCE_COVER,
   EVENT_COVER_BY_DEFAULT,
 } from "../../common/constants.js";
-import  Map  from './Map.jsx';
-import './styles.css'
+import Map from "./Map.jsx";
+import "./styles.css";
 
 export default function CreateEvent() {
   const [event, setEvent] = useState({
@@ -49,7 +55,8 @@ export default function CreateEvent() {
   const reoccurringRef = useRef(null);
   const categoryRef = useRef(null);
   const [isReoccurringOpen, setIsReoccurringOpen] = useState(false);
-  const [selectedReoccurringOption, setSelectedReoccurringOption] = useState(null);
+  const [selectedReoccurringOption, setSelectedReoccurringOption] =
+    useState(null);
   const [finalDate, setFinalDate] = useState("");
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
@@ -57,7 +64,10 @@ export default function CreateEvent() {
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (reoccurringRef.current && !reoccurringRef.current.contains(event.target)) {
+      if (
+        reoccurringRef.current &&
+        !reoccurringRef.current.contains(event.target)
+      ) {
         setIsReoccurringOpen(false);
       }
       if (categoryRef.current && !categoryRef.current.contains(event.target)) {
@@ -66,7 +76,10 @@ export default function CreateEvent() {
       if (inviteRef.current && !inviteRef.current.contains(event.target)) {
         inviteRef.current.removeAttribute("open");
       }
-      if (inviteListRef.current && !inviteListRef.current.contains(event.target)) {
+      if (
+        inviteListRef.current &&
+        !inviteListRef.current.contains(event.target)
+      ) {
         inviteListRef.current.removeAttribute("open");
       }
     }
@@ -162,7 +175,16 @@ export default function CreateEvent() {
   };
 
   const createEvent = async () => {
-    const { title, description, location, startDate, startTime, endDate, endTime, category } = event;
+    const {
+      title,
+      description,
+      location,
+      startDate,
+      startTime,
+      endDate,
+      endTime,
+      category,
+    } = event;
 
     const validationErrors = {
       title: validateTitle(title),
@@ -228,7 +250,7 @@ export default function CreateEvent() {
   };
 
   return (
-    <div className="p-4 max-w-3xl mx-auto shadow-md rounded-lg">
+    <div className="create-event-form p-4 max-w-3xl mx-auto rounded-lg mt-8 mb-8">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Create Event</h1>
         <GoBackArrow onClick={() => navigate("/events")} />
@@ -240,7 +262,10 @@ export default function CreateEvent() {
           { label: "Location", key: "location", type: "text" },
         ].map(({ label, key, type }) => (
           <div key={key} className="mb-4 px-2 w-full sm:w-1/2">
-            <label htmlFor={`input-${key}`} className="block text-sm font-medium">
+            <label
+              htmlFor={`input-${key}`}
+              className="block text-sm font-medium"
+            >
               {label} <span className="text-red-500">*</span>:
             </label>
             <div className="mt-1">
@@ -252,7 +277,9 @@ export default function CreateEvent() {
                 id={`input-${key}`}
                 className="shadow-sm block w-full sm:text-sm rounded-md"
               />
-              {errors[key] && <div className="text-red-500 text-sm">{errors[key]}</div>}
+              {errors[key] && (
+                <div className="text-red-500 text-sm">{errors[key]}</div>
+              )}
             </div>
           </div>
         ))}
@@ -266,7 +293,10 @@ export default function CreateEvent() {
           { label: "End Time", key: "endTime", type: "time" },
         ].map(({ label, key, type }) => (
           <div key={key} className="mb-4 px-2 w-full sm:w-1/2">
-            <label htmlFor={`input-${key}`} className="block text-sm font-medium">
+            <label
+              htmlFor={`input-${key}`}
+              className="block text-sm font-medium"
+            >
               {label} <span className="text-red-500">*</span>:
             </label>
             <div className="mt-1">
@@ -278,14 +308,19 @@ export default function CreateEvent() {
                 id={`input-${key}`}
                 className="shadow-sm block w-full sm:text-sm rounded-md"
               />
-              {errors[key] && <div className="text-red-500 text-sm">{errors[key]}</div>}
+              {errors[key] && (
+                <div className="text-red-500 text-sm">{errors[key]}</div>
+              )}
             </div>
           </div>
         ))}
       </div>
 
       <div className="mb-4">
-        <label htmlFor="input-description" className="block text-sm font-medium">
+        <label
+          htmlFor="input-description"
+          className="block text-sm font-medium"
+        >
           Description:
         </label>
         <div className="mt-1">
@@ -294,7 +329,9 @@ export default function CreateEvent() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
-          {errors.description && <div className="text-red-500 text-sm">{errors.description}</div>}
+          {errors.description && (
+            <div className="text-red-500 text-sm">{errors.description}</div>
+          )}
         </div>
       </div>
 
@@ -311,7 +348,10 @@ export default function CreateEvent() {
       </div>
 
       <div className="mb-4" ref={reoccurringRef}>
-        <label htmlFor="reoccurring-option" className="block text-sm font-medium">
+        <label
+          htmlFor="reoccurring-option"
+          className="block text-sm font-medium"
+        >
           Reoccurring:
         </label>
         <div className="mt-1 relative">
@@ -321,14 +361,19 @@ export default function CreateEvent() {
             onClick={() => setIsReoccurringOpen(!isReoccurringOpen)}
           >
             <span className="block truncate">
-              {selectedReoccurringOption ? selectedReoccurringOption.label : "Select Occurrence"}
+              {selectedReoccurringOption
+                ? selectedReoccurringOption.label
+                : "Select Occurrence"}
             </span>
             <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
               <ArrowDown />
             </span>
           </button>
           {isReoccurringOpen && (
-            <div className="origin-top-right absolute z-10 mt-1 w-full rounded-md glass bg-transparent ring-1 ring-black ring-opacity-5">
+            <div
+              className="origin-top-right absolute mt-1 w-full rounded-md backdrop-blur-lg bg-white/10 ring-1 text-black ring-black ring-opacity-5"
+              style={{ zIndex: 999 }}
+            >
               {recurrenceOptions.map((option) => (
                 <div
                   key={option.value}
@@ -337,7 +382,9 @@ export default function CreateEvent() {
                     setSelectedReoccurringOption(option);
                     setIsReoccurringOpen(false);
                     updateEvent(option.value, "isReoccurring");
-                    if (["weekly", "monthly", "yearly"].includes(option.value)) {
+                    if (
+                      ["weekly", "monthly", "yearly"].includes(option.value)
+                    ) {
                       setFinalDate(""); // Reset finalDate if it's one of the recurring options
                     }
                   }}
@@ -348,23 +395,26 @@ export default function CreateEvent() {
             </div>
           )}
         </div>
-        {(selectedReoccurringOption && ["weekly", "monthly", "yearly"].includes(selectedReoccurringOption.value)) && (
-          <div className="mt-4">
-            <label htmlFor="final-date" className="block text-sm font-medium">
-              Final Date:
-            </label>
-            <input
-              type="date"
-              id="final-date"
-              className="mt-1 block w-full rounded-md shadow-sm sm:text-sm"
-              value={finalDate}
-              onChange={(e) => {
-                setFinalDate(e.target.value);
-                updateEvent(e.target.value, "finalDate");
-              }}
-            />
-          </div>
-        )}
+        {selectedReoccurringOption &&
+          ["weekly", "monthly", "yearly"].includes(
+            selectedReoccurringOption.value
+          ) && (
+            <div className="mt-4">
+              <label htmlFor="final-date" className="block text-sm font-medium">
+                Final Date:
+              </label>
+              <input
+                type="date"
+                id="final-date"
+                className="mt-1 block w-full rounded-md shadow-sm sm:text-sm"
+                value={finalDate}
+                onChange={(e) => {
+                  setFinalDate(e.target.value);
+                  updateEvent(e.target.value, "finalDate");
+                }}
+              />
+            </div>
+          )}
       </div>
 
       <div className="mb-4 relative" ref={categoryRef}>
@@ -379,14 +429,19 @@ export default function CreateEvent() {
             onClick={() => setIsCategoryOpen(!isCategoryOpen)}
           >
             <span className="block truncate">
-              {selectedCategoryOption ? selectedCategoryOption.label : "Select Category"}
+              {selectedCategoryOption
+                ? selectedCategoryOption.label
+                : "Select Category"}
             </span>
             <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
               <ArrowDown />
             </span>
           </button>
           {isCategoryOpen && (
-            <div className="origin-top-right absolute z-10 mt-1 w-full rounded-md glass bg-transparent ring-1 ring-black ring-opacity-5">
+            <div
+              className="origin-top-right absolute mt-1 w-full rounded-md  backdrop-blur-lg bg-white/10 ring-1 text-black ring-black ring-opacity-5"
+              style={{ zIndex: 999 }}
+            >
               {categoryOptions.map((option) => (
                 <div
                   key={option.value}
@@ -407,26 +462,46 @@ export default function CreateEvent() {
 
       <div>
         {coverPreview && (
-          <img src={coverPreview} alt="Cover Preview" className="w-96 h-64 object-cover rounded mb-2" />
+          <img
+            src={coverPreview}
+            alt="Cover Preview"
+            className="w-96 h-64 object-cover rounded mb-2"
+          />
         )}
       </div>
 
-      <div className="flex items-center gap-8">
+      <div className="flex items-center gap-1.9">
         <Button className="font-bold py-2 px-4 rounded" onClick={createEvent}>
           Create
         </Button>
-        <Button onClick={() => document.getElementById("cover-upload").click()} className="font-bold py-2 px-4 rounded">
+        <Button
+          onClick={() => document.getElementById("cover-upload").click()}
+          className="font-bold py-2 px-4 rounded"
+        >
           Upload Cover
         </Button>
-        <details className="dropdown" ref={inviteRef}>
-          <summary className="font-bold py-2 px-4 rounded cursor-pointer btn btn-secondary">▼Invite Contact</summary>
-          <div className="dropdown-menu-up max-h-48 overflow-y-auto mt-2">
+
+        <details
+          className="dropdown"
+          ref={inviteRef}
+          style={{ position: "relative" }}
+        >
+          <summary className="font-bold py-2 px-4 cursor-pointer btn btn-secondary">
+            ▼Invite Contact
+          </summary>
+          <div
+            className="dropdown-menu absolute max-h-48 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black hover:glass"
+            style={{ zIndex: 999 }}
+          >
             <ul className="space-y-2">
               {contacts.length === 0 ? (
                 <li className="p-2">No contacts found.</li>
               ) : (
                 contacts.map((contact) => (
-                  <li key={contact} className="p-2 hover:bg-gray-200 cursor-pointer">
+                  <li
+                    key={contact}
+                    className="p-2 hover:bg-gray-200 cursor-pointer"
+                  >
                     <a onClick={() => handleInviteUser(contact)}>{contact}</a>
                   </li>
                 ))
@@ -434,23 +509,40 @@ export default function CreateEvent() {
             </ul>
           </div>
         </details>
-        <details className="dropdown glass" ref={inviteListRef}>
-          <summary className="font-bold py-2 px-4 rounded cursor-pointer  btn-primary">▼Invite List</summary>
-          <div className="dropdown-menu-up max-h-48 overflow-y-auto mt-2">
+
+        <details className="dropdown" ref={inviteListRef}>
+          <summary className="font-bold py-2 px-4  cursor-pointer btn btn-secondary">
+            ▼Invite Group
+          </summary>
+          <div
+            className="dropdown-menu absolute max-h-48 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black hover:glass"
+            style={{ zIndex: 999 }}
+          >
             <ul className="space-y-2">
               {contactLists.length === 0 ? (
                 <li className="p-2">No contact lists found.</li>
               ) : (
                 contactLists.map((list) => (
-                  <li key={list.id} className="p-2 hover:bg-gray-200 cursor-pointer">
-                    <a onClick={() => handleInviteList(list.id, list.title)}>{list.title}</a>
+                  <li
+                    key={list.id}
+                    className="p-2 hover:bg-gray-200 cursor-pointer"
+                  >
+                    <a onClick={() => handleInviteList(list.id, list.title)}>
+                      {list.title}
+                    </a>
                   </li>
                 ))
               )}
             </ul>
           </div>
         </details>
-        <input type="file" id="cover-upload" style={{ display: "none" }} accept="image/*" onChange={handleFileChange} />
+        <input
+          type="file"
+          id="cover-upload"
+          style={{ display: "none" }}
+          accept="image/*"
+          onChange={handleFileChange}
+        />
       </div>
 
       <div className="my-4">

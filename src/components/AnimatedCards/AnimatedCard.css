@@ -15,7 +15,7 @@
   width: 350px;
   height: auto;
   margin: auto;
-  box-shadow: 0 70px 120px -80px #000000;
+  box-shadow: 0 70px 120px -70px #000000;
   transform-style: preserve-3d;
   transition: transform 0.05s linear;
   border-radius: 15px;

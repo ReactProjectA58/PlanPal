@@ -10,8 +10,8 @@ export default function Footer() {
     <footer className="bg-primary-800 text-white  ">
       <footer className="footer bg-base-300 text-base-content  bottom-0 p-3 flex justify-around backdrop-blur-lg bg-white/10">
         <nav>
-          <h6 className=" font-semibold text-gray-600 uppercase ">Team 03</h6>
-          <div className="grid grid-flow-col gap-4 mt-1">
+          <h6 className=" font-semibold uppercase ">Team 03</h6>
+          <div className="footer-icons grid grid-flow-col gap-4 mt-1">
             <a href="/contact-us">
               <ContactUs />
             </a>
@@ -21,8 +21,8 @@ export default function Footer() {
           </div>
         </nav>
         <nav>
-          <h6 className="font-semibold text-gray-600 uppercase ">Project</h6>
-          <div className="grid grid-flow-col gap-4 mt-1">
+          <h6 className="font-semibold uppercase ">Project</h6>
+          <div className="footer-icons grid grid-flow-col gap-4 mt-1">
             <a href="https://github.com/ReactProjectA58/PlanPal">
               <GithubIcon />
             </a>
