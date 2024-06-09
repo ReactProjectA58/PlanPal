@@ -29,6 +29,8 @@ import {
 import Map from "./Map.jsx";
 import "./styles.css";
 
+const MAPBOX_TOKEN = 'sk.eyJ1IjoibWRvbmV2diIsImEiOiJjbHg3aXhma2cxeWlnMmpxdTl3aWcya3I2In0.fxZquQpnSrvq144fj9kS-Q';
+
 export default function CreateEvent() {
   const [event, setEvent] = useState({
     title: "",
@@ -61,6 +63,7 @@ export default function CreateEvent() {
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [coverPreview, setCoverPreview] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -144,6 +147,23 @@ export default function CreateEvent() {
     if (inviteListRef.current) {
       inviteListRef.current.removeAttribute("open");
     }
+  };
+
+  const handleLocationChange = async (e) => {
+    const value = e.target.value;
+    updateEvent(value, "location");
+    if (value.length > 2) {
+      const response = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(value)}.json?access_token=${MAPBOX_TOKEN}`);
+      const data = await response.json();
+      setSuggestions(data.features.map(feature => feature.place_name));
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    updateEvent(suggestion, "location");
+    setSuggestions([]);
   };
 
   const recurrenceOptions = [
@@ -272,13 +292,20 @@ export default function CreateEvent() {
               <input
                 type={type}
                 value={event[key]}
-                onChange={(e) => updateEvent(e.target.value, key)}
+                onChange={(e) => key === "location" ? handleLocationChange(e) : updateEvent(e.target.value, key)}
                 name={`input-${key}`}
                 id={`input-${key}`}
                 className="shadow-sm block w-full sm:text-sm rounded-md"
               />
-              {errors[key] && (
-                <div className="text-red-500 text-sm">{errors[key]}</div>
+              {errors[key] && <div className="text-red-500 text-sm">{errors[key]}</div>}
+                {key === "location" && suggestions.length > 0 && (
+                  <ul className="border border-gray-300 rounded mt-1 max-h-40 overflow-y-auto">
+                    {suggestions.map((suggestion, index) => (
+                      <li key={index} className="p-2 hover:bg-gray-200 cursor-pointer" onClick={() => handleSuggestionClick(suggestion)}>
+                        {suggestion}
+                      </li>
+                    ))}
+                  </ul>
               )}
             </div>
           </div>
