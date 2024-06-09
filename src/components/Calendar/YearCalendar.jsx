@@ -36,7 +36,7 @@ export default function YearCalendar({ onDateClick, events }) {
               i >= firstDayOfWeek ? 'text-gray-700 cursor-pointer' : 'bg-transparent'
             }`}
             onClick={() => i >= firstDayOfWeek && onDateClick(day)}
-            style={i >= firstDayOfWeek ? { backgroundColor: 'red', color: 'white', borderRadius: '50%', width: '32px', height: '32px' } : {}}
+            style={i >= firstDayOfWeek ? { backgroundColor: 'red', opacity:0.4, color: 'white', borderRadius: '50%', width: '32px', height: '32px' } : {}}
           >
             {i >= firstDayOfWeek ? format(day, 'd') : ''}
           </div>
