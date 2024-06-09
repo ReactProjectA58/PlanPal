@@ -20,6 +20,7 @@ import {
   EVENT_CULTURE_AND_SCIENCE_COVER,
   EVENT_COVER_BY_DEFAULT,
 } from "../../common/constants.js";
+import  Map  from './Map.jsx';
 import './styles.css'
 
 export default function CreateEvent() {
@@ -418,7 +419,7 @@ export default function CreateEvent() {
           Upload Cover
         </Button>
         <details className="dropdown" ref={inviteRef}>
-          <summary className="font-bold py-2 px-4 rounded cursor-pointer bg-gray-700 text-white">Invite Contact</summary>
+          <summary className="font-bold py-2 px-4 rounded cursor-pointer btn btn-secondary">▼Invite Contact</summary>
           <div className="dropdown-menu-up max-h-48 overflow-y-auto mt-2">
             <ul className="space-y-2">
               {contacts.length === 0 ? (
@@ -433,8 +434,8 @@ export default function CreateEvent() {
             </ul>
           </div>
         </details>
-        <details className="dropdown" ref={inviteListRef}>
-          <summary className="font-bold py-2 px-4 rounded cursor-pointer bg-gray-700 text-white">Invite List</summary>
+        <details className="dropdown glass" ref={inviteListRef}>
+          <summary className="font-bold py-2 px-4 rounded cursor-pointer  btn-primary">▼Invite List</summary>
           <div className="dropdown-menu-up max-h-48 overflow-y-auto mt-2">
             <ul className="space-y-2">
               {contactLists.length === 0 ? (
@@ -450,6 +451,10 @@ export default function CreateEvent() {
           </div>
         </details>
         <input type="file" id="cover-upload" style={{ display: "none" }} accept="image/*" onChange={handleFileChange} />
+      </div>
+
+      <div className="my-4">
+        <Map address={event.location} />
       </div>
     </div>
   );

@@ -49,4 +49,22 @@
     border-radius: 4px;
     margin-top: 0;
 }
-  
+
+.single-event-container img {
+  object-fit: cover;
+}
+
+.single-event-container .categories-dropdown details[open] {
+  position: relative;
+  z-index: 1;
+}
+
+.single-event-container .dropdown-menu-up {
+  display: block;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+}

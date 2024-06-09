@@ -4,7 +4,8 @@ import { getEventById } from '../../services/event.service.js';
 import { AppContext } from '../../context/AppContext.jsx';
 import { GoBackArrow, Edit } from '../../common/helpers/icons.jsx';
 import { EVENT_COVER_BY_DEFAULT } from '../../common/constants.js';
-import './styles.css'; // Import your CSS file here
+import Map from './Map.jsx'; 
+import './styles.css';
 
 export default function SingleEventView() {
   const { eventId } = useParams();
@@ -74,10 +75,15 @@ export default function SingleEventView() {
         <span className="font-semibold">Category:</span> {event.category}
       </div>
       <div className="mb-4">
-        <img src={event.cover || EVENT_COVER_BY_DEFAULT} alt="Event" className="rounded-xl w-half" />
-      </div>
-      <div className="mb-4">
         <span className="font-semibold">Description:</span> {event.description}
+      </div>
+      <div className="mb-4 flex">
+        <div className="w-1/2 mr-2">
+          <img src={event.cover || EVENT_COVER_BY_DEFAULT} alt="Event" className="rounded-xl w-full h-full object-cover" />
+        </div>
+        <div className="w-1/2 h-full ml-2">
+          <Map address={event.location} />
+        </div>
       </div>
       <div className="mb-4 categories-dropdown" ref={participantsRef}>
         <details>
