@@ -4,7 +4,7 @@ import { getEventById } from '../../services/event.service.js';
 import { AppContext } from '../../context/AppContext.jsx';
 import { GoBackArrow, Edit } from '../../common/helpers/icons.jsx';
 import { EVENT_COVER_BY_DEFAULT } from '../../common/constants.js';
-import Map from './Map.jsx'; 
+import Map from './Map.jsx';
 import './styles.css';
 
 export default function SingleEventView() {
@@ -78,11 +78,11 @@ export default function SingleEventView() {
         <span className="font-semibold">Description:</span> {event.description}
       </div>
       <div className="mb-4 flex">
-        <div className="w-1/2 mr-2">
-          <img src={event.cover || EVENT_COVER_BY_DEFAULT} alt="Event" className="rounded-xl w-full h-full object-cover" />
+        <div className="flex-grow mr-2 flex justify-center items-center">
+          <img src={event.cover || EVENT_COVER_BY_DEFAULT} alt="Event" className="rounded-xl max-h-96 object-contain w-full h-full" />
         </div>
-        <div className="w-1/2 h-full ml-2">
-          <Map address={event.location} />
+        <div className="flex-grow ml-2">
+          <Map address={event.location} className="w-full h-96" />
         </div>
       </div>
       <div className="mb-4 categories-dropdown" ref={participantsRef}>

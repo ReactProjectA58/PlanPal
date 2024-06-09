@@ -94,7 +94,7 @@ export default function AllEvents() {
       setLoading(false);
     }
     if (categoriesRef.current) {
-      categoriesRef.current.open = false; // Close the dropdown
+      categoriesRef.current.removeAttribute("open"); // Close the dropdown
     }
   };
 
@@ -123,9 +123,9 @@ export default function AllEvents() {
             Private Events
           </button>
         </div>
-        <details className="dropdown categories-dropdown" ref={categoriesRef}>
+        <details className="dropdown categories-dropdown" ref={categoriesRef} style={{ position: "relative" }}>
           <summary className="btn btn-secondary">Categories</summary>
-          <div className="dropdown-menu">
+          <div className="dropdown-menu absolute max-h-48 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black hover:glass" style={{ zIndex: 999 }}>
             <ul className="space-y-2">
               {categories.map((category) => (
                 <li

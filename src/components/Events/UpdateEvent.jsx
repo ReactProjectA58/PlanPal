@@ -8,6 +8,8 @@ import { AppContext } from '../../context/AppContext.jsx';
 import { uploadCover } from '../../services/upload.service.js';
 import './styles.css'; // Import your CSS file here
 
+const MAPBOX_TOKEN = 'sk.eyJ1IjoibWRvbmV2diIsImEiOiJjbHg3aXhma2cxeWlnMmpxdTl3aWcya3I2In0.fxZquQpnSrvq144fj9kS-Q';
+
 export default function UpdateEvent() {
   const { eventId } = useParams();
   const [event, setEvent] = useState(null);
@@ -20,12 +22,17 @@ export default function UpdateEvent() {
   const inviteRef = useRef(null);
   const uninviteRef = useRef(null);
   const fileInputRef = useRef(null);
+  const [finalDate, setFinalDate] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
         const eventData = await getEventById(eventId);
         setEvent(eventData);
+        if (["weekly", "monthly", "yearly"].includes(eventData.isReoccurring)) {
+          setFinalDate(eventData.finalDate);
+        }
       } catch (error) {
         setError('Failed to fetch event data. Please try again.');
       } finally {
@@ -161,6 +168,23 @@ export default function UpdateEvent() {
     }
   };
 
+  const handleLocationChange = async (e) => {
+    const value = e.target.value;
+    updateEventData(value, "location");
+    if (value.length > 2) {
+      const response = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(value)}.json?access_token=${MAPBOX_TOKEN}`);
+      const data = await response.json();
+      setSuggestions(data.features.map(feature => feature.place_name));
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    updateEventData(suggestion, "location");
+    setSuggestions([]);
+  };
+
   if (loading) return <div className="text-center mt-10">Loading...</div>;
   if (error) return <div className="text-center text-red-500 mt-10">{error}</div>;
   if (!event) return <div className="text-center mt-10">No event found.</div>;
@@ -243,12 +267,21 @@ export default function UpdateEvent() {
                 className="w-full p-2 border rounded"
                 type={type}
                 value={event[key]}
-                onChange={(e) => updateEventData(e.target.value, key)}
+                onChange={(e) => type === 'text' && key === 'location' ? handleLocationChange(e) : updateEventData(e.target.value, key)}
                 name={`input-${key}`}
                 id={`input-${key}`}
               />
             )}
             {errors[key] && <div className="text-red-500 text-sm mt-1">{errors[key]}</div>}
+            {key === 'location' && suggestions.length > 0 && (
+              <ul className="border border-gray-300 rounded mt-1 max-h-40 overflow-y-auto">
+                {suggestions.map((suggestion, index) => (
+                  <li key={index} className="p-2 hover:bg-gray-200 cursor-pointer" onClick={() => handleSuggestionClick(suggestion)}>
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
       ))}
@@ -261,28 +294,52 @@ export default function UpdateEvent() {
           onChange={(e) => updateEventData(e.target.checked, "isPublic")}
         />
       </div>
-      <div className="flex items-center space-x-2 mb-4">
-        <label htmlFor="reoccurring-option" className="font-semibold">Reoccurring:</label>
-        <select
-          id="reoccurring-option"
-          value={event.isReoccurring}
-          onChange={(e) => updateEventData(e.target.value, "isReoccurring")}
-          className="border rounded p-2"
-        >
-          <option value="weekly">Weekly</option>
-          <option value="monthly">Monthly</option>
-          <option value="yearly">Yearly</option>
-          <option value="indefinitely">Indefinitely</option>
-          <option value="never">Never</option>
-        </select>
+
+      <div className="mb-4">
+        <label htmlFor="reoccurring-option" className="block text-sm font-medium">Reoccurring:</label>
+        <div className="mt-1 relative">
+          <select
+            id="reoccurring-option"
+            value={event.isReoccurring}
+            onChange={(e) => {
+              updateEventData(e.target.value, "isReoccurring");
+              if (["weekly", "monthly", "yearly"].includes(e.target.value)) {
+                setFinalDate(""); // Reset finalDate if it's one of the recurring options
+              }
+            }}
+            className="w-full p-2 border rounded"
+          >
+            <option value="never">Never</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+            <option value="indefinitely">Indefinitely</option>
+          </select>
+        </div>
+        {["weekly", "monthly", "yearly"].includes(event.isReoccurring) && (
+          <div className="mt-4">
+            <label htmlFor="final-date" className="block text-sm font-medium">Final Date:</label>
+            <input
+              type="date"
+              id="final-date"
+              className="mt-1 block w-full p-2 border rounded"
+              value={finalDate}
+              onChange={(e) => {
+                setFinalDate(e.target.value);
+                updateEventData(e.target.value, "finalDate");
+              }}
+            />
+          </div>
+        )}
       </div>
-      <div className="flex items-center space-x-2 mb-4">
-        <label htmlFor="category-option" className="font-semibold">Category:</label>
+
+      <div className="mb-4 w-full">
+        <label htmlFor="category-option" className="block font-semibold">Category:</label>
         <select
           id="category-option"
           value={event.category}
           onChange={(e) => updateEventData(e.target.value, "category")}
-          className="border rounded p-2"
+          className="w-full p-2 border rounded"
         >
           <option value="Entertainment">Entertainment</option>
           <option value="Sport">Sport</option>
