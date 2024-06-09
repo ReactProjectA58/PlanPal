@@ -24,6 +24,7 @@
   text-transform: uppercase;
   box-sizing: border-box;
 }
+
 .btn--ripple {
   background: linear-gradient(90deg, #c9aaaa, #9d87ff);
   overflow: hidden;
