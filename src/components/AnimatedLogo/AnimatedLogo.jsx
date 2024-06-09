@@ -18,7 +18,7 @@ const LogoZoom = () => {
       const tl = gsap.timeline({ paused: true });
       tl.to("#text-svg", {
         opacity: 0,
-        scale: 7,
+        scale: 5.4,
         duration: 1.0,
       });
 
