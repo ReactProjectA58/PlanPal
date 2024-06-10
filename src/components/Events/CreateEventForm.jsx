@@ -57,9 +57,9 @@ export default function CreateEvent() {
   const reoccurringRef = useRef(null);
   const categoryRef = useRef(null);
   const [isReoccurringOpen, setIsReoccurringOpen] = useState(false);
-  const [selectedReoccurringOption, setSelectedReoccurringOption] =
-    useState(null);
+  const [selectedReoccurringOption, setSelectedReoccurringOption] = useState(null);
   const [finalDate, setFinalDate] = useState("");
+  const [isIndefinite, setIsIndefinite] = useState(false);
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [coverPreview, setCoverPreview] = useState(null);
@@ -171,7 +171,6 @@ export default function CreateEvent() {
     { value: "weekly", label: "Weekly" },
     { value: "monthly", label: "Monthly" },
     { value: "yearly", label: "Yearly" },
-    { value: "indefinitely", label: "Indefinitely" },
   ];
 
   const categoryOptions = [
@@ -281,11 +280,8 @@ export default function CreateEvent() {
           { label: "Title", key: "title", type: "text" },
           { label: "Location", key: "location", type: "text" },
         ].map(({ label, key, type }) => (
-          <div key={key} className="mb-4 px-2 w-full sm:w-1/2">
-            <label
-              htmlFor={`input-${key}`}
-              className="block text-sm font-medium"
-            >
+          <div key={key} className="mb-4 px-2 w-full sm:w-1/2 relative">
+            <label htmlFor={`input-${key}`} className="block text-sm font-medium">
               {label} <span className="text-red-500">*</span>:
             </label>
             <div className="mt-1">
@@ -298,14 +294,14 @@ export default function CreateEvent() {
                 className="shadow-sm block w-full sm:text-sm rounded-md"
               />
               {errors[key] && <div className="text-red-500 text-sm">{errors[key]}</div>}
-                {key === "location" && suggestions.length > 0 && (
-                  <ul className="border border-gray-300 rounded mt-1 max-h-40 overflow-y-auto">
-                    {suggestions.map((suggestion, index) => (
-                      <li key={index} className="p-2 hover:bg-gray-200 cursor-pointer" onClick={() => handleSuggestionClick(suggestion)}>
-                        {suggestion}
-                      </li>
-                    ))}
-                  </ul>
+              {key === "location" && suggestions.length > 0 && (
+                <ul className="border border-gray-300 rounded mt-1 max-h-40 w-full overflow-y-auto absolute z-50 backdrop-blur-lg bg-white/10 text-black">
+                  {suggestions.map((suggestion, index) => (
+                    <li key={index} className="p-2 hover:glass cursor-pointer" onClick={() => handleSuggestionClick(suggestion)}>
+                      {suggestion}
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
           </div>
@@ -320,10 +316,7 @@ export default function CreateEvent() {
           { label: "End Time", key: "endTime", type: "time" },
         ].map(({ label, key, type }) => (
           <div key={key} className="mb-4 px-2 w-full sm:w-1/2">
-            <label
-              htmlFor={`input-${key}`}
-              className="block text-sm font-medium"
-            >
+            <label htmlFor={`input-${key}`} className="block text-sm font-medium">
               {label} <span className="text-red-500">*</span>:
             </label>
             <div className="mt-1">
@@ -335,19 +328,14 @@ export default function CreateEvent() {
                 id={`input-${key}`}
                 className="shadow-sm block w-full sm:text-sm rounded-md"
               />
-              {errors[key] && (
-                <div className="text-red-500 text-sm">{errors[key]}</div>
-              )}
+              {errors[key] && <div className="text-red-500 text-sm">{errors[key]}</div>}
             </div>
           </div>
         ))}
       </div>
 
       <div className="mb-4">
-        <label
-          htmlFor="input-description"
-          className="block text-sm font-medium"
-        >
+        <label htmlFor="input-description" className="block text-sm font-medium">
           Description:
         </label>
         <div className="mt-1">
@@ -356,9 +344,7 @@ export default function CreateEvent() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
-          {errors.description && (
-            <div className="text-red-500 text-sm">{errors.description}</div>
-          )}
+          {errors.description && <div className="text-red-500 text-sm">{errors.description}</div>}
         </div>
       </div>
 
@@ -375,10 +361,7 @@ export default function CreateEvent() {
       </div>
 
       <div className="mb-4" ref={reoccurringRef}>
-        <label
-          htmlFor="reoccurring-option"
-          className="block text-sm font-medium"
-        >
+        <label htmlFor="reoccurring-option" className="block text-sm font-medium">
           Reoccurring:
         </label>
         <div className="mt-1 relative">
@@ -409,10 +392,9 @@ export default function CreateEvent() {
                     setSelectedReoccurringOption(option);
                     setIsReoccurringOpen(false);
                     updateEvent(option.value, "isReoccurring");
-                    if (
-                      ["weekly", "monthly", "yearly"].includes(option.value)
-                    ) {
-                      setFinalDate(""); // Reset finalDate if it's one of the recurring options
+                    if (["weekly", "monthly", "yearly"].includes(option.value)) {
+                      setFinalDate("");
+                      setIsIndefinite(false);
                     }
                   }}
                 >
@@ -422,26 +404,36 @@ export default function CreateEvent() {
             </div>
           )}
         </div>
-        {selectedReoccurringOption &&
-          ["weekly", "monthly", "yearly"].includes(
-            selectedReoccurringOption.value
-          ) && (
-            <div className="mt-4">
-              <label htmlFor="final-date" className="block text-sm font-medium">
-                Final Date:
-              </label>
+        {selectedReoccurringOption && ["weekly", "monthly", "yearly"].includes(selectedReoccurringOption.value) && (
+          <div className="mt-4">
+            <div className="flex items-center">
               <input
-                type="date"
-                id="final-date"
-                className="mt-1 block w-full rounded-md shadow-sm sm:text-sm"
-                value={finalDate}
-                onChange={(e) => {
-                  setFinalDate(e.target.value);
-                  updateEvent(e.target.value, "finalDate");
-                }}
+                type="checkbox"
+                checked={isIndefinite}
+                onChange={(e) => setIsIndefinite(e.target.checked)}
+                className="h-4 w-4 rounded"
               />
+              <label className="ml-2 text-sm font-medium">Indefinitely</label>
             </div>
-          )}
+            {!isIndefinite && (
+              <>
+                <label htmlFor="final-date" className="block text-sm font-medium mt-2">
+                  Final Date:
+                </label>
+                <input
+                  type="date"
+                  id="final-date"
+                  className="mt-1 block w-full rounded-md shadow-sm sm:text-sm"
+                  value={finalDate}
+                  onChange={(e) => {
+                    setFinalDate(e.target.value);
+                    updateEvent(e.target.value, "finalDate");
+                  }}
+                />
+              </>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="mb-4 relative" ref={categoryRef}>
@@ -508,11 +500,7 @@ export default function CreateEvent() {
           Upload Cover
         </Button>
 
-        <details
-          className="dropdown"
-          ref={inviteRef}
-          style={{ position: "relative" }}
-        >
+        <details className="dropdown" ref={inviteRef} style={{ position: "relative" }}>
           <summary className="font-bold py-2 px-4 cursor-pointer btn btn-secondary">
             ▼Invite Contact
           </summary>
@@ -525,10 +513,7 @@ export default function CreateEvent() {
                 <li className="p-2">No contacts found.</li>
               ) : (
                 contacts.map((contact) => (
-                  <li
-                    key={contact}
-                    className="p-2 hover:bg-gray-200 cursor-pointer"
-                  >
+                  <li key={contact} className="p-2 hover:bg-gray-200 cursor-pointer">
                     <a onClick={() => handleInviteUser(contact)}>{contact}</a>
                   </li>
                 ))
@@ -538,7 +523,7 @@ export default function CreateEvent() {
         </details>
 
         <details className="dropdown" ref={inviteListRef}>
-          <summary className="font-bold py-2 px-4  cursor-pointer btn btn-secondary">
+          <summary className="font-bold py-2 px-4 cursor-pointer btn btn-secondary">
             ▼Invite Group
           </summary>
           <div
@@ -550,13 +535,8 @@ export default function CreateEvent() {
                 <li className="p-2">No contact lists found.</li>
               ) : (
                 contactLists.map((list) => (
-                  <li
-                    key={list.id}
-                    className="p-2 hover:bg-gray-200 cursor-pointer"
-                  >
-                    <a onClick={() => handleInviteList(list.id, list.title)}>
-                      {list.title}
-                    </a>
+                  <li key={list.id} className="p-2 hover:bg-gray-200 cursor-pointer">
+                    <a onClick={() => handleInviteList(list.id, list.title)}>{list.title}</a>
                   </li>
                 ))
               )}

@@ -85,10 +85,13 @@ export default function SingleEventView() {
           <Map address={event.location} className="w-full h-96" />
         </div>
       </div>
-      <div className="mb-4 categories-dropdown" ref={participantsRef}>
-        <details>
-          <summary className="cursor-pointer text-lg font-semibold">Participants</summary>
-          <div className="dropdown-menu-up max-h-48 overflow-y-auto mt-2">
+      <div className="mb-4 relative" ref={participantsRef}>
+        <details className="dropdown">
+          <summary className="m-1 font-bold py-2 px-4 cursor-pointer btn btn-secondary">Participants</summary>
+          <div
+            className="dropdown-menu absolute max-h-48 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black hover:glass"
+            style={{ zIndex: 999 }}
+          >
             <ul className="space-y-2">
               {event.peopleGoing ? Object.entries(event.peopleGoing).map(([participant, participantData], index) => (
                 <li key={participant} className={`flex items-center space-x-3 ${index % 3 === 0 && 'mt-4'}`}>

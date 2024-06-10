@@ -8,7 +8,7 @@ import {
 import { AppContext } from "../../context/AppContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
-import "./styles.css"; // Import your CSS file
+import "./styles.css";
 
 export default function AllEvents() {
   const [events, setEvents] = useState([]);
@@ -106,7 +106,7 @@ export default function AllEvents() {
   return (
     <div className="events-container relative px-4 py-8">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-4xl font-bold ">All Events</h1>
+        <h1 className="text-4xl font-bold">All Events</h1>
       </div>
       <div className="flex justify-between mb-8">
         <div className="flex space-x-4">
@@ -116,27 +116,40 @@ export default function AllEvents() {
           <a href="/my-events">
             <button className="btn">My Events</button>
           </a>
-          <button className="btn " onClick={() => navigate("/public-events")}>
+          <button className="btn" onClick={() => navigate("/public-events")}>
             Public Events
           </button>
           <button className="btn" onClick={() => navigate("/private-events")}>
             Private Events
           </button>
         </div>
-        <details className="dropdown categories-dropdown" ref={categoriesRef} style={{ position: "relative" }}>
-          <summary className="btn btn-secondary">Categories</summary>
-          <div className="dropdown-menu absolute max-h-48 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black hover:glass" style={{ zIndex: 999 }}>
-            <ul className="space-y-2">
-              {categories.map((category) => (
-                <li
-                  key={category}
-                  className="p-2 hover:bg-gray-200 cursor-pointer"
-                >
-                  <a onClick={() => handleSortByCategory(category)}>
-                    {category}
-                  </a>
-                </li>
-              ))}
+        <details
+          className="dropdown"
+          ref={categoriesRef}
+          style={{ position: "relative" }}
+        >
+          <summary className="font-bold py-2 px-4 cursor-pointer btn btn-secondary">
+            ▼Categories
+          </summary>
+          <div
+            className="dropdown-menu absolute max-h-48 overflow-y-auto mt-2"
+            style={{ zIndex: 999 }}
+          >
+            <ul className="space-y-2 backdrop-blur-lg bg-white/10 text-black" >
+              {categories.length === 0 ? (
+                <li className="p-2 hover:glass" >No categories found.</li>
+              ) : (
+                categories.map((category) => (
+                  <li
+                    key={category}
+                    className="p-2 hover:bg-gray-200 cursor-pointer"
+                  >
+                    <a onClick={() => handleSortByCategory(category)}>
+                      {category}
+                    </a>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
         </details>
