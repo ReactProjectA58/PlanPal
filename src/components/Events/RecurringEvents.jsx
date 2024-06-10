@@ -22,6 +22,7 @@ const RecurringEvents = ({ events, selectedDate }) => {
       let eventEnd = parseISO(`${event.endDate}T${event.endTime}`);
       const eventDuration = differenceInMinutes(eventEnd, eventStart);
       const finalDate = event.finalDate ? parseISO(event.finalDate) : null;
+      const originalEventStart = eventStart;
 
       switch (event.isReoccurring) {
         case "weekly":
@@ -34,7 +35,8 @@ const RecurringEvents = ({ events, selectedDate }) => {
             eventStart <= endOfDay(selectedDate) &&
             eventEnd >= startOfDay(selectedDate) &&
             eventStart >= startOfWeek(selectedDate) &&
-            (!finalDate || eventStart <= finalDate)
+            (!finalDate || eventStart <= finalDate) &&
+            eventStart.getTime() !== originalEventStart.getTime()
           ) {
             recurringEvents.push({
               ...event,
@@ -53,7 +55,8 @@ const RecurringEvents = ({ events, selectedDate }) => {
             eventStart <= endOfDay(selectedDate) &&
             eventEnd >= startOfDay(selectedDate) &&
             eventStart >= startOfMonth(selectedDate) &&
-            (!finalDate || eventStart <= finalDate)
+            (!finalDate || eventStart <= finalDate) &&
+            eventStart.getTime() !== originalEventStart.getTime()
           ) {
             recurringEvents.push({
               ...event,
@@ -72,7 +75,8 @@ const RecurringEvents = ({ events, selectedDate }) => {
             eventStart <= endOfDay(selectedDate) &&
             eventEnd >= startOfDay(selectedDate) &&
             eventStart >= startOfYear(selectedDate) &&
-            (!finalDate || eventStart <= finalDate)
+            (!finalDate || eventStart <= finalDate) &&
+            eventStart.getTime() !== originalEventStart.getTime()
           ) {
             recurringEvents.push({
               ...event,

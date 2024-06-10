@@ -59,12 +59,8 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
   });
 
   const allEventsForSelectedDay = [
-    ...eventsForSelectedDay.filter((event) => {
-      return !recurringEventsForSelectedDay.some((recurringEvent) => {
-        return recurringEvent.eventId === event.eventId;
-      });
-    }),
     ...recurringEventsForSelectedDay,
+    ...eventsForSelectedDay,
   ];
 
   const getCategoryColor = (category, isPast) => {
