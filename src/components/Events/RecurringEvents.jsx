@@ -10,6 +10,7 @@ import {
   endOfDay,
   startOfWeek,
   addMinutes,
+  format,
 } from "date-fns";
 import PropTypes from "prop-types";
 
@@ -18,71 +19,75 @@ const RecurringEvents = ({ events, selectedDate }) => {
 
   events.forEach((event) => {
     if (event.isReoccurring) {
-      let eventStart = parseISO(`${event.startDate}T${event.startTime}`);
-      let eventEnd = parseISO(`${event.endDate}T${event.endTime}`);
-      const eventDuration = differenceInMinutes(eventEnd, eventStart);
+      const originalEventStart = parseISO(`${event.startDate}T${event.startTime}`);
+      const originalEventEnd = parseISO(`${event.endDate}T${event.endTime}`);
+      const eventDuration = differenceInMinutes(originalEventEnd, originalEventStart);
       const finalDate = event.finalDate ? parseISO(event.finalDate) : null;
-      const originalEventStart = eventStart;
+
+      let eventStart = originalEventStart;
+      let eventEnd = originalEventEnd;
+
+      const addRecurrence = () => {
+        recurringEvents.push({
+          ...event,
+          startDate: format(eventStart, "yyyy-MM-dd"),
+          endDate: format(eventEnd, "yyyy-MM-dd"),
+          startTime: format(eventStart, "HH:mm"),
+          endTime: format(eventEnd, "HH:mm"),
+        });
+      };
+
+      const calculateNextOccurrence = (unit) => {
+        switch (unit) {
+          case "weekly":
+            eventStart = addWeeks(eventStart, 1);
+            break;
+          case "monthly":
+            eventStart = addMonths(eventStart, 1);
+            break;
+          case "yearly":
+            eventStart = addYears(eventStart, 1);
+            break;
+          default:
+            break;
+        }
+        eventEnd = addMinutes(eventStart, eventDuration);
+      };
+
+      const shouldAddEvent = () => {
+        return (
+          eventStart <= endOfDay(selectedDate) &&
+          eventEnd >= startOfDay(selectedDate) &&
+          (!finalDate || eventStart <= finalDate)
+        );
+      };
 
       switch (event.isReoccurring) {
         case "weekly":
           while (eventStart < startOfWeek(selectedDate)) {
-            eventStart = addWeeks(eventStart, 1);
-            eventEnd = addMinutes(eventStart, eventDuration);
+            calculateNextOccurrence("weekly");
             if (finalDate && eventStart > finalDate) break;
           }
-          if (
-            eventStart <= endOfDay(selectedDate) &&
-            eventEnd >= startOfDay(selectedDate) &&
-            eventStart >= startOfWeek(selectedDate) &&
-            (!finalDate || eventStart <= finalDate) &&
-            eventStart.getTime() !== originalEventStart.getTime()
-          ) {
-            recurringEvents.push({
-              ...event,
-              startDate: eventStart.toISOString().split("T")[0],
-              endDate: eventEnd.toISOString().split("T")[0],
-            });
+          if (shouldAddEvent() && eventStart.getTime() !== originalEventStart.getTime()) {
+            addRecurrence();
           }
           break;
         case "monthly":
           while (eventStart < startOfMonth(selectedDate)) {
-            eventStart = addMonths(eventStart, 1);
-            eventEnd = addMinutes(eventStart, eventDuration);
+            calculateNextOccurrence("monthly");
             if (finalDate && eventStart > finalDate) break;
           }
-          if (
-            eventStart <= endOfDay(selectedDate) &&
-            eventEnd >= startOfDay(selectedDate) &&
-            eventStart >= startOfMonth(selectedDate) &&
-            (!finalDate || eventStart <= finalDate) &&
-            eventStart.getTime() !== originalEventStart.getTime()
-          ) {
-            recurringEvents.push({
-              ...event,
-              startDate: eventStart.toISOString().split("T")[0],
-              endDate: eventEnd.toISOString().split("T")[0],
-            });
+          if (shouldAddEvent() && eventStart.getTime() !== originalEventStart.getTime()) {
+            addRecurrence();
           }
           break;
         case "yearly":
           while (eventStart < startOfYear(selectedDate)) {
-            eventStart = addYears(eventStart, 1);
-            eventEnd = addMinutes(eventStart, eventDuration);
+            calculateNextOccurrence("yearly");
             if (finalDate && eventStart > finalDate) break;
           }
-          if (
-            eventStart <= endOfDay(selectedDate) &&
-            eventEnd >= startOfDay(selectedDate) &&
-            eventStart >= startOfYear(selectedDate) &&
-            (!finalDate || eventStart <= finalDate) &&
-            eventStart.getTime() !== originalEventStart.getTime()
-          ) {
-            recurringEvents.push({
-              ...event,
-              startDate: eventStart.toISOString().split("T")[0],
-              endDate: eventEnd.toISOString().split("T")[0],
-            });
+          if (shouldAddEvent() && eventStart.getTime() !== originalEventStart.getTime()) {
+            addRecurrence();
           }
           break;
         default:

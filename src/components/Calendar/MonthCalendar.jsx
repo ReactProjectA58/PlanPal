@@ -89,7 +89,7 @@ export default function MonthCalendar({ onDateClick, events }) {
   });
 
   return (
-    <div className="h-full w-full">
+    <div className="pt-16" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
       <div className="max-w-full h-full px-2 sm:px-4 mx-auto">
         <div className="flex items-center justify-between mb-4">
           <button

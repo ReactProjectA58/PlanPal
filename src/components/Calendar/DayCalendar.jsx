@@ -75,7 +75,7 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
   };
 
   return (
-    <div className="pt-16 w-full">
+    <div className="pt-16" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
       <div className="px-4 mx-auto sm:px-7 md:px-6 max-w-full">
         <div className="flex items-center justify-between mb-8">
           <button
