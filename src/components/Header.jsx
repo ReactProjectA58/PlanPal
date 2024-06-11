@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
-import { logoutUser } from "../services/auth.service";
+import { logoutUser } from '../services/auth.service';
 import { DARK_THEME, LIGHT_THEME } from "../common/constants";
 import { Moon, Sun } from "../common/helpers/icons";
 import SideBar from "./Sidebar/Sidebar";
 import AnimatedButton from "./AnimatedButton/AnimatedButton";
 import HomeButton from "./AnimatedButton/HomeButton";
+import AdminPanelDropdown from "./AdminPanel/AdminPanel";
 
 export default function Header() {
   const { user, userData, setAppState } = useContext(AppContext);
@@ -44,7 +45,6 @@ export default function Header() {
     >
       <div className="flex items-center">
         {user && <SideBar />}
-
         <HomeButton />
       </div>
 
@@ -54,6 +54,7 @@ export default function Header() {
             <button className="btn btn-primary" onClick={handleClick}>
               Profile
             </button>
+            {userData?.role === "Admin" && <AdminPanelDropdown />}
             <button className="btn btn-secondary" onClick={logout}>
               Logout
             </button>
