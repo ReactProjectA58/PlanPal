@@ -13,7 +13,7 @@ import { themeChecker } from "../../../common/helpers/toast";
 export default function PanelLists({ setCurrentView, list, allContacts }) {
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
-  const [contacts, setContacts] = useState(list?.contacts || {});
+  const [contacts, setContacts] = useState({});
 
   useEffect(() => {
     setContacts(list?.contacts || {});
@@ -40,6 +40,7 @@ export default function PanelLists({ setCurrentView, list, allContacts }) {
     setContacts(updatedContacts);
     updateContact(listKey, updatedContacts);
   };
+  // console.log(list.contacts);
 
   return (
     <ul className="mb-4 p-4 bg-transparent rounded-lg shadow-xl">
@@ -59,16 +60,17 @@ export default function PanelLists({ setCurrentView, list, allContacts }) {
             <div tabIndex={0} role="button" className="btn-ghost">
               <Plus />
             </div>
-            <ul className="dropdown-content grid menu p-2 shadow bg-base-100 rounded-box overflow-auto h-auto max-h-48 z-50">
+            <ul className="dropdown-content grid menu p-2 shadow bg-base-100 rounded-box overflow-auto h-auto max-h-48">
               <li className="menu-title">
                 <span>Contacts</span>
               </li>
               {allContacts && allContacts.length > 0 ? (
                 allContacts.map((contact) => {
                   const isContactInList =
-                    contacts && contacts[contact.handle.toLowerCase()];
+                    (contacts && contacts[contact.handle.toLowerCase()]) ??
+                    false;
                   return (
-                    <li key={contact?.handle}>
+                    <li key={contact.handle}>
                       <label className="label cursor-pointer">
                         <input
                           type="checkbox"
