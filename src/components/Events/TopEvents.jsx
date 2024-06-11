@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getTopThreeEvents } from "../../services/event.service.js";
 import EventItem from "./EventItem.jsx";
+import LoadingSpinner from "../Loading/LoadingSpinner.jsx";
 
 const TopThreeEvents = () => {
   const [events, setEvents] = useState([]);
@@ -23,7 +24,11 @@ const TopThreeEvents = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (error) {

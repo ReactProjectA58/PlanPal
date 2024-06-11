@@ -11,6 +11,7 @@ import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
 import "./styles.css";
 import { errorChecker, themeChecker } from "../../common/helpers/toast.js";
 import LoadingSpinner from "../Loading/LoadingSpinner.jsx";
+import showConfirmDialog from "../ConfirmDialog.jsx";
 
 export default function AllEvents() {
   const [events, setEvents] = useState([]);
@@ -63,9 +64,9 @@ export default function AllEvents() {
     }
   };
 
-  const handleLeaveEvent = async (eventTitle) => {
+  const handleLeaveEvent = async (eventId, eventTitle) => {
     showConfirmDialog("Do you want to leave this event?", async () => {
-      const result = await leaveEvent(userData.handle, eventTitle);
+      const result = await leaveEvent(userData.handle, eventId);
       if (result) {
         themeChecker("You have left the event successfully!");
         const updatedGoingToEvents = { ...userData.goingToEvents };

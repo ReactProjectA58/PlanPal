@@ -4,10 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContext.jsx";
 import { joinEvent, leaveEvent } from "../../services/event.service.js";
 import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
+import { errorChecker, themeChecker } from "../../common/helpers/toast.js";
+import showConfirmDialog from "../ConfirmDialog.jsx";
 
 const EventItem = ({ event }) => {
   const { user, userData } = useContext(AppContext);
-  const [isGoing, setIsGoing] = useState(userData?.goingToEvents?.[event.title] || false);
+  const [isGoing, setIsGoing] = useState(
+    userData?.goingToEvents?.[event.title] || false
+  );
   const navigate = useNavigate();
 
   const handleJoinEventDashboard = async () => {
@@ -18,7 +22,7 @@ const EventItem = ({ event }) => {
 
     const result = await joinEvent(userData.handle, event.id);
     if (result) {
-      alert("You have joined the event successfully!");
+      themeChecker("You have joined the event successfully!");
 
       setIsGoing(true);
     }
@@ -26,16 +30,18 @@ const EventItem = ({ event }) => {
 
   const handleLeaveEventDashboard = async () => {
     if (!userData) {
-      alert("User data is not available.");
+      errorChecker("User data is not available.");
       return;
     }
 
-    const result = await leaveEvent(userData.handle, event.title);
-    if (result) {
-      alert("You have left the event successfully!");
+    showConfirmDialog("Do you want to leave this event?", async () => {
+      const result = await leaveEvent(userData.handle, event.title);
+      if (result) {
+        themeChecker("You have left the event successfully!");
 
-      setIsGoing(false);
-    }
+        setIsGoing(false);
+      }
+    });
   };
 
   return (
@@ -81,7 +87,10 @@ const EventItem = ({ event }) => {
                   Leave Event
                 </button>
               ) : (
-                <button className="btn btn-secondary" onClick={handleJoinEventDashboard}>
+                <button
+                  className="btn btn-secondary"
+                  onClick={handleJoinEventDashboard}
+                >
                   Join Event
                 </button>
               )}
@@ -94,4 +103,3 @@ const EventItem = ({ event }) => {
 };
 
 export default EventItem;
-
