@@ -483,3 +483,24 @@ export const getTopThreeEvents = async () => {
     throw new Error("Failed to fetch events");
   }
 };
+
+export const searchEventsByName = async (eventName) => {
+  const db = getDatabase();
+  const eventsRef = ref(db, 'events');
+
+  try {
+    const snapshot = await get(eventsRef);
+    if (snapshot.exists()) {
+      const events = snapshot.val();
+      const matchingEvents = Object.keys(events)
+        .filter(key => events[key].name.toLowerCase().includes(eventName.toLowerCase()))
+        .map(key => ({ id: key, ...events[key] }));
+      return matchingEvents;
+    } else {
+      throw new Error("No events found");
+    }
+  } catch (error) {
+    console.error("Error searching events by name:", error);
+    throw error;
+  }
+};
