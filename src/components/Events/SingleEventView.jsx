@@ -110,7 +110,7 @@ export default function SingleEventView() {
         <div className="flex items-center space-x-2">
           <GoBackArrow onClick={() => navigate("/events")} />
           {(userData?.handle === event.creator ||
-            userData.role === "Admin") && (
+            userData?.role === "Admin") && (
             <Edit onClick={() => navigate(`/update-event/${eventId}`)} />
           )}
         </div>

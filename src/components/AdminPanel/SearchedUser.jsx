@@ -53,6 +53,10 @@ export default function SearchedUser({ user }) {
         <div className="grid grid-cols-3 gap-4 text-gray-500 text-xs">
           <p className="col-span-3">Username: {user.handle}</p>
           <p className="col-span-3">Email: {user.email}</p>
+          <p className="col-span-3">Phone Number: {user.phoneNumber}</p>
+          <p className="col-span-3">Role: {user.role}</p>
+          <p className="col-span-3">Blocked: {user.isBlocked ? "Yes" : "No"}</p>
+          <p className="col-span-3">Address: {user.address}</p>
         </div>
         <div className="card-actions flex space-x-2">
           {isBlocked ? (
@@ -84,5 +88,8 @@ SearchedUser.propTypes = {
     email: PropTypes.string.isRequired,
     avatar: PropTypes.string,
     isBlocked: PropTypes.bool.isRequired,
+    phoneNumber: PropTypes.string.isRequired,
+    role: PropTypes.string.isRequired,
+    address: PropTypes.string,
   }).isRequired,
 };
