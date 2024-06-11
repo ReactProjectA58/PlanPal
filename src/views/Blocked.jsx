@@ -11,7 +11,7 @@ export default function Blocked() {
           href="mailto:admin@planpal.com"
           style={{ color: "rgb(90, 68, 22)" }}
         >
-          admin@reactventure.com
+          admin@planpal.com
         </a>{" "}
         for assistance.
       </p>

@@ -1,30 +1,62 @@
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { useState, useRef, useEffect } from "react"; // Import necessary hooks from react
 
 export default function AdminPanelDropdown() {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const handleLinkClick = () => {
+    setOpen(false); // Close the dropdown
+  };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="dropdown dropdown-end">
+    <div className="dropdown dropdown-end" ref={dropdownRef}>
       <button
         className="btn btn-secondary dropdown-toggle"
         type="button"
         tabIndex="0"
+        onClick={() => setOpen(!open)} // Toggle the dropdown
       >
         Admin Panel
       </button>
-      <ul
-        tabIndex="0"
-        className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
-      >
-        <li>
-          <Link className="dropdown-item" to="/user-search">
-            Users searcher
-          </Link>
-        </li>
-        <li>
-          <Link className="dropdown-item" to="/events">
-            View All Events
-          </Link>
-        </li>
-      </ul>
+      {open && (
+        <ul
+          tabIndex="0"
+          className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+        >
+          <li>
+            <Link
+              className="dropdown-item"
+              to="/user-search"
+              onClick={handleLinkClick}
+            >
+              Users searcher
+            </Link>
+          </li>
+          <li>
+            <Link
+              className="dropdown-item"
+              to="/events"
+              onClick={handleLinkClick}
+            >
+              View All Events
+            </Link>
+          </li>
+        </ul>
+      )}
     </div>
   );
 }
