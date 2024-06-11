@@ -140,9 +140,9 @@ export default function AllEvents() {
               {categories.length === 0 ? (
                 <li className="p-2 hover:glass">No categories found.</li>
               ) : (
-                categories.map((category) => (
+                categories.map((category, index) => (
                   <li
-                    key={category}
+                    key={index}
                     className="p-2 hover:bg-gray-200 cursor-pointer"
                   >
                     <a onClick={() => handleSortByCategory(category)}>
@@ -159,9 +159,9 @@ export default function AllEvents() {
         {events.length === 0 ? (
           <div className="text-center text-gray-600">No events found.</div>
         ) : (
-          events.map((event) => (
+          events.map((event, index) => (
             <div
-              key={event.id}
+              key={index}
               className="event-card shadow-xl transform transition-transform hover:scale-105 mt-4 flex flex-row items-center p-4 space-x-4 rounded-lg"
             >
               <figure className="w-96 h-64">
