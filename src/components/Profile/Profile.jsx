@@ -114,11 +114,11 @@ function Profile() {
               </div>
             </div>
             <div>
-              <label className="text-lg font-medium">Username:</label>
+              <label className="text-lg font-medium">Username: </label>
               <span className="text-lg">{userData.handle}</span>
             </div>
             <div>
-              <label className="text-lg font-medium">First Name:</label>
+              <label className="text-lg font-medium">First Name: </label>
               {isEditing ? (
                 <>
                   <input
@@ -139,7 +139,7 @@ function Profile() {
               )}
             </div>
             <div>
-              <label className="text-lg font-medium">Last Name:</label>
+              <label className="text-lg font-medium">Last Name: </label>
               {isEditing ? (
                 <>
                   <input
@@ -160,7 +160,7 @@ function Profile() {
               )}
             </div>
             <div>
-              <label className="text-lg font-medium">Phone:</label>
+              <label className="text-lg font-medium">Phone: </label>
               {isEditing ? (
                 <>
                   <input
@@ -181,7 +181,7 @@ function Profile() {
               )}
             </div>
             <div>
-              <label className="text-lg font-medium">Email:</label>
+              <label className="text-lg font-medium">Email: </label>
               {isEditing ? (
                 <>
                   <input
@@ -202,7 +202,7 @@ function Profile() {
               )}
             </div>
             <div>
-              <label className="text-lg font-medium">Address:</label>
+              <label className="text-lg font-medium">Address: </label>
               {isEditing ? (
                 <>
                   <input

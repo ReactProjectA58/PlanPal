@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import Kaloyan from "../../assets/me.png";
-// import Milen from "../../assets/me2.png";
+import Milen from "../../assets/Milen.png";
 // import Yordan from "../../assets/me3.png";
 import "./AnimatedCard.css";
 import { useGSAP } from "@gsap/react";
@@ -20,19 +20,19 @@ const cardData = [
     github: "https://github.com/kkkostov",
   },
   {
-    // profilePic: Milen,
+    profilePic: Milen,
     description:
-      "I'm an enthusiastic junior developer specializing in JavaScript and React. I enjoy creating dynamic web applications and strive to deliver high-quality solutions.",
-    name: "Milen",
+      "I'm a passionate junior developer focused on JavaScript and React. I love building interactive web applications and aim to provide top-notch solutions.",
+    name: "Milen Donev",
     title: "Junior Frontend Developer",
-    linkedin: "https://www.linkedin.com/",
-    github: "https://github.com/",
+    linkedin: "https://www.linkedin.com/in/milen-donev-00b031227/",
+    github: "https://github.com/MilenDonevv",
   },
   {
     // profilePic: Yordan,
     description:
       "I'm an enthusiastic junior developer specializing in JavaScript and React. I enjoy creating dynamic web applications and strive to deliver high-quality solutions.",
-    name: "Yordan",
+    name: "Yordan Dimitrov",
     title: "Junior Frontend Developer",
     linkedin: "https://www.linkedin.com/",
     github: "https://github.com/",

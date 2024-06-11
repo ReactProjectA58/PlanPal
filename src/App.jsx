@@ -24,6 +24,8 @@ import UpdateEvent from "./components/Events/UpdateEvent.jsx";
 import Calendar from "./components/Calendar/Calendar.jsx";
 import { ToastContainer } from "react-toastify";
 import AboutUs from "./views/AboutUs.jsx";
+import UserSearch from './components/AdminPanel/UserSearch.jsx';
+import Blocked from './views/Blocked.jsx';
 
 const HomeWithLoading = withLoading(Home);
 const LoginWithLoading = withLoading(Login);
@@ -68,7 +70,11 @@ function App() {
       <ToastContainer newestOnTop />
       <AppContext.Provider value={{ ...appState, setAppState }}>
         <div className="flex flex-col justify-between max-w-full">
-          <Header />
+          {appState.userData && appState.userData.isBlocked ? (
+            <RestrictedHeader userData={appState.userData} />
+          ) : (
+            <Header />
+          )}
           <div className="container mx-auto min-h-screen min-w-min">
             <Routes>
               <Route
@@ -104,6 +110,8 @@ function App() {
               />
               <Route path="/profile/:handle" element={<ProfileWithLoading />} />
               <Route path="/about" element={<AboutUsWithLoading />} />
+              <Route path="/user-search" element={<UserSearch />} />
+              <Route path="/blocked" element={<Blocked />} />
               <Route path="*" element={<NotFoundWithLoading />} />
             </Routes>
           </div>

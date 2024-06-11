@@ -1,0 +1,40 @@
+.btn {
+    background-color: rgb(81, 126, 51);
+    border-color: transparent;
+  }
+  
+  .btn:hover {
+    background-color: rgb(147, 197, 114);
+    border-color: transparent;
+  }
+  .dropdown-item {
+    width: 90%;
+  }
+  
+  .dropdown-item:active {
+    background-color: rgb(147, 197, 114);
+  }
+  
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .navigation-links {
+    display: flex;
+  }
+  
+  .user-section {
+    display: flex;
+    align-items: center;
+  }
+  
+  .admin-panel {
+    margin-left: 10px;
+  }
+  
+  .user-welcome {
+    margin-right: 10px;
+  }
+  
