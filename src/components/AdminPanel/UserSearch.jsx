@@ -34,30 +34,23 @@ export default function UserSearch() {
   }, [searchTerm, users]);
 
   return (
-    <div>
+    <div className="flex flex-col items-center my-8">
       <input
         type="text"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search for user..."
-        style={{
-          borderStyle: "inset",
-          borderWidth: "2px",
-          borderColor: "green",
-          backgroundColor: "white",
-          color: "black",
-          boxShadow: "inset 0px 0px 5px rgba(0, 0, 0, 0.5)",
-        }}
+        className="border-2 border-gray-300 bg-white text-black shadow-inner focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent rounded-lg px-4 py-2"
       />
 
       {searchPerformed && searchResults.length === 0 && (
-        <>
-          <h2>Search Results:</h2>
-          <p>No users found.</p>
-        </>
+        <div className="text-center mt-4">
+          <h2 className="text-xl font-semibold">Search Results:</h2>
+          <p className="text-gray-500">No users found.</p>
+        </div>
       )}
 
-      <div>
+      <div className="mt-6 w-full max-w-3xl">
         {searchResults.map((user) => (
           <SearchedUser key={user.id} user={user} />
         ))}
