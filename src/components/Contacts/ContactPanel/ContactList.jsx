@@ -32,14 +32,15 @@ export default function ContactList({
         </span>
       </ul>
       {renderedContacts &&
-        renderedContacts.map((list) => (
+        renderedContacts.map((list, uniqueId) => (
           <PanelLists
-            key={list.key}
+            key={uniqueId}
             list={list}
             renderedContacts={renderedContacts}
             allContacts={allContacts}
             setCurrentView={setCurrentView}
           />
+          // console.log(list.key)
         ))}
     </div>
   );
