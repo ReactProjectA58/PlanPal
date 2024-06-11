@@ -21,6 +21,8 @@ import {
   faCircleArrowLeft,
   faEye,
   faEyeSlash,
+  faCheck,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -185,4 +187,12 @@ export const ArrowDown = () => {
 
 export const TrashBin = () => {
   return <FontAwesomeIcon icon={faTrash} size={"lg"} />;
+};
+
+export const Check = () => {
+  return <FontAwesomeIcon icon={faCheck} size={"lg"} />;
+};
+
+export const Uncheck = () => {
+  return <FontAwesomeIcon icon={faXmark} size={"lg"} />;
 };

@@ -1,5 +1,6 @@
 import { ref, push, getDatabase, get, update } from "firebase/database";
 import { db } from "../config/firebase-config";
+import { themeChecker } from "../common/helpers/toast";
 
 export const addEvent = async (event) => {
   const newEvent = {
@@ -59,7 +60,7 @@ export const joinEvent = async (handle, eventId) => {
       ref(db, `users/${handle}/goingToEvents/${eventTitle}`)
     );
     if (userEventSnapshot.exists()) {
-      alert("You already joined this event");
+      themeChecker("You already joined this event");
       return;
     }
 

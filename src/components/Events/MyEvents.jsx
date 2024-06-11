@@ -4,6 +4,9 @@ import { AppContext } from "../../context/AppContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { GoBackArrow } from "../../common/helpers/icons.jsx";
 import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
+import { errorChecker, themeChecker } from "../../common/helpers/toast.js";
+import showConfirmDialog from "../ConfirmDialog.jsx";
+import LoadingSpinner from "../Loading/LoadingSpinner.jsx";
 
 export default function MyEvents() {
   const [events, setEvents] = useState([]);
@@ -34,36 +37,27 @@ export default function MyEvents() {
   }, [userData, userLoading]);
 
   const handleLeaveEvent = async (eventTitle) => {
-    if (!userData) {
-      alert("User data is not available.");
-      return;
-    }
-
-    const confirmLeave = window.confirm(
-      "Please confirm you want to leave this event."
-    );
-    if (!confirmLeave) {
-      return; // User canceled the action
-    }
-
-    const result = await leaveEvent(userData.handle, eventTitle);
-    if (result) {
-      alert("You have left the event successfully!");
-
-      const updatedUserData = {
-        ...userData,
-        goingToEvents: {
-          ...userData.goingToEvents,
-          [eventTitle]: false,
-        },
-      };
-      setAppState(updatedUserData);
-      navigate("/my-events");
-    }
+    showConfirmDialog("Do you want to leave this event?", async () => {
+      const result = await leaveEvent(userData.handle, eventTitle);
+      if (result) {
+        themeChecker("You have left the event successfully!");
+        const updatedGoingToEvents = { ...userData.goingToEvents };
+        updatedGoingToEvents[eventTitle] = false;
+        setAppState({
+          ...userData,
+          goingToEvents: updatedGoingToEvents,
+        });
+        navigate("/my-events");
+      }
+    });
   };
 
   if (loading || userLoading)
-    return <div className="text-center mt-10">Loading...</div>;
+    return (
+      <div className="text-center mt-10">
+        <LoadingSpinner />
+      </div>
+    );
   if (error)
     return <div className="text-center text-red-500 mt-10">{error}</div>;
 
