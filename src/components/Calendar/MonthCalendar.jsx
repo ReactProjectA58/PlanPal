@@ -57,11 +57,7 @@ export default function MonthCalendar({ onDateClick, events }) {
     );
   
     const allEventsForSelectedDay = [
-      ...eventsForSelectedDay.filter((event) => {
-        return !recurringEventsForSelectedDay.some((recurringEvent) => {
-          return recurringEvent.eventId === event.eventId;
-        });
-      }),
+      ...eventsForSelectedDay,
       ...recurringEventsForSelectedDay,
     ];
   
@@ -93,9 +89,9 @@ export default function MonthCalendar({ onDateClick, events }) {
   });
 
   return (
-    <div className="pt-16 h-full w-full">
-      <div className="max-w-7xl px-4 mx-auto sm:px-7 md:max-w-6xl md:px-6 h-full">
-        <div className="flex items-center justify-between mb-8">
+    <div className="pt-16" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
+      <div className="max-w-full h-full px-2 sm:px-4 mx-auto">
+        <div className="flex items-center justify-between mb-4">
           <button
             type="button"
             onClick={previousMonth}
@@ -144,9 +140,9 @@ export default function MonthCalendar({ onDateClick, events }) {
             </svg>
           </button>
         </div>
-        <div className="grid grid-cols-7 gap-1 text-center">
+        <div className="grid grid-cols-7 gap-2 text-center">
           {["M", "T", "W", "T", "F", "S", "S"].map((day, index) => (
-            <div key={index} className="text-xl font-semibold pb-8">
+            <div key={index} className="text-xl font-semibold">
               {day}
             </div>
           ))}
@@ -155,7 +151,7 @@ export default function MonthCalendar({ onDateClick, events }) {
               key={day.toString()}
               className={classNames(
                 dayIdx === 0 && colStartClasses[getDay(day)],
-                "py-1.5 relative h-32" 
+                "py-1.5 relative h-auto"
               )}
             >
               <button
