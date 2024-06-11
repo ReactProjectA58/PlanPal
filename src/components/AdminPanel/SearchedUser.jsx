@@ -4,6 +4,8 @@ import { AppContext } from "../../context/AppContext";
 import { Link } from "react-router-dom";
 import { blockUser, unblockUser } from "../../services/admin.service.js";
 import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
+import { themeChecker } from "../../common/helpers/toast.js";
+import showConfirmDialog from "../ConfirmDialog.jsx";
 
 export default function SearchedUser({ user }) {
   const { userData } = useContext(AppContext);
@@ -11,17 +13,17 @@ export default function SearchedUser({ user }) {
   const isAdmin = userData && userData.isAdmin;
 
   const handleBlockUser = async () => {
-    const confirmBlock = window.confirm(
+    const confirmBlock = showConfirmDialog(
       "Please confirm you want to block this user."
     );
-    if (!confirmBlock) {
-      return; // User canceled the action
+    if (confirmBlock) {
+      return;
     }
 
     try {
       await blockUser(user.handle);
       setIsBlocked(true);
-      alert("User has been blocked successfully.");
+      themeChecker("User has been blocked successfully.");
     } catch (error) {
       console.error("Error blocking user:", error);
     }
@@ -31,7 +33,7 @@ export default function SearchedUser({ user }) {
     try {
       await unblockUser(user.handle);
       setIsBlocked(false);
-      alert("User has been unblocked successfully.");
+      themeChecker("User has been unblocked successfully.");
     } catch (error) {
       console.error("Error unblocking user:", error);
     }

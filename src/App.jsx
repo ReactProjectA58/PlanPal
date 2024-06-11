@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "./config/firebase-config.js";
+import { app, auth } from "./config/firebase-config.js";
 import Home from "./views/Home.jsx";
 import Dashboard from "./views/Dashboard.jsx";
 import Footer from "./components/Footer.jsx";
@@ -24,8 +24,9 @@ import UpdateEvent from "./components/Events/UpdateEvent.jsx";
 import Calendar from "./components/Calendar/Calendar.jsx";
 import { ToastContainer } from "react-toastify";
 import AboutUs from "./views/AboutUs.jsx";
-import UserSearch from './components/AdminPanel/UserSearch.jsx';
-import Blocked from './views/Blocked.jsx';
+import UserSearch from "./components/AdminPanel/UserSearch.jsx";
+import Blocked from "./views/Blocked.jsx";
+import Authenticated from "./hoc/Authenticated"; // Import the Authenticated component
 
 const HomeWithLoading = withLoading(Home);
 const LoginWithLoading = withLoading(Login);
@@ -52,63 +53,152 @@ function App() {
 
   useEffect(() => {
     if (appState.user !== user) {
-      setAppState((prevState) => ({ ...prevState, user }));
+      setAppState((prevState) => ({
+        ...prevState,
+        user,
+      }));
     }
   }, [user, appState.user]);
 
   useEffect(() => {
-    if (!appState.user) return;
+    if (!appState.user) {
+      setAppState((prevState) => ({
+        ...prevState,
+        userData: null,
+      }));
+      return;
+    }
 
     getUserData(appState.user.uid).then((snapshot) => {
-      const userData = snapshot.val() ? Object.values(snapshot.val())[0] : null;
-      setAppState((prevState) => ({ ...prevState, userData }));
+      const fetchedUserData = snapshot.val()
+        ? Object.values(snapshot.val())[0]
+        : null;
+      const userData = fetchedUserData
+        ? { ...fetchedUserData, isBlocked: fetchedUserData.isBlocked ?? false }
+        : null;
+      setAppState((prevState) => ({
+        ...prevState,
+        userData,
+      }));
     });
   }, [appState.user]);
+
+  const renderDashboard = () => {
+    return <DashboardWithLoading />;
+  };
 
   return (
     <BrowserRouter>
       <ToastContainer newestOnTop />
       <AppContext.Provider value={{ ...appState, setAppState }}>
         <div className="flex flex-col justify-between max-w-full">
-          {appState.userData && appState.userData.isBlocked ? (
-            <RestrictedHeader userData={appState.userData} />
-          ) : (
-            <Header />
-          )}
+          <Header />
           <div className="container mx-auto min-h-screen min-w-min">
             <Routes>
               <Route
                 path="/"
-                element={user ? <DashboardWithLoading /> : <HomeWithLoading />}
+                element={
+                  appState.user ? (
+                    appState.userData && appState.userData.isBlocked ? (
+                      <Blocked />
+                    ) : (
+                      renderDashboard()
+                    )
+                  ) : (
+                    <HomeWithLoading />
+                  )
+                }
               />
               <Route path="/login" element={<LoginWithLoading />} />
               <Route path="/register" element={<RegisterWithLoading />} />
               <Route
                 path="/contacts"
-                element={<ContactsDashboardWithLoading />}
+                element={
+                  <Authenticated>
+                    <ContactsDashboardWithLoading />
+                  </Authenticated>
+                }
               />
-              <Route path="/dashboard" element={<DashboardWithLoading />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <Authenticated>
+                    <DashboardWithLoading />
+                  </Authenticated>
+                }
+              />
               <Route
                 path="/create-event"
-                element={<CreateEventWithLoading />}
+                element={
+                  <Authenticated>
+                    <CreateEventWithLoading />
+                  </Authenticated>
+                }
               />
-              <Route path="/calendar" element={<CalendarWithLoading />} />
-              <Route path="/update-event/:eventId" element={<UpdateEvent />} />
-              <Route path="/events" element={<AllEventsWithLoading />} />
-              <Route path="/my-events" element={<MyEventsWithLoading />} />
+              <Route
+                path="/calendar"
+                element={
+                  <Authenticated>
+                    <CalendarWithLoading />
+                  </Authenticated>
+                }
+              />
+              <Route
+                path="/update-event/:eventId"
+                element={
+                  <Authenticated>
+                    <UpdateEvent />
+                  </Authenticated>
+                }
+              />
+              <Route
+                path="/events"
+                element={
+                  <Authenticated>
+                    <AllEventsWithLoading />
+                  </Authenticated>
+                }
+              />
+              <Route
+                path="/my-events"
+                element={
+                  <Authenticated>
+                    <MyEventsWithLoading />
+                  </Authenticated>
+                }
+              />
               <Route
                 path="/public-events"
-                element={<PublicEventsWithLoading />}
+                element={
+                  <Authenticated>
+                    <PublicEventsWithLoading />
+                  </Authenticated>
+                }
               />
               <Route
                 path="/private-events"
-                element={<PrivateEventsWithLoading />}
+                element={
+                  <Authenticated>
+                    <PrivateEventsWithLoading />
+                  </Authenticated>
+                }
               />
               <Route
                 path="/events/:eventId"
-                element={<SingleViewEventWithLoading />}
+                element={
+                  <Authenticated>
+                    <SingleViewEventWithLoading />
+                  </Authenticated>
+                }
               />
-              <Route path="/profile/:handle" element={<ProfileWithLoading />} />
+              <Route
+                path="/profile/:handle"
+                element={
+                  <Authenticated>
+                    <ProfileWithLoading />
+                  </Authenticated>
+                }
+              />
               <Route path="/about" element={<AboutUsWithLoading />} />
               <Route path="/user-search" element={<UserSearch />} />
               <Route path="/blocked" element={<Blocked />} />

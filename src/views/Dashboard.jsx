@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import MonthCalendar from "../components/Calendar/MonthCalendar";
 import { displayMyEvents } from "../services/event.service";
-import { AppContext } from "../context/AppContext"; 
+import { AppContext } from "../context/AppContext";
 import TopThreeEvents from "../components/Events/TopEvents";
 import WeatherComponent from "../components/Weather/WeatherComponent";
 
@@ -32,19 +32,21 @@ function Dashboard() {
 
   return (
     <div className="p-4">
-      <div className="grid grid-cols-3 gap-4" style={{ height: "70vh" }}> 
-        <div className="col-span-2 pt-32"> 
-          <MonthCalendar 
-            events={events} 
-            onDateClick={handleDateClick} 
-            selectedDate={selectedDate} 
+      <div className="grid grid-cols-3 gap-4" style={{ height: "70vh" }}>
+        <div className="col-span-2 pt-32">
+          <MonthCalendar
+            events={events}
+            onDateClick={handleDateClick}
+            selectedDate={selectedDate}
           />
         </div>
         <div className="col-span-1">
           <WeatherComponent />
         </div>
       </div>
-      <div className="mt-2"> {/* Adjusted margin top */}
+      <div className="mt-2">
+        {" "}
+        {/* Adjusted margin top */}
         <TopThreeEvents />
       </div>
     </div>
@@ -52,8 +54,8 @@ function Dashboard() {
 }
 
 Dashboard.propTypes = {
-  events: PropTypes.array.isRequired,
-  selectedDate: PropTypes.instanceOf(Date).isRequired,
+  events: PropTypes.array,
+  selectedDate: PropTypes.instanceOf(Date),
 };
 
 export default Dashboard;
