@@ -7,8 +7,8 @@ export const addEvent = async (event) => {
     createdOn: Date.now(),
     isDeleted: false,
     peopleGoing: {
-      [event.creator]: true
-    }
+      [event.creator]: true,
+    },
   };
 
   const result = await push(ref(db, "events"), newEvent);
@@ -24,15 +24,15 @@ export const addEvent = async (event) => {
 
 export const getAllEvents = async () => {
   const db = getDatabase();
-  const eventsRef = ref(db, 'events/');
-  
+  const eventsRef = ref(db, "events/");
+
   try {
     const snapshot = await get(eventsRef);
     if (snapshot.exists()) {
       const eventsData = snapshot.val();
-      return Object.keys(eventsData).map(key => ({
+      return Object.keys(eventsData).map((key) => ({
         id: key,
-        ...eventsData[key]
+        ...eventsData[key],
       }));
     } else {
       return [];
@@ -49,13 +49,15 @@ export const joinEvent = async (handle, eventId) => {
   try {
     const eventSnapshot = await get(eventRef);
     if (!eventSnapshot.exists()) {
-      console.error('Event does not exist');
+      console.error("Event does not exist");
       return;
     }
 
     const eventTitle = eventSnapshot.val().title;
 
-    const userEventSnapshot = await get(ref(db, `users/${handle}/goingToEvents/${eventTitle}`));
+    const userEventSnapshot = await get(
+      ref(db, `users/${handle}/goingToEvents/${eventTitle}`)
+    );
     if (userEventSnapshot.exists()) {
       alert("You already joined this event");
       return;
@@ -67,9 +69,9 @@ export const joinEvent = async (handle, eventId) => {
 
     await update(ref(db), updates);
 
-    return { id: eventId, title: eventTitle }; 
+    return { id: eventId, title: eventTitle };
   } catch (error) {
-    console.error('Error joining event:', error);
+    console.error("Error joining event:", error);
     return null;
   }
 };
@@ -91,7 +93,7 @@ export const leaveEvent = async (handle, eventTitle) => {
     }
 
     if (!eventId) {
-      console.error('Event does not exist');
+      console.error("Event does not exist");
       return;
     }
 
@@ -101,9 +103,9 @@ export const leaveEvent = async (handle, eventTitle) => {
 
     await update(ref(db), updates);
 
-    return { id: eventId, title: eventTitle }; 
+    return { id: eventId, title: eventTitle };
   } catch (error) {
-    console.error('Error leaving event:', error);
+    console.error("Error leaving event:", error);
     return null;
   }
 };
@@ -132,17 +134,17 @@ export const displayMyEvents = async (userHandle) => {
 
 export const getPublicEvents = async () => {
   const db = getDatabase();
-  const eventsRef = ref(db, 'events/');
-  
+  const eventsRef = ref(db, "events/");
+
   try {
     const snapshot = await get(eventsRef);
     if (snapshot.exists()) {
       const eventsData = snapshot.val();
       return Object.keys(eventsData)
-        .filter(key => eventsData[key].isPublic)
-        .map(key => ({
+        .filter((key) => eventsData[key].isPublic)
+        .map((key) => ({
           id: key,
-          ...eventsData[key]
+          ...eventsData[key],
         }));
     } else {
       return [];
@@ -155,17 +157,17 @@ export const getPublicEvents = async () => {
 
 export const getPrivateEvents = async () => {
   const db = getDatabase();
-  const eventsRef = ref(db, 'events/');
-  
+  const eventsRef = ref(db, "events/");
+
   try {
     const snapshot = await get(eventsRef);
     if (snapshot.exists()) {
       const eventsData = snapshot.val();
       return Object.keys(eventsData)
-        .filter(key => !eventsData[key].isPublic)
-        .map(key => ({
+        .filter((key) => !eventsData[key].isPublic)
+        .map((key) => ({
           id: key,
-          ...eventsData[key]
+          ...eventsData[key],
         }));
     } else {
       return [];
@@ -179,7 +181,7 @@ export const getPrivateEvents = async () => {
 export const getEventDetails = async (eventId) => {
   const db = getDatabase();
   const eventRef = ref(db, `events/${eventId}`);
-  
+
   try {
     const snapshot = await get(eventRef);
     if (snapshot.exists()) {
@@ -196,7 +198,7 @@ export const getEventDetails = async (eventId) => {
 export const getParticipants = async (eventId) => {
   const db = getDatabase();
   const participantsRef = ref(db, `events/${eventId}/peopleGoing`);
-  
+
   try {
     const snapshot = await get(participantsRef);
     if (snapshot.exists()) {
@@ -213,7 +215,7 @@ export const getParticipants = async (eventId) => {
 export const getEventById = async (eventId) => {
   const db = getDatabase();
   const eventRef = ref(db, `events/${eventId}`);
-  
+
   try {
     const snapshot = await get(eventRef);
     if (snapshot.exists()) {
@@ -226,7 +228,6 @@ export const getEventById = async (eventId) => {
     throw error;
   }
 };
-
 
 export const updateEvent = async (eventId, eventData) => {
   try {
@@ -246,7 +247,7 @@ export const updateEvent = async (eventId, eventData) => {
     const updates = {};
     updates[`events/${eventId}`] = eventData;
 
-    Object.keys(peopleGoing).forEach(handle => {
+    Object.keys(peopleGoing).forEach((handle) => {
       updates[`users/${handle}/goingToEvents/${oldEventTitle}`] = null;
       updates[`users/${handle}/goingToEvents/${newEventTitle}`] = true;
     });
@@ -258,7 +259,6 @@ export const updateEvent = async (eventId, eventData) => {
     throw error;
   }
 };
-
 
 export const deleteEvent = async (eventId) => {
   const eventRef = ref(db, `events/${eventId}`);
@@ -288,18 +288,17 @@ export const deleteEvent = async (eventId) => {
   }
 };
 
-
-export const getTopEvents = async () => { 
+export const getTopEvents = async () => {
   const db = getDatabase();
-  const eventsRef = ref(db, 'events/');
-  
+  const eventsRef = ref(db, "events/");
+
   try {
     const snapshot = await get(eventsRef);
     if (snapshot.exists()) {
       const eventsData = snapshot.val();
-      const events = Object.keys(eventsData).map(key => ({
+      const events = Object.keys(eventsData).map((key) => ({
         id: key,
-        ...eventsData[key]
+        ...eventsData[key],
       }));
 
       return events.sort((a, b) => b.peopleGoing - a.peopleGoing).slice(0, 5);
@@ -310,16 +309,20 @@ export const getTopEvents = async () => {
     console.error("Error fetching events:", error);
     throw new Error("Failed to fetch events");
   }
-}
+};
 
 export const getUserContacts = async (userHandle) => {
   const userRef = ref(db, `users/${userHandle}/contacts`);
   const snapshot = await get(userRef);
   const contacts = snapshot.val() || {};
   return Object.keys(contacts);
-}
+};
 
-export const inviteUser = async (eventId, invitingUserHandle, userToInviteHandle) => {
+export const inviteUser = async (
+  eventId,
+  invitingUserHandle,
+  userToInviteHandle
+) => {
   const eventRef = ref(db, `events/${eventId}`);
 
   try {
@@ -403,7 +406,7 @@ export const inviteList = async (eventId, invitingUserHandle, listId) => {
 
     const updates = {};
 
-    Object.keys(contacts).forEach(userToInviteHandle => {
+    Object.keys(contacts).forEach((userToInviteHandle) => {
       updates[`events/${eventId}/peopleGoing/${userToInviteHandle}`] = true;
       updates[`users/${userToInviteHandle}/goingToEvents/${eventTitle}`] = true;
     });
@@ -424,10 +427,12 @@ export const getContactLists = async (userHandle) => {
     const snapshot = await get(contactListsRef);
     if (snapshot.exists()) {
       const contactListsData = snapshot.val();
-      const userLists = Object.keys(contactListsData).filter(key => contactListsData[key].creator === userHandle);
-      return userLists.map(key => ({
+      const userLists = Object.keys(contactListsData).filter(
+        (key) => contactListsData[key].creator === userHandle
+      );
+      return userLists.map((key) => ({
         id: key,
-        ...contactListsData[key]
+        ...contactListsData[key],
       }));
     } else {
       return [];
@@ -439,10 +444,41 @@ export const getContactLists = async (userHandle) => {
 };
 
 export const sortByCategory = async (category) => {
-  const eventsRef = ref(db, 'events');
+  const eventsRef = ref(db, "events");
   const snapshot = await get(eventsRef);
   const events = snapshot.val() || {};
 
-  const filteredEvents = Object.values(events).filter(event => event.category === category);
+  const filteredEvents = Object.values(events).filter(
+    (event) => event.category === category
+  );
   return filteredEvents;
+};
+
+export const getTopThreeEvents = async () => {
+  const db = getDatabase();
+  const eventsRef = ref(db, "events/");
+
+  try {
+    const snapshot = await get(eventsRef);
+    if (snapshot.exists()) {
+      const eventsData = snapshot.val();
+      const events = Object.keys(eventsData).map((key) => ({
+        id: key,
+        ...eventsData[key],
+      }));
+
+      return events
+        .sort(
+          (a, b) =>
+            Object.keys(b.peopleGoing || {}).length -
+            Object.keys(a.peopleGoing || {}).length
+        )
+        .slice(0, 3);
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    throw new Error("Failed to fetch events");
+  }
 };

@@ -135,9 +135,9 @@ export default function AllEvents() {
             className="dropdown-menu absolute max-h-48 overflow-y-auto mt-2"
             style={{ zIndex: 999 }}
           >
-            <ul className="space-y-2 backdrop-blur-lg bg-white/10 text-black" >
+            <ul className="space-y-2 backdrop-blur-lg bg-white/10 text-black">
               {categories.length === 0 ? (
-                <li className="p-2 hover:glass" >No categories found.</li>
+                <li className="p-2 hover:glass">No categories found.</li>
               ) : (
                 categories.map((category) => (
                   <li

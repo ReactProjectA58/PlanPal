@@ -33,7 +33,10 @@ function AnimatedStack() {
     <>
       <div className="container">
         <div className="cards">
-          <div className="custom-card card1" style={{ zIndex: 4 }}>
+          <div
+            className="custom-card card1 backdrop-blur-lg bg-white/10"
+            style={{ zIndex: 4 }}
+          >
             <div className="card-content">
               <h1>Plan and Discover</h1>
               <p>
@@ -51,7 +54,10 @@ function AnimatedStack() {
             </div>
           </div>
 
-          <div className="custom-card card2" style={{ zIndex: 3 }}>
+          <div
+            className="custom-card card2 backdrop-blur-lg bg-white/10"
+            style={{ zIndex: 3 }}
+          >
             <div className="card-content">
               <h1>Organize</h1>
               <p>
@@ -70,7 +76,10 @@ function AnimatedStack() {
             </div>
           </div>
 
-          <div className="custom-card card3" style={{ zIndex: 2 }}>
+          <div
+            className="custom-card card3 backdrop-blur-lg bg-white/10"
+            style={{ zIndex: 2 }}
+          >
             <div className="card-content">
               <h1>Connect and Share</h1>
               <p>
