@@ -524,11 +524,13 @@ export default function CreateEvent() {
           <img
             src={coverPreview}
             alt="Cover Preview"
-            className="w-96 h-64 object-cover rounded mb-2"
+            className="w-full h-full object-cover rounded-xl mb-2"
           />
         )}
       </div>
-
+      <div className="my-4">
+        <Map address={event.location} />
+      </div>
       <div className="flex items-center gap-1.9">
         <Button className="font-bold py-2 px-4 rounded" onClick={createEvent}>
           Create
@@ -602,10 +604,6 @@ export default function CreateEvent() {
           accept="image/*"
           onChange={handleFileChange}
         />
-      </div>
-
-      <div className="my-4">
-        <Map address={event.location} />
       </div>
     </div>
   );

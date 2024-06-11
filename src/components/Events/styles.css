@@ -67,7 +67,8 @@
   padding: 0.5rem;
 }
 
-.create-event-form {
+.create-event-form,
+.single-event-container {
   box-shadow: 0 70px 120px -50px #000000;
 }
 
