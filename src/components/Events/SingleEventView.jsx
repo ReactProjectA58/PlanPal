@@ -64,7 +64,7 @@ export default function SingleEventView() {
         <h1 className="text-3xl font-bold">{event.title}</h1>
         <div className="flex items-center space-x-2">
           <GoBackArrow onClick={() => navigate("/events")} />
-          {userData?.handle === event.creator && (
+          {(userData?.handle === event.creator || userData?.role === "Admin") && (
             <Edit onClick={() => navigate(`/update-event/${eventId}`)} />
           )}
         </div>
@@ -132,7 +132,7 @@ export default function SingleEventView() {
                         <div className="font-semibold">
                           {participantData.name || participant}
                         </div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-black-900">
                           @{participant}
                         </div>
                       </div>

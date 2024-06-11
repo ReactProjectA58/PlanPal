@@ -7,7 +7,6 @@ import { validateRegister } from "../common/helpers/validationHelpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import "daisyui/dist/full.css"; // Ensure you have daisyUI installed and imported
-import AnimatedButton from "./AnimatedButton/AnimatedButton";
 import RegisterButton from "./AnimatedButton/RegisterButton";
 
 export default function Register() {
@@ -50,10 +49,13 @@ export default function Register() {
   };
 
   const register = async () => {
-    const validationErrors = await validateRegister(form);
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-    } else {
+    try {
+      const validationErrors = await validateRegister(form);
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        return;
+      }
+  
       const credential = await registerUser(form.email, form.password);
       const userData = {
         uid: credential.user.uid,
@@ -61,21 +63,31 @@ export default function Register() {
         firstName: form.firstName,
         lastName: form.lastName,
         phoneNumber: form.phoneNumber,
-        address: "",
+        address: form.address || "No address provided",
         avatar:
           "https://firebasestorage.googleapis.com/v0/b/planpal-65592.appspot.com/o/avatars%2Fdefault-profile.png?alt=media&token=fd3e31cf-95d7-4bbd-a9e4-7155048663dd",
         handle: form.userName,
         isBlocked: false,
         role: "User",
       };
-      await createUserHandle(userData);
-      setAppState({ user: credential.user, userData });
-      navigate("/");
+  
+      try {
+        await createUserHandle(userData);
+        setAppState({ user: credential.user, userData });
+        navigate("/");
+      } catch (error) {
+        console.error("Error creating user handle:", error);
+        setErrors({ server: "Failed to create user handle. Please try again." });
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+      setErrors({ server: "Registration failed. Please try again." });
     }
   };
+  
 
   return (
-    <div className=" register-form flex flex-col gap-4 sm:flex-row justify-center items-center  mx-auto p-4 rounded-lg mt-8 mb-8 w-auto h-auto">
+    <div className="register-form flex flex-col gap-4 sm:flex-row justify-center items-center mx-auto p-4 rounded-lg mt-8 mb-8 w-auto h-auto">
       <img
         src="https://images.pexels.com/photos/7034449/pexels-photo-7034449.jpeg"
         className="w-full sm:w-1/2 h-auto rounded-2xl"
@@ -244,6 +256,26 @@ export default function Register() {
             />
             {errors.phoneNumber && (
               <span className="text-red-500 text-sm">{errors.phoneNumber}</span>
+            )}
+          </div>
+          <div className="form-control w-full">
+            <label htmlFor="address" className="label">
+              <span className="label-text">
+                Address <span className="text-red-500">*</span>:
+              </span>
+            </label>
+            <input
+              placeholder="Enter Your Address"
+              value={form.address}
+              onChange={updateForm("address")}
+              type="text"
+              id="address"
+              className={`input input-bordered w-full ${
+                errors.address ? "input-error" : ""
+              }`}
+            />
+            {errors.address && (
+              <span className="text-red-500 text-sm">{errors.address}</span>
             )}
           </div>
           <RegisterButton onClick={register} />
