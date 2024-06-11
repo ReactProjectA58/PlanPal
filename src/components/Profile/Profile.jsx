@@ -21,6 +21,7 @@ function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState({});
   const [avatarPreview, setAvatarPreview] = useState("");
+  const [originalData, setOriginalData] = useState({});
 
   useEffect(() => {
     async function fetchData() {
@@ -28,9 +29,8 @@ function Profile() {
         const userSnapshot = await getUserByHandle(handle);
         if (userSnapshot.exists()) {
           const data = userSnapshot.val();
-          setUserData({
-            ...data,
-          });
+          setUserData({ ...data });
+          setOriginalData({ ...data });
           setAvatarPreview(data.avatar);
         } else {
           console.log("User not found");
@@ -80,6 +80,12 @@ function Profile() {
     } catch (error) {
       console.error("Error updating user:", error);
     }
+  };
+
+  const handleCancel = () => {
+    setUserData(originalData);
+    setIsEditing(false);
+    setErrors({});
   };
 
   return (
@@ -261,9 +267,14 @@ function Profile() {
           </div>
           <div className="mt-4 flex justify-end">
             {isEditing ? (
-              <button onClick={handleSave} className="btn btn-primary">
-                Save
-              </button>
+              <>
+                <button onClick={handleSave} className="btn btn-primary mr-2">
+                  Save
+                </button>
+                <button onClick={handleCancel} className="btn btn-secondary">
+                  Cancel
+                </button>
+              </>
             ) : (
               <button
                 onClick={() => setIsEditing(true)}

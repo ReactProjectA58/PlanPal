@@ -2,7 +2,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import Kaloyan from "../../assets/me.png";
 import Milen from "../../assets/Milen.png";
-// import Yordan from "../../assets/me3.png";
+import Yordan from "../../assets/me3.png";
 import "./AnimatedCard.css";
 import { useGSAP } from "@gsap/react";
 import AnimatedCarousel from "../AnimatedCarousel/AnimatedCarousel";
@@ -29,7 +29,7 @@ const cardData = [
     github: "https://github.com/MilenDonevv",
   },
   {
-    // profilePic: Yordan,
+  profilePic: Yordan,
     description:
       "I'm an enthusiastic junior developer specializing in JavaScript and React. I enjoy creating dynamic web applications and strive to deliver high-quality solutions.",
     name: "Yordan Dimitrov",
