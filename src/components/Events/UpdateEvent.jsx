@@ -18,12 +18,19 @@ import {
   validateEndTime,
 } from "../../common/helpers/validationHelpers.js";
 import Button from "../Button.jsx";
-import { GoBackArrow, DeleteEvent, ArrowDown } from "../../common/helpers/icons.jsx";
+import {
+  GoBackArrow,
+  DeleteEvent,
+  ArrowDown,
+} from "../../common/helpers/icons.jsx";
 import { AppContext } from "../../context/AppContext.jsx";
 import { uploadCover } from "../../services/upload.service.js";
 import "./styles.css";
+import { errorChecker, themeChecker } from "../../common/helpers/toast.js";
+import showConfirmDialog from "../ConfirmDialog.jsx";
 
-const MAPBOX_TOKEN = 'sk.eyJ1IjoibWRvbmV2diIsImEiOiJjbHg3aXhma2cxeWlnMmpxdTl3aWcya3I2In0.fxZquQpnSrvq144fj9kS-Q';
+const MAPBOX_TOKEN =
+  "sk.eyJ1IjoibWRvbmV2diIsImEiOiJjbHg3aXhma2cxeWlnMmpxdTl3aWcya3I2In0.fxZquQpnSrvq144fj9kS-Q";
 
 export default function UpdateEvent() {
   const { eventId } = useParams();
@@ -77,7 +84,10 @@ export default function UpdateEvent() {
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (reoccurringRef.current && !reoccurringRef.current.contains(event.target)) {
+      if (
+        reoccurringRef.current &&
+        !reoccurringRef.current.contains(event.target)
+      ) {
         setIsReoccurringOpen(false);
       }
       if (categoryRef.current && !categoryRef.current.contains(event.target)) {
@@ -105,7 +115,15 @@ export default function UpdateEvent() {
   };
 
   const handleUpdateEvent = async () => {
-    const { title, description, location, startDate, startTime, endDate, endTime } = event;
+    const {
+      title,
+      description,
+      location,
+      startDate,
+      startTime,
+      endDate,
+      endTime,
+    } = event;
 
     const validationErrors = {
       title: validateTitle(title),
@@ -132,30 +150,32 @@ export default function UpdateEvent() {
       navigate(`/events/${eventId}`);
     } catch (error) {
       console.error("Error updating event:", error);
-      alert("Failed to update event. Please try again.");
+      errorChecker("Failed to update event. Please try again.");
     }
   };
 
   const handleDeleteEvent = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this event?");
-    if (confirmDelete) {
-      try {
-        const result = await deleteEvent(eventId);
-        if (result) {
-          navigate("/my-events");
-        } else {
-          alert("Failed to delete event. Please try again.");
+    showConfirmDialog(
+      "Are you sure you want to delete this event?",
+      async () => {
+        try {
+          const result = await deleteEvent(eventId);
+          if (result) {
+            navigate("/my-events");
+          } else {
+            errorChecker("Failed to delete event. Please try again.");
+          }
+        } catch (error) {
+          console.error("Error deleting event:", error);
+          errorChecker("Failed to delete event. Please try again.");
         }
-      } catch (error) {
-        console.error("Error deleting event:", error);
-        alert("Failed to delete event. Please try again.");
       }
-    }
+    );
   };
 
   const handleInviteUser = async (userHandle) => {
     if (event.peopleGoing && event.peopleGoing[userHandle]) {
-      alert("This user is already invited to this event!");
+      themeChecker("This user is already invited to this event!");
       if (inviteRef.current) {
         inviteRef.current.open = false;
       }
@@ -165,16 +185,16 @@ export default function UpdateEvent() {
     try {
       const result = await inviteUser(eventId, userData.handle, userHandle);
       if (result) {
-        alert(`${userHandle} was successfully invited.`);
+        themeChecker(`${userHandle} was successfully invited.`);
         if (inviteRef.current) {
           inviteRef.current.open = false;
         }
       } else {
-        alert(`Failed to invite user ${userHandle}`);
+        errorChecker(`Failed to invite user ${userHandle}`);
       }
     } catch (error) {
       console.error("Error inviting user:", error);
-      alert("Failed to invite user. Please try again.");
+      errorChecker("Failed to invite user. Please try again.");
     }
   };
 
@@ -182,16 +202,16 @@ export default function UpdateEvent() {
     try {
       const result = await uninviteUser(eventId, userHandle);
       if (result) {
-        alert(`${userHandle} was successfully kicked out.`);
+        themeChecker(`${userHandle} was successfully kicked out.`);
         if (uninviteRef.current) {
           uninviteRef.current.open = false;
         }
       } else {
-        alert(`Failed to uninvite user ${userHandle}`);
+        errorChecker(`Failed to uninvite user ${userHandle}`);
       }
     } catch (error) {
       console.error("Error uninviting user:", error);
-      alert("Failed to uninvite user. Please try again.");
+      errorChecker("Failed to uninvite user. Please try again.");
     }
   };
 
@@ -203,10 +223,10 @@ export default function UpdateEvent() {
         const updatedEvent = { ...event, cover: coverURL };
         await updateEvent(eventId, updatedEvent);
         setEvent(updatedEvent);
-        alert("Cover image updated successfully.");
+        themeChecker("Cover image updated successfully.");
       } catch (error) {
         console.error("Error updating cover image:", error);
-        alert("Failed to update cover image. Please try again.");
+        errorChecker("Failed to update cover image. Please try again.");
       }
     }
   };
@@ -216,7 +236,9 @@ export default function UpdateEvent() {
     updateEventData(value, "location");
     if (value.length > 2) {
       const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(value)}.json?access_token=${MAPBOX_TOKEN}`
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          value
+        )}.json?access_token=${MAPBOX_TOKEN}`
       );
       const data = await response.json();
       setSuggestions(data.features.map((feature) => feature.place_name));
@@ -230,8 +252,6 @@ export default function UpdateEvent() {
     setSuggestions([]);
   };
 
-  if (loading) return <div className="text-center mt-10">Loading...</div>;
-  if (error) return <div className="text-center text-red-500 mt-10">{error}</div>;
   if (!event) return <div className="text-center mt-10">No event found.</div>;
 
   return (
@@ -252,7 +272,10 @@ export default function UpdateEvent() {
                   <li className="p-2">No contacts found.</li>
                 ) : (
                   contacts.map((contact) => (
-                    <li key={contact} className="p-2 hover:bg-gray-200 cursor-pointer">
+                    <li
+                      key={contact}
+                      className="p-2 hover:bg-gray-200 cursor-pointer"
+                    >
                       <a onClick={() => handleInviteUser(contact)}>{contact}</a>
                     </li>
                   ))
@@ -269,23 +292,31 @@ export default function UpdateEvent() {
               style={{ zIndex: 999 }}
             >
               <ul className="space-y-2">
-                {Object.keys(event.peopleGoing || {})
-                  .filter((handle) => handle !== event.creator)
-                  .length === 0 ? (
+                {Object.keys(event.peopleGoing || {}).filter(
+                  (handle) => handle !== event.creator
+                ).length === 0 ? (
                   <li className="p-2">No participants to uninvite.</li>
                 ) : (
                   Object.keys(event.peopleGoing || {})
                     .filter((handle) => handle !== event.creator)
                     .map((participant) => (
-                      <li key={participant} className="p-2 hover:bg-gray-200 cursor-pointer">
-                        <a onClick={() => handleUninviteUser(participant)}>{participant}</a>
+                      <li
+                        key={participant}
+                        className="p-2 hover:bg-gray-200 cursor-pointer"
+                      >
+                        <a onClick={() => handleUninviteUser(participant)}>
+                          {participant}
+                        </a>
                       </li>
                     ))
                 )}
               </ul>
             </div>
           </details>
-          <Button className="btn btn-secondary" onClick={() => fileInputRef.current.click()}>
+          <Button
+            className="btn btn-secondary"
+            onClick={() => fileInputRef.current.click()}
+          >
             Update Cover
           </Button>
           <input
@@ -337,7 +368,9 @@ export default function UpdateEvent() {
                 id={`input-${key}`}
               />
             )}
-            {errors[key] && <div className="text-red-500 text-sm mt-1">{errors[key]}</div>}
+            {errors[key] && (
+              <div className="text-red-500 text-sm mt-1">{errors[key]}</div>
+            )}
             {key === "location" && suggestions.length > 0 && (
               <ul className="order border-gray-300 rounded mt-1 max-h-40 overflow-y-auto absolute z-50 backdrop-blur-lg bg-white/10 text-black">
                 {suggestions.map((suggestion, index) => (
@@ -419,7 +452,10 @@ export default function UpdateEvent() {
             </div>
             {!isIndefinite && (
               <>
-                <label htmlFor="final-date" className="block text-sm font-medium mt-2">
+                <label
+                  htmlFor="final-date"
+                  className="block text-sm font-medium mt-2"
+                >
                   Final Date:
                 </label>
                 <input
@@ -461,18 +497,20 @@ export default function UpdateEvent() {
               className="origin-top-right absolute mt-1 w-full rounded-md backdrop-blur-lg bg-white/10 ring-1 ring-black ring-opacity-5 border-2 border-gray-700 text-black"
               style={{ zIndex: 999 }}
             >
-              {["Entertainment", "Sports", "Culture & Science"].map((option) => (
-                <div
-                  key={option}
-                  className="cursor-pointer select-none relative py-2 pl-3 pr-9 hover:glass"
-                  onClick={() => {
-                    updateEventData(option, "category");
-                    setIsCategoryOpen(false);
-                  }}
-                >
-                  <span className="block truncate">{option}</span>
-                </div>
-              ))}
+              {["Entertainment", "Sports", "Culture & Science"].map(
+                (option) => (
+                  <div
+                    key={option}
+                    className="cursor-pointer select-none relative py-2 pl-3 pr-9 hover:glass"
+                    onClick={() => {
+                      updateEventData(option, "category");
+                      setIsCategoryOpen(false);
+                    }}
+                  >
+                    <span className="block truncate">{option}</span>
+                  </div>
+                )
+              )}
             </div>
           )}
         </div>

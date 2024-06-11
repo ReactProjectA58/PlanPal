@@ -8,6 +8,9 @@ import { AppContext } from "../../context/AppContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { GoBackArrow } from "../../common/helpers/icons.jsx";
 import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
+import { errorChecker, themeChecker } from "../../common/helpers/toast.js";
+import showConfirmDialog from "../ConfirmDialog.jsx";
+import LoadingSpinner from "../Loading/LoadingSpinner.jsx";
 
 export default function PublicEvents() {
   const [events, setEvents] = useState([]);
@@ -37,13 +40,13 @@ export default function PublicEvents() {
 
   const handleJoinEvent = async (eventId, eventTitle) => {
     if (!userData) {
-      alert("User data is not available.");
+      errorChecker("User data is not available.");
       return;
     }
 
     const result = await joinEvent(userData.handle, eventId);
     if (result) {
-      alert("You have joined the event successfully!");
+      themeChecker("You have joined the event successfully!");
 
       const updatedUserData = {
         ...userData,
@@ -58,29 +61,27 @@ export default function PublicEvents() {
   };
 
   const handleLeaveEvent = async (eventTitle) => {
-    if (!userData) {
-      alert("User data is not available.");
-      return;
-    }
-
-    const result = await leaveEvent(userData.handle, eventTitle);
-    if (result) {
-      window.confirm("Please confirm you want to leave this event!");
-
-      const updatedUserData = {
-        ...userData,
-        goingToEvents: {
-          ...userData.goingToEvents,
-          [eventTitle]: false,
-        },
-      };
-      setAppState(updatedUserData);
-      navigate("/my-events");
-    }
+    showConfirmDialog("Do you want to leave this event?", async () => {
+      const result = await leaveEvent(userData.handle, eventTitle);
+      if (result) {
+        themeChecker("You have left the event successfully!");
+        const updatedGoingToEvents = { ...userData.goingToEvents };
+        updatedGoingToEvents[eventTitle] = false;
+        setAppState({
+          ...userData,
+          goingToEvents: updatedGoingToEvents,
+        });
+        navigate("/my-events");
+      }
+    });
   };
 
   if (loading || userLoading)
-    return <div className="text-center mt-10">Loading...</div>;
+    return (
+      <div className="text-center mt-10">
+        <LoadingSpinner />
+      </div>
+    );
   if (error)
     return <div className="text-center text-red-500 mt-10">{error}</div>;
 
@@ -92,9 +93,7 @@ export default function PublicEvents() {
       </div>
       <div className="flex flex-col space-y-6 mt-4">
         {events.length === 0 ? (
-          <div className="text-center text-gray-600">
-            No public events found.
-          </div>
+          <div className="text-center">No public events found.</div>
         ) : (
           events.map((event) => (
             <div
@@ -112,10 +111,10 @@ export default function PublicEvents() {
                 <h2 className="card-title text-xl font-semibold">
                   {event.title}
                 </h2>
-                <p className="text-gray-700 break-words whitespace-normal overflow-hidden max-h-24 text-sm">
+                <p className=" break-words whitespace-normal overflow-hidden max-h-24 text-sm">
                   {event.description}
                 </p>
-                <div className="grid grid-cols-3 gap-4 text-gray-500 text-xs">
+                <div className="grid grid-cols-3 gap-4 text-xs">
                   <p className="col-span-3">Location: {event.location}</p>
                   <p>
                     Start: {event.startDate} {event.startTime}

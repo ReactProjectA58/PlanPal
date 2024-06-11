@@ -9,6 +9,8 @@ import { AppContext } from "../../context/AppContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
 import "./styles.css";
+import { errorChecker, themeChecker } from "../../common/helpers/toast.js";
+import LoadingSpinner from "../Loading/LoadingSpinner.jsx";
 
 export default function AllEvents() {
   const [events, setEvents] = useState([]);
@@ -41,13 +43,13 @@ export default function AllEvents() {
 
   const handleJoinEvent = async (eventId, eventTitle) => {
     if (!userData) {
-      alert("User data is not available.");
+      errorChecker("User data is not available.");
       return;
     }
 
     const result = await joinEvent(userData.handle, eventId);
     if (result) {
-      alert("You have joined the event successfully!");
+      themeChecker("You have joined the event successfully!");
 
       const updatedUserData = {
         ...userData,
@@ -62,25 +64,19 @@ export default function AllEvents() {
   };
 
   const handleLeaveEvent = async (eventTitle) => {
-    if (!userData) {
-      alert("User data is not available.");
-      return;
-    }
-
-    const result = await leaveEvent(userData.handle, eventTitle);
-    if (result) {
-      window.confirm("Please confirm you want to leave this event!");
-
-      const updatedUserData = {
-        ...userData,
-        goingToEvents: {
-          ...userData.goingToEvents,
-          [eventTitle]: false,
-        },
-      };
-      setAppState(updatedUserData);
-      navigate("/my-events");
-    }
+    showConfirmDialog("Do you want to leave this event?", async () => {
+      const result = await leaveEvent(userData.handle, eventTitle);
+      if (result) {
+        themeChecker("You have left the event successfully!");
+        const updatedGoingToEvents = { ...userData.goingToEvents };
+        updatedGoingToEvents[eventTitle] = false;
+        setAppState({
+          ...userData,
+          goingToEvents: updatedGoingToEvents,
+        });
+        navigate("/my-events");
+      }
+    });
   };
 
   const handleSortByCategory = async (category) => {
@@ -94,12 +90,16 @@ export default function AllEvents() {
       setLoading(false);
     }
     if (categoriesRef.current) {
-      categoriesRef.current.removeAttribute("open"); // Close the dropdown
+      categoriesRef.current.removeAttribute("open");
     }
   };
 
   if (loading || userLoading || !userData)
-    return <div className="text-center mt-10">Loading...</div>;
+    return (
+      <div className="text-center mt-10">
+        <LoadingSpinner />
+      </div>
+    );
   if (error)
     return <div className="text-center text-red-500 mt-10">{error}</div>;
 

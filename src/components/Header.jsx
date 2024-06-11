@@ -1,13 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
-import { logoutUser } from '../services/auth.service';
+import { logoutUser } from "../services/auth.service";
 import { DARK_THEME, LIGHT_THEME } from "../common/constants";
 import { Moon, Sun } from "../common/helpers/icons";
 import SideBar from "./Sidebar/Sidebar";
 import AnimatedButton from "./AnimatedButton/AnimatedButton";
 import HomeButton from "./AnimatedButton/HomeButton";
 import AdminPanelDropdown from "./AdminPanel/AdminPanel";
+import showConfirmDialog from "./ConfirmDialog";
 
 export default function Header() {
   const { user, userData, setAppState } = useContext(AppContext);
@@ -25,8 +26,11 @@ export default function Header() {
   };
 
   const logout = async () => {
-    await logoutUser();
-    setAppState({ user: null, userData: null });
+    showConfirmDialog("Leaving us so quickly?", async () => {
+      await logoutUser();
+      setAppState({ user: null, userData: null });
+      navigate(`/`);
+    });
   };
 
   useEffect(() => {
