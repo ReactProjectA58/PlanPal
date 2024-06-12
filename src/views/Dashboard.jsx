@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 import MonthCalendar from "../components/Calendar/MonthCalendar";
+import DayCalendar from "../components/Calendar/DayCalendar";
 import { displayMyEvents } from "../services/event.service";
 import { AppContext } from "../context/AppContext";
 import TopThreeEvents from "../components/Events/TopEvents";
@@ -32,21 +33,30 @@ function Dashboard() {
 
   return (
     <div className="p-4">
-      <div className="grid grid-cols-3 gap-4" style={{ height: "70vh" }}>
-        <div className="col-span-2 pt-32">
-          <MonthCalendar
-            events={events}
-            onDateClick={handleDateClick}
-            selectedDate={selectedDate}
-          />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4" style={{ minHeight: "70vh" }}>
+        <div className="flex flex-col h-full">
+          <div className="flex-grow pt-20">
+            <MonthCalendar
+              events={events}
+              onDateClick={handleDateClick}
+              selectedDate={selectedDate}
+            />
+          </div>
+          <div className="mt-4">
+            <WeatherComponent />
+          </div>
         </div>
-        <div className="col-span-1">
-          <WeatherComponent />
+        <div className="pt-20 flex flex-col h-full">
+          <div className="flex-grow" style={{ maxHeight: "110vh", overflowY: "auto" }}>
+            <DayCalendar
+              events={events}
+              selectedDate={selectedDate}
+              onDateChange={setSelectedDate}
+            />
+          </div>
         </div>
       </div>
-      <div className="mt-2">
-        {" "}
-        {/* Adjusted margin top */}
+      <div className="mt-4">
         <TopThreeEvents />
       </div>
     </div>
