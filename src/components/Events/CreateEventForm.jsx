@@ -31,7 +31,7 @@ import "./styles.css";
 import { errorChecker, themeChecker } from "../../common/helpers/toast.js";
 
 const MAPBOX_TOKEN =
-  "sk.eyJ1IjoibWRvbmV2diIsImEiOiJjbHg3aXhma2cxeWlnMmpxdTl3aWcya3I2In0.fxZquQpnSrvq144fj9kS-Q";
+  "sk.eyJ1IjoibWRvbmV2diIsImEiOiJjbHhia2xlMzAwZWx5MmlzODhzdm83M3RrIn0.I9KO-Iji0OdFNuq23omNhQ";
 
 export default function CreateEvent() {
   const [event, setEvent] = useState({
