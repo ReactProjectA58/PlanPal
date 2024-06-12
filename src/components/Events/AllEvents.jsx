@@ -4,6 +4,7 @@ import {
   joinEvent,
   leaveEvent,
   sortByCategory,
+  searchEventsByName,
 } from "../../services/event.service.js";
 import { AppContext } from "../../context/AppContext.jsx";
 import { useNavigate } from "react-router-dom";
@@ -17,11 +18,8 @@ export default function AllEvents() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const {
-    userData,
-    loading: userLoading,
-    setAppState,
-  } = useContext(AppContext);
+  const [searchTerm, setSearchTerm] = useState("");
+  const { userData, loading: userLoading, setAppState } = useContext(AppContext);
   const navigate = useNavigate();
   const categoriesRef = useRef(null);
 
@@ -41,6 +39,20 @@ export default function AllEvents() {
 
     fetchEvents();
   }, []);
+
+  useEffect(() => {
+    const performSearch = async () => {
+      if (searchTerm.trim() !== "") {
+        const results = await searchEventsByName(searchTerm);
+        setEvents(results);
+      } else {
+        const eventsData = await getAllEvents();
+        setEvents(eventsData);
+      }
+    };
+
+    performSearch();
+  }, [searchTerm]);
 
   const handleJoinEvent = async (eventId, eventTitle) => {
     if (!userData) {
@@ -63,10 +75,9 @@ export default function AllEvents() {
       navigate("/my-events");
     }
   };
-
-  const handleLeaveEvent = async (eventId, eventTitle) => {
+  const handleLeaveEvent = async (eventTitle) => {
     showConfirmDialog("Do you want to leave this event?", async () => {
-      const result = await leaveEvent(userData.handle, eventId);
+      const result = await leaveEvent(userData.handle, eventTitle);
       if (result) {
         themeChecker("You have left the event successfully!");
         const updatedGoingToEvents = { ...userData.goingToEvents };
@@ -124,36 +135,49 @@ export default function AllEvents() {
             Private Events
           </button>
         </div>
-        <details
-          className="dropdown"
-          ref={categoriesRef}
-          style={{ position: "relative" }}
-        >
-          <summary className="font-bold py-2 px-4 cursor-pointer btn btn-secondary">
-            ▼Categories
-          </summary>
-          <div
-            className="dropdown-menu absolute max-h-48 overflow-y-auto mt-2"
-            style={{ zIndex: 999 }}
+        <div className="flex space-x-4 items-center">
+          {userData.role === "Admin" && (
+            <div className="flex space-x-2 items-center">
+              <input
+                type="text"
+                placeholder="Search events"
+                className="input input-bordered"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          )}
+          <details
+            className="dropdown"
+            ref={categoriesRef}
+            style={{ position: "relative" }}
           >
-            <ul className="space-y-2 backdrop-blur-lg bg-white/10 text-black">
-              {categories.length === 0 ? (
-                <li className="p-2 hover:glass">No categories found.</li>
-              ) : (
-                categories.map((category, index) => (
-                  <li
-                    key={index}
-                    className="p-2 hover:bg-gray-200 cursor-pointer"
-                  >
-                    <a onClick={() => handleSortByCategory(category)}>
-                      {category}
-                    </a>
-                  </li>
-                ))
-              )}
-            </ul>
-          </div>
-        </details>
+            <summary className="font-bold py-2 px-4 cursor-pointer btn btn-secondary">
+              ▼Categories
+            </summary>
+            <div
+              className="dropdown-menu absolute max-h-48 overflow-y-auto mt-2"
+              style={{ zIndex: 999 }}
+            >
+              <ul className="space-y-2 backdrop-blur-lg bg-white/10 text-black">
+                {categories.length === 0 ? (
+                  <li className="p-2 hover:glass">No categories found.</li>
+                ) : (
+                  categories.map((category, index) => (
+                    <li
+                      key={index}
+                      className="p-2 hover:bg-gray-200 cursor-pointer"
+                    >
+                      <a onClick={() => handleSortByCategory(category)}>
+                        {category}
+                      </a>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
+          </details>
+        </div>
       </div>
       <div className="flex flex-col space-y-6 mt-4">
         {events.length === 0 ? (
@@ -202,7 +226,7 @@ export default function AllEvents() {
                   userData.goingToEvents[event.title] ? (
                     <button
                       className="btn"
-                      onClick={() => handleLeaveEvent(event.title)}
+                      onClick={() => handleLeaveEvent(event.id, event.title)}
                     >
                       Leave Event
                     </button>

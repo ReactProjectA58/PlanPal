@@ -484,23 +484,29 @@ export const getTopThreeEvents = async () => {
   }
 };
 
-export const searchEventsByName = async (eventName) => {
+export const searchEventsByName = async (searchTerm) => {
   const db = getDatabase();
   const eventsRef = ref(db, 'events');
 
   try {
     const snapshot = await get(eventsRef);
-    if (snapshot.exists()) {
-      const events = snapshot.val();
-      const matchingEvents = Object.keys(events)
-        .filter(key => events[key].name.toLowerCase().includes(eventName.toLowerCase()))
-        .map(key => ({ id: key, ...events[key] }));
-      return matchingEvents;
-    } else {
-      throw new Error("No events found");
-    }
+    if (!snapshot.exists()) return [];
+
+    const events = Object.entries(snapshot.val()).map(([key, value]) => ({
+      ...value,
+      id: key,
+    }));
+
+    return events.filter(
+      (event) =>
+        (event.title &&
+          event.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (event.description &&
+          event.description.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
   } catch (error) {
     console.error("Error searching events by name:", error);
     throw error;
   }
 };
+
