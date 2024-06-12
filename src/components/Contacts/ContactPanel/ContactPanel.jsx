@@ -75,9 +75,7 @@ export default function ContactPanel({
     if (currentView === "My Contacts") {
       return isAddedContact(contactHandle) ? "Remove user" : "Add user";
     } else {
-      const tooltip = isAddedContact(contactHandle)
-        ? "Remove contact"
-        : "Add contact ";
+      const tooltip = isAddedContact(contactHandle) ? "Remove" : "Add contact ";
       return `${tooltip}`;
     }
   };

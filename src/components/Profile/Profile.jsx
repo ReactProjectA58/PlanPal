@@ -90,7 +90,7 @@ function Profile() {
 
   return (
     <div className="container mx-auto mt-10">
-      <div className="card w-full bg-base-100 shadow-xl">
+      <div className="profile p-4 max-w-3xl mx-auto rounded-lg mt-8 mb-8">
         <div className="card-body">
           <h2 className="card-title text-3xl font-semibold mb-4">My Profile</h2>
           <div className="flex flex-col space-y-4">

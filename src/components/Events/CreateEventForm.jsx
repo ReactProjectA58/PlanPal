@@ -266,7 +266,7 @@ export default function CreateEvent() {
       });
       setCoverFile(null);
       setInvitedUsers([]);
-      navigate(`/events/${newEvent.id}`);
+      navigate("/events");
     } catch (error) {
       console.error("Error creating event:", error);
       errorChecker("Failed to create event. Please try again.");

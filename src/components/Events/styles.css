@@ -68,7 +68,8 @@
 }
 
 .create-event-form,
-.single-event-container {
+.single-event-container,
+.profile {
   box-shadow: 0 70px 120px -50px #000000;
 }
 
