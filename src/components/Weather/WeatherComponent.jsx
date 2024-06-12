@@ -57,8 +57,8 @@ const WeatherComponent = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center">
-            <div className="flex flex-col bg-white rounded p-4 w-full max-w-xs">
+        <div className="flex items-center justify-center">
+            <div className="flex flex-col bg-white rounded p-4 w-full max-w-lg">
                 <div className="font-bold text-xl">{weatherData.name}</div>
                 <div className="text-sm text-gray-500">{getFormattedDate()}</div>
                 <div className="mt-6 text-6xl self-center inline-flex items-center justify-center rounded-lg text-indigo-400 h-24 w-24">
