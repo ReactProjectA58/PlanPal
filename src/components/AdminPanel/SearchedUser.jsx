@@ -13,30 +13,34 @@ export default function SearchedUser({ user }) {
   const isAdmin = userData && userData.isAdmin;
 
   const handleBlockUser = async () => {
-    const confirmBlock = showConfirmDialog(
-      "Please confirm you want to block this user."
-    );
-    if (confirmBlock) {
-      return;
-    }
+    const onConfirm = async () => {
+      try {
+        await blockUser(user.handle);
+        setIsBlocked(true);
+        themeChecker("User has been blocked successfully.");
+      } catch (error) {
+        console.error("Error blocking user:", error);
+      }
+    };
 
-    try {
-      await blockUser(user.handle);
-      setIsBlocked(true);
-      themeChecker("User has been blocked successfully.");
-    } catch (error) {
-      console.error("Error blocking user:", error);
-    }
+    showConfirmDialog("Please confirm you want to block this user.", onConfirm);
   };
 
   const handleUnblockUser = async () => {
-    try {
-      await unblockUser(user.handle);
-      setIsBlocked(false);
-      themeChecker("User has been unblocked successfully.");
-    } catch (error) {
-      console.error("Error unblocking user:", error);
-    }
+    const onConfirm = async () => {
+      try {
+        await unblockUser(user.handle);
+        setIsBlocked(false);
+        themeChecker("User has been unblocked successfully.");
+      } catch (error) {
+        console.error("Error unblocking user:", error);
+      }
+    };
+
+    showConfirmDialog(
+      "Please confirm you want to unblock this user.",
+      onConfirm
+    );
   };
 
   return (
