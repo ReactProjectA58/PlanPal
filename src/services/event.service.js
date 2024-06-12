@@ -225,7 +225,7 @@ export const getEventById = async (eventId) => {
       throw new Error("Event not found");
     }
   } catch (error) {
-    console.error("Error fetching event:", error);
+    console.error(error);
     throw error;
   }
 };
@@ -486,7 +486,7 @@ export const getTopThreeEvents = async () => {
 
 export const searchEventsByName = async (searchTerm) => {
   const db = getDatabase();
-  const eventsRef = ref(db, 'events');
+  const eventsRef = ref(db, "events");
 
   try {
     const snapshot = await get(eventsRef);
@@ -509,4 +509,3 @@ export const searchEventsByName = async (searchTerm) => {
     throw error;
   }
 };
-

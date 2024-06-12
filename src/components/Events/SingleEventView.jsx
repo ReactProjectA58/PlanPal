@@ -26,10 +26,16 @@ export default function SingleEventView() {
 
   useEffect(() => {
     const fetchEvent = async () => {
+      setLoading(true);
+      setError(null);
+
+      console.log("Fetching event with ID:", eventId);
       try {
         const eventData = await getEventById(eventId);
+        console.log("Event data fetched:", eventData);
         setEvent(eventData);
       } catch (error) {
+        console.error("Error in fetchEvent:", error.message, error.stack);
         setError("Failed to fetch event data. Please try again.");
       } finally {
         setLoading(false);

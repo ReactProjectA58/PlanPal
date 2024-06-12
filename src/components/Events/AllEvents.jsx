@@ -19,7 +19,11 @@ export default function AllEvents() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const { userData, loading: userLoading, setAppState } = useContext(AppContext);
+  const {
+    userData,
+    loading: userLoading,
+    setAppState,
+  } = useContext(AppContext);
   const navigate = useNavigate();
   const categoriesRef = useRef(null);
 
@@ -226,7 +230,7 @@ export default function AllEvents() {
                   userData.goingToEvents[event.title] ? (
                     <button
                       className="btn"
-                      onClick={() => handleLeaveEvent(event.id, event.title)}
+                      onClick={() => handleLeaveEvent(event.title)}
                     >
                       Leave Event
                     </button>
