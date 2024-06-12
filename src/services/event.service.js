@@ -24,20 +24,11 @@ export const addEvent = async (event) => {
 };
 
 export const getAllEvents = async () => {
-  const db = getDatabase();
-  const eventsRef = ref(db, "events/");
-
   try {
-    const snapshot = await get(eventsRef);
-    if (snapshot.exists()) {
-      const eventsData = snapshot.val();
-      return Object.keys(eventsData).map((key) => ({
-        id: key,
-        ...eventsData[key],
-      }));
-    } else {
-      return [];
-    }
+    const publicEvents = await getPublicEvents();
+    const privateEvents = await getPrivateEvents();
+
+    return [...publicEvents, ...privateEvents];
   } catch (error) {
     console.error("Error fetching events:", error);
     throw new Error("Failed to fetch events");
@@ -156,17 +147,18 @@ export const getPublicEvents = async () => {
   }
 };
 
-export const getPrivateEvents = async () => {
+
+export const getPrivateEvents = async (userHandle) => {
   const db = getDatabase();
-  const eventsRef = ref(db, "events/");
+  const eventsRef = ref(db, "events");
 
   try {
     const snapshot = await get(eventsRef);
     if (snapshot.exists()) {
       const eventsData = snapshot.val();
       return Object.keys(eventsData)
-        .filter((key) => !eventsData[key].isPublic)
-        .map((key) => ({
+        .filter(key => eventsData[key].peopleGoing && eventsData[key].peopleGoing[userHandle] && !eventsData[key].isPublic)
+        .map(key => ({
           id: key,
           ...eventsData[key],
         }));
@@ -174,10 +166,12 @@ export const getPrivateEvents = async () => {
       return [];
     }
   } catch (error) {
-    console.error("Error fetching events:", error);
-    throw new Error("Failed to fetch events");
+    console.error("Error fetching private events:", error);
+    throw new Error("Failed to fetch private events");
   }
 };
+
+
 
 export const getEventDetails = async (eventId) => {
   const db = getDatabase();

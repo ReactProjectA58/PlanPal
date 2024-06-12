@@ -16,17 +16,13 @@ export default function PrivateEvents() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const {
-    userData,
-    loading: userLoading,
-    setAppState,
-  } = useContext(AppContext);
+  const { userData, loading: userLoading, setAppState } = useContext(AppContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const privateEvents = await getPrivateEvents();
+        const privateEvents = await getPrivateEvents(userData.handle);
         setEvents(privateEvents);
       } catch (error) {
         setError("Failed to fetch private events. Please try again.");
@@ -35,8 +31,10 @@ export default function PrivateEvents() {
       }
     };
 
-    fetchEvents();
-  }, []);
+    if (userData) {
+      fetchEvents();
+    }
+  }, [userData]);
 
   const handleJoinEvent = async (eventId, eventTitle) => {
     if (!userData) {
@@ -87,7 +85,7 @@ export default function PrivateEvents() {
 
   return (
     <div className="events-container relative px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8 ">Private Events</h1>
+      <h1 className="text-4xl font-bold mb-8">Private Events</h1>
       <div className="absolute top-0 right-0 mt-4 mr-4 z-10">
         <GoBackArrow onClick={() => navigate("/events")} />
       </div>

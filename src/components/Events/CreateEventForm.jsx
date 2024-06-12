@@ -42,7 +42,7 @@ export default function CreateEvent() {
     endTime: "",
     location: "",
     description: "",
-    isPublic: false,
+    isPublic: true,
     isReoccurring: "never",
     category: "Entertainment",
   });
