@@ -6,6 +6,7 @@ import {
   equalTo,
   orderByChild,
   update,
+  getDatabase,
 } from "firebase/database";
 import { db } from "../config/firebase-config";
 
@@ -58,5 +59,22 @@ export const getUserContacts = async (handle) => {
   } catch (error) {
     console.error("Error fetching contacts:", error);
     throw error;
+  }
+};
+
+export const getUserAvatar = async (handle) => {
+  const userHandle = handle.toLowerCase();
+  const userRef = ref(getDatabase(), `users/${userHandle}/avatar`);
+
+  try {
+    const snapshot = await get(userRef);
+    if (snapshot.exists()) {
+      return snapshot.val();
+    } else {
+      return "https://via.placeholder.com/40";
+    }
+  } catch (error) {
+    console.error("Error fetching avatar:", error);
+    return "https://via.placeholder.com/40"; 
   }
 };

@@ -4,14 +4,14 @@ import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDgtfrE7KY3wCFVwQ2bz0pVqpG_pELY2Gk",
-  authDomain: "planpal-65592.firebaseapp.com",
-  databaseURL:
-    "https://planpal-65592-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "planpal-65592",
-  storageBucket: "planpal-65592.appspot.com",
-  messagingSenderId: "703107405045",
-  appId: "1:703107405045:web:8cced77b583a037f77e1bc",
+  apiKey: "AIzaSyAOv6te6B7Wiq0aRciZfgBPBwN-y9XUa4g",
+  authDomain: "planpal-final.firebaseapp.com",
+  databaseURL: "https://planpal-final-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "planpal-final",
+  storageBucket: "planpal-final.appspot.com",
+  messagingSenderId: "513816265162",
+  appId: "1:513816265162:web:78adcec825ee0fc8784f33",
+  measurementId: "G-D1Z9RGRJ8E"
 };
 
 

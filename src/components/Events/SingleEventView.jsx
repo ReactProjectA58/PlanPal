@@ -5,13 +5,14 @@ import {
   joinEvent,
   leaveEvent,
 } from "../../services/event.service.js";
+import { getUserAvatar } from "../../services/users.service.js";
 import { AppContext } from "../../context/AppContext.jsx";
 import { GoBackArrow, Edit } from "../../common/helpers/icons.jsx";
 import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
 import Map from "./Map.jsx";
 import "./styles.css";
 import LoadingSpinner from "../Loading/LoadingSpinner.jsx";
-import { themeChecker } from "../../common/helpers/toast.js";
+import { errorChecker, themeChecker } from "../../common/helpers/toast.js";
 import showConfirmDialog from "../ConfirmDialog.jsx";
 
 export default function SingleEventView() {
@@ -23,6 +24,7 @@ export default function SingleEventView() {
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
   const participantsRef = useRef(null);
+  const [participantsAvatars, setParticipantsAvatars] = useState({});
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -34,6 +36,12 @@ export default function SingleEventView() {
         const eventData = await getEventById(eventId);
         console.log("Event data fetched:", eventData);
         setEvent(eventData);
+
+        const avatars = {};
+        for (const participant in eventData.peopleGoing) {
+          avatars[participant] = await getUserAvatar(participant);
+        }
+        setParticipantsAvatars(avatars);
       } catch (error) {
         console.error("Error in fetchEvent:", error.message, error.stack);
         setError("Failed to fetch event data. Please try again.");
@@ -83,9 +91,9 @@ export default function SingleEventView() {
     }
   };
 
-  const handleLeaveEvent = async (eventId, eventTitle) => {
+  const handleLeaveEvent = async (eventTitle) => {
     showConfirmDialog("Do you want to leave this event?", async () => {
-      const result = await leaveEvent(userData.handle, eventId);
+      const result = await leaveEvent(userData.handle, eventTitle);
       if (result) {
         themeChecker("You have left the event successfully!");
         const updatedGoingToEvents = { ...userData.goingToEvents };
@@ -162,32 +170,36 @@ export default function SingleEventView() {
             className="dropdown-menu absolute max-h-48 overflow-y-auto mt-2 backdrop-blur-lg bg-white/10 text-black "
             style={{ zIndex: 999 }}
           >
-            <ul className="space-y-2 overflow-x-hidden ">
+            <ul className="space-y-2 overflow-x-hidden">
               {event.peopleGoing ? (
                 Object.entries(event.peopleGoing).map(
-                  ([participant, participantData], index) => (
-                    <li
-                      key={participant}
-                      className={`flex items-center space-x-3 hover:glass ${
-                        index % 3 === 0 && "mt-4"
-                      }`}
-                    >
-                      <img
-                        src={
-                          participantData.avatar ||
-                          "https://via.placeholder.com/40"
-                        }
-                        alt="Avatar"
-                        className="w-10 h-10 rounded-full"
-                      />
-                      <div>
-                        <div className="font-semibold">
-                          {participantData.name || participant}
+                  ([participant, participantData], index) => {
+                    const avatar =
+                      participantsAvatars[participant] ||
+                      "https://via.placeholder.com/40";
+                    return (
+                      <li
+                        key={participant}
+                        className={`flex items-center space-x-3 hover:glass ${
+                          index % 3 === 0 && "mt-4"
+                        }`}
+                      >
+                        <img
+                          src={avatar}
+                          alt="Avatar"
+                          className="w-10 h-10 rounded-full"
+                        />
+                        <div>
+                          <div className="font-semibold">
+                            {participantData && participantData.name
+                              ? participantData.name
+                              : participant}
+                          </div>
+                          <div className="text-sm">@{participant}</div>
                         </div>
-                        <div className="text-sm">@{participant}</div>
-                      </div>
-                    </li>
-                  )
+                      </li>
+                    );
+                  }
                 )
               ) : (
                 <li>No participants yet.</li>
@@ -196,7 +208,10 @@ export default function SingleEventView() {
           </div>
         </details>
         {userData.goingToEvents && userData.goingToEvents[event.title] ? (
-          <button className="btn" onClick={() => handleLeaveEvent(event.title)}>
+          <button
+            className="btn"
+            onClick={() => handleLeaveEvent(event.title)}
+          >
             Leave Event
           </button>
         ) : (

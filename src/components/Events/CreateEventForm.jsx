@@ -51,7 +51,6 @@ export default function CreateEvent() {
   const [contacts, setContacts] = useState([]);
   const [contactLists, setContactLists] = useState([]);
   const [invitedUsers, setInvitedUsers] = useState([]);
-  const [description, setDescription] = useState("");
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
   const inviteRef = useRef(null);
@@ -118,7 +117,7 @@ export default function CreateEvent() {
   const updateEvent = (value, key) => {
     setEvent({
       ...event,
-      [key]: key === "description" ? description : value,
+      [key]: value,
     });
   };
 
@@ -367,9 +366,10 @@ export default function CreateEvent() {
         </label>
         <div className="mt-1">
           <textarea
+            id="input-description"
             className="textarea textarea-bordered textarea-sm w-full"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={event.description}
+            onChange={(e) => updateEvent(e.target.value, "description")}
           ></textarea>
           {errors.description && (
             <div className="text-red-500 text-sm">{errors.description}</div>
