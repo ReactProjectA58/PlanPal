@@ -60,6 +60,22 @@ export default function AllEvents() {
     performSearch();
   }, [searchTerm, userData]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        categoriesRef.current &&
+        !categoriesRef.current.contains(event.target)
+      ) {
+        categoriesRef.current.removeAttribute("open");
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleJoinEvent = async (eventId, eventTitle) => {
     if (!userData) {
       errorChecker("User data is not available.");
@@ -179,10 +195,9 @@ export default function AllEvents() {
                     <li
                       key={index}
                       className="p-2 hover:bg-gray-200 cursor-pointer"
+                      onClick={() => handleSortByCategory(category)}
                     >
-                      <a onClick={() => handleSortByCategory(category)}>
-                        {category}
-                      </a>
+                      {category}
                     </li>
                   ))
                 )}
@@ -257,5 +272,5 @@ export default function AllEvents() {
         )}
       </div>
     </div>
-  );  
+  );
 }
