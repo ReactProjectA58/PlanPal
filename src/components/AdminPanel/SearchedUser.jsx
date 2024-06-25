@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { AppContext } from "../../context/AppContext";
 import { Link } from "react-router-dom";
 import { blockUser, unblockUser } from "../../services/admin.service.js";
-import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
+import { BASE, EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
 import { themeChecker } from "../../common/helpers/toast.js";
 import showConfirmDialog from "../ConfirmDialog.jsx";
 
@@ -75,7 +75,7 @@ export default function SearchedUser({ user }) {
             </button>
           )}
           {isAdmin && (
-            <Link to={`/user/${user.id}`} className="profile-link">
+            <Link to={`${BASE}user/${user.id}`} className="profile-link">
               <button className="btn btn-primary">Profile</button>
             </Link>
           )}

@@ -25,6 +25,7 @@ import {
   EVENT_ENTERTAINMENT_COVER,
   EVENT_CULTURE_AND_SCIENCE_COVER,
   EVENT_COVER_BY_DEFAULT,
+  BASE,
 } from "../../common/constants.js";
 import Map from "./Map.jsx";
 import "./styles.css";
@@ -210,7 +211,7 @@ export default function CreateEvent() {
       endTime,
       category,
     } = event;
-  
+
     const validationErrors = {
       title: validateTitle(title),
       description: validateDescription(description),
@@ -220,17 +221,17 @@ export default function CreateEvent() {
       endDate: validateEndDate(endDate, startDate),
       endTime: validateEndTime(endTime),
     };
-  
+
     const filteredErrors = Object.keys(validationErrors).reduce((acc, key) => {
       if (validationErrors[key]) acc[key] = validationErrors[key];
       return acc;
     }, {});
-  
+
     if (Object.keys(filteredErrors).length > 0) {
       setErrors(filteredErrors);
       return;
     }
-  
+
     try {
       let coverURL = "";
       if (coverFile) {
@@ -238,7 +239,7 @@ export default function CreateEvent() {
       } else {
         coverURL = getDefaultCoverByCategory(category);
       }
-  
+
       const newEvent = await addEvent(
         {
           ...event,
@@ -247,11 +248,11 @@ export default function CreateEvent() {
         },
         invitedUsers
       );
-  
+
       for (const userHandle of invitedUsers) {
         await inviteUser(newEvent.id, userData.handle, userHandle);
       }
-  
+
       const updatedUserData = {
         ...userData,
         goingToEvents: {
@@ -260,7 +261,7 @@ export default function CreateEvent() {
         },
       };
       setAppState(updatedUserData);
-  
+
       setEvent({
         title: "",
         startDate: "",
@@ -275,7 +276,7 @@ export default function CreateEvent() {
       });
       setCoverFile(null);
       setInvitedUsers([]);
-      navigate("/events");
+      navigate(`${BASE}events`);
     } catch (error) {
       console.error("Error creating event:", error);
       errorChecker("Failed to create event. Please try again.");
@@ -286,7 +287,7 @@ export default function CreateEvent() {
     <div className="create-event-form p-4 max-w-3xl mx-auto rounded-lg mt-8 mb-8">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Create Event</h1>
-        <GoBackArrow onClick={() => navigate("/events")} />
+        <GoBackArrow onClick={() => navigate(`${BASE}events`)} />
       </div>
 
       <div className="flex flex-wrap -mx-2">

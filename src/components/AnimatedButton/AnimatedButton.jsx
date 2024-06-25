@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import "./AnimatedButton.css";
+import { BASE } from "../../common/constants";
 
 function AnimatedButton() {
   const navigate = useNavigate();
@@ -41,14 +42,14 @@ function AnimatedButton() {
     <div className="btn-container">
       <button
         className="btn btn--hoverEffect2"
-        onClick={() => navigate("/register")}
+        onClick={() => navigate(`${BASE}register`)}
       >
         Join us
       </button>
       <button
         className="btn btn--ripple btn-primary"
         id="ripple"
-        onClick={() => navigate("/login")}
+        onClick={() => navigate(`${BASE}login`)}
       >
         Login
       </button>

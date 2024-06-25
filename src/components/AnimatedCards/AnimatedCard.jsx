@@ -17,7 +17,7 @@ const cardData = [
     name: "Kaloyan Kostov",
     title: "Junior Frontend Developer",
     linkedin: "https://www.linkedin.com/in/kaloyan-kostov-82b04926a/",
-    github: "https://github.com/kkkostov",
+    github: "https://github.com/Kaloyan-Kostov",
   },
   {
     profilePic: Milen,
@@ -29,7 +29,7 @@ const cardData = [
     github: "https://github.com/MilenDonevv",
   },
   {
-  profilePic: Yordan,
+    profilePic: Yordan,
     description:
       "I'm an enthusiastic junior developer specializing in JavaScript and React. I enjoy creating dynamic web applications and strive to deliver high-quality solutions.",
     name: "Yordan Dimitrov",

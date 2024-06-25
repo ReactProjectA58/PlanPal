@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../../context/AppContext";
 import { ToastContainer } from "react-toastify";
 import { themeChecker } from "../../../common/helpers/toast";
+import { BASE } from "../../../common/constants";
 
 export default function PanelLists({ setCurrentView, list, allContacts }) {
   const { userData } = useContext(AppContext);
@@ -49,7 +50,7 @@ export default function PanelLists({ setCurrentView, list, allContacts }) {
           className="text-sm cursor-pointer tracking-wider"
           onClick={() => {
             setCurrentView(list.title);
-            navigate("/contacts");
+            navigate(`${BASE}contacts`);
           }}
         >
           {list.title}

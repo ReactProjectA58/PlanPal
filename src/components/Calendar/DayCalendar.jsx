@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   format,
   add,
@@ -10,9 +10,10 @@ import {
   getMinutes,
   parseISO,
 } from "date-fns";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import RecurringEvents from '../Events/RecurringEvents';
+import RecurringEvents from "../Events/RecurringEvents";
+import { BASE } from "../../common/constants";
 
 function DayCalendar({ events, selectedDate, onDateChange }) {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -43,18 +44,23 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
 
   const currentHour = getHours(currentTime);
   const currentMinute = getMinutes(currentTime);
-  const isToday = format(selectedDate, "yyyy-MM-dd") === format(currentTime, "yyyy-MM-dd");
+  const isToday =
+    format(selectedDate, "yyyy-MM-dd") === format(currentTime, "yyyy-MM-dd");
   const currentTimePosition = (currentHour + currentMinute / 60) * 3;
 
-  const recurringEventsForSelectedDay = RecurringEvents({ events, selectedDate });
+  const recurringEventsForSelectedDay = RecurringEvents({
+    events,
+    selectedDate,
+  });
 
   const eventsForSelectedDay = events.filter((event) => {
     const eventStart = parseISO(`${event.startDate}T${event.startTime}`);
     const eventEnd = parseISO(`${event.endDate}T${event.endTime}`);
     return (
-      (format(eventStart, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd")) ||
-      (format(eventEnd, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd")) ||
-      (eventStart < startOfDay(selectedDate) && eventEnd > endOfDay(selectedDate))
+      format(eventStart, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd") ||
+      format(eventEnd, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd") ||
+      (eventStart < startOfDay(selectedDate) &&
+        eventEnd > endOfDay(selectedDate))
     );
   });
 
@@ -64,18 +70,22 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
   ];
 
   const getCategoryColor = (category, isPast) => {
-    const baseColor = {
-      Sports: "bg-green-300",
-      "Culture & Science": "bg-blue-300",
-      Entertainment: "bg-yellow-300",
-      default: "bg-gray-300",
-    }[category] || "bg-gray-300";
+    const baseColor =
+      {
+        Sports: "bg-green-300",
+        "Culture & Science": "bg-blue-300",
+        Entertainment: "bg-yellow-300",
+        default: "bg-gray-300",
+      }[category] || "bg-gray-300";
 
     return `${baseColor} ${isPast ? "bg-opacity-10" : "bg-opacity-20"}`;
   };
 
   return (
-    <div className="pt-16" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
+    <div
+      className="pt-16"
+      style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", padding: "20px" }}
+    >
       <div className="px-4 mx-auto sm:px-7 md:px-6 max-w-full">
         <div className="flex items-center justify-between mb-8">
           <button
@@ -129,28 +139,44 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
         <div className="border p-4 relative overflow-hidden max-w-full">
           <div className="relative">
             {hours.map((hour, index) => (
-              <div key={index} className="flex flex-col justify-start border-t h-12">
+              <div
+                key={index}
+                className="flex flex-col justify-start border-t h-12"
+              >
                 <div className="w-16 text-right pr-2 text-xs">
                   {format(hour, "HH:mm")}
                 </div>
               </div>
             ))}
             {allEventsForSelectedDay.map((event, index) => {
-              const eventStart = parseISO(`${event.startDate}T${event.startTime}`);
+              const eventStart = parseISO(
+                `${event.startDate}T${event.startTime}`
+              );
               const eventEnd = parseISO(`${event.endDate}T${event.endTime}`);
 
               const isPast = eventEnd < currentTime;
 
-              const eventStartHour = eventStart < startOfDay(selectedDate) ? 0 : getHours(eventStart);
-              const eventStartMinute = eventStart < startOfDay(selectedDate) ? 0 : getMinutes(eventStart);
+              const eventStartHour =
+                eventStart < startOfDay(selectedDate)
+                  ? 0
+                  : getHours(eventStart);
+              const eventStartMinute =
+                eventStart < startOfDay(selectedDate)
+                  ? 0
+                  : getMinutes(eventStart);
               const startTop = (eventStartHour + eventStartMinute / 60) * 3;
 
-              const eventEndHour = eventEnd > endOfDay(selectedDate) ? 24 : getHours(eventEnd);
-              const eventEndMinute = eventEnd > endOfDay(selectedDate) ? 0 : getMinutes(eventEnd);
-              const eventHeight = (eventEndHour + eventEndMinute / 60) * 3 - startTop;
+              const eventEndHour =
+                eventEnd > endOfDay(selectedDate) ? 24 : getHours(eventEnd);
+              const eventEndMinute =
+                eventEnd > endOfDay(selectedDate) ? 0 : getMinutes(eventEnd);
+              const eventHeight =
+                (eventEndHour + eventEndMinute / 60) * 3 - startTop;
 
-              const eventWidth = (100 / allEventsForSelectedDay.length) - GAP_SIZE;
-              const eventLeft = index * ((100 / allEventsForSelectedDay.length) + GAP_SIZE);
+              const eventWidth =
+                100 / allEventsForSelectedDay.length - GAP_SIZE;
+              const eventLeft =
+                index * (100 / allEventsForSelectedDay.length + GAP_SIZE);
 
               const categoryColor = getCategoryColor(event.category, isPast);
 
@@ -167,7 +193,7 @@ function DayCalendar({ events, selectedDate, onDateChange }) {
                     marginRight: `${GAP_SIZE / 2}rem`,
                     opacity: isPast ? 0.5 : 1,
                   }}
-                  onClick={() => navigate(`/events/${event.id}`)}
+                  onClick={() => navigate(`${BASE}events/${event.id}`)}
                 >
                   <div className="px-2 py-1">
                     <div className="font-semibold">{event.title}</div>

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { logoutUser } from "../services/auth.service";
-import { DARK_THEME, LIGHT_THEME } from "../common/constants";
+import { BASE, DARK_THEME, LIGHT_THEME } from "../common/constants";
 import { Moon, Sun } from "../common/helpers/icons";
 import SideBar from "./Sidebar/Sidebar";
 import AnimatedButton from "./AnimatedButton/AnimatedButton";
@@ -22,14 +22,14 @@ export default function Header() {
   };
 
   const handleClick = () => {
-    navigate(`/profile/${userData ? userData.handle : ""}`);
+    navigate(`${BASE}profile/${userData ? userData.handle : ""}`);
   };
 
   const logout = async () => {
     showConfirmDialog("Leaving us so quickly?", async () => {
       await logoutUser();
       setAppState({ user: null, userData: null });
-      navigate(`/`);
+      navigate(`${BASE}`);
     });
   };
 
@@ -42,7 +42,7 @@ export default function Header() {
   return (
     <div
       className={`navbar bg-base-300 min-w-full flex justify-between items-center backdrop-blur-lg bg-white/10 z-50 ${
-        location.pathname === "/"
+        location.pathname === `${BASE}`
           ? "fixed top-0 left-0 w-full z-50 backdrop-blur-lg bg-white/10"
           : ""
       }`}

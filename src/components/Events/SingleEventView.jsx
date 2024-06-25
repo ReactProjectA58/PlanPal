@@ -8,7 +8,7 @@ import {
 import { getUserAvatar } from "../../services/users.service.js";
 import { AppContext } from "../../context/AppContext.jsx";
 import { GoBackArrow, Edit } from "../../common/helpers/icons.jsx";
-import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
+import { BASE, EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
 import Map from "./Map.jsx";
 import "./styles.css";
 import LoadingSpinner from "../Loading/LoadingSpinner.jsx";
@@ -87,7 +87,7 @@ export default function SingleEventView() {
         },
       };
       setAppState(updatedUserData);
-      navigate("/my-events");
+      navigate(`${BASE}my-events`);
     }
   };
 
@@ -102,7 +102,7 @@ export default function SingleEventView() {
           ...userData,
           goingToEvents: updatedGoingToEvents,
         });
-        navigate("/my-events");
+        navigate(`${BASE}my-events`);
       }
     });
   };
@@ -122,10 +122,10 @@ export default function SingleEventView() {
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">{event.title}</h1>
         <div className="flex items-center space-x-2">
-          <GoBackArrow onClick={() => navigate("/events")} />
+          <GoBackArrow onClick={() => navigate(`${BASE}events`)} />
           {(userData?.handle === event.creator ||
             userData?.role === "Admin") && (
-            <Edit onClick={() => navigate(`/update-event/${eventId}`)} />
+            <Edit onClick={() => navigate(`${BASE}update-event/${eventId}`)} />
           )}
         </div>
       </div>
@@ -208,10 +208,7 @@ export default function SingleEventView() {
           </div>
         </details>
         {userData.goingToEvents && userData.goingToEvents[event.title] ? (
-          <button
-            className="btn"
-            onClick={() => handleLeaveEvent(event.title)}
-          >
+          <button className="btn" onClick={() => handleLeaveEvent(event.title)}>
             Leave Event
           </button>
         ) : (

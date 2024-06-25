@@ -36,11 +36,6 @@ function RegisterButton({ onClick }) {
     };
   }, []);
 
-  const handleClick = () => {
-    navigate("/");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
     <button
       className="btn btn--hoverEffect2 m-auto"

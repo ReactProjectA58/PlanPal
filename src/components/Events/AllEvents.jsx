@@ -8,7 +8,7 @@ import {
 } from "../../services/event.service.js";
 import { AppContext } from "../../context/AppContext.jsx";
 import { useNavigate } from "react-router-dom";
-import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
+import { BASE, EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
 import "./styles.css";
 import { errorChecker, themeChecker } from "../../common/helpers/toast.js";
 import LoadingSpinner from "../Loading/LoadingSpinner.jsx";
@@ -94,7 +94,7 @@ export default function AllEvents() {
         },
       };
       setAppState(updatedUserData);
-      navigate("/my-events");
+      navigate(`${BASE}my-events`);
     }
   };
 
@@ -114,7 +114,7 @@ export default function AllEvents() {
           ...userData,
           goingToEvents: updatedGoingToEvents,
         });
-        navigate("/my-events");
+        navigate(`${BASE}my-events`);
       }
     });
   };
@@ -150,16 +150,24 @@ export default function AllEvents() {
       </div>
       <div className="flex justify-between mb-8">
         <div className="flex space-x-4">
-          <a href="/create-event">
+          <button onClick={() => navigate(`${BASE}create-event`)}>
             <button className="btn btn-primary">Create Event</button>
-          </a>
-          <a href="/my-events">
+          </button>
+
+          <button onClick={() => navigate(`${BASE}my-events`)}>
             <button className="btn">My Events</button>
-          </a>
-          <button className="btn" onClick={() => navigate("/public-events")}>
+          </button>
+
+          <button
+            className="btn"
+            onClick={() => navigate(`${BASE}public-events`)}
+          >
             Public Events
           </button>
-          <button className="btn" onClick={() => navigate("/private-events")}>
+          <button
+            className="btn"
+            onClick={() => navigate(`${BASE}private-events`)}
+          >
             Private Events
           </button>
         </div>
@@ -245,7 +253,7 @@ export default function AllEvents() {
                 <div className="card-actions flex space-x-2">
                   <button
                     className="btn btn-primary"
-                    onClick={() => navigate(`/events/${event.id}`)}
+                    onClick={() => navigate(`${BASE}events/${event.id}`)}
                   >
                     View more
                   </button>

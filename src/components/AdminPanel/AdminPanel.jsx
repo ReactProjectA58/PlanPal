@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import { useState, useRef, useEffect } from "react"; // Import necessary hooks from react
+import { BASE } from "../../common/constants";
 
 export default function AdminPanelDropdown() {
   const [open, setOpen] = useState(false);
@@ -40,7 +41,7 @@ export default function AdminPanelDropdown() {
           <li>
             <Link
               className="dropdown-item"
-              to="/user-search"
+              to={`${BASE}user-search`}
               onClick={handleLinkClick}
             >
               Users searcher
@@ -49,7 +50,7 @@ export default function AdminPanelDropdown() {
           <li>
             <Link
               className="dropdown-item"
-              to="/events"
+              to={`${BASE}events`}
               onClick={handleLinkClick}
             >
               View All Events

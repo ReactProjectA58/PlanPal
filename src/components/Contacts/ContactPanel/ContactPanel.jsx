@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../../context/AppContext";
 import { updateContact } from "../../../services/contacts.service";
 import { themeChecker } from "../../../common/helpers/toast";
+import { BASE } from "../../../common/constants";
 
 export default function ContactPanel({
   isSearching,
@@ -85,11 +86,11 @@ export default function ContactPanel({
   };
 
   const handleSearch = (query) => {
-    navigate(`/contacts?query=${query}`);
+    navigate(`${BASE}contacts?query=${query}`);
   };
 
   const handleContactsBackClick = () => {
-    navigate("/contacts");
+    navigate(`${BASE}contacts`);
     setCurrentView("My Contacts");
     setClearSearch((prev) => !prev);
   };

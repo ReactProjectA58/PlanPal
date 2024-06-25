@@ -3,7 +3,7 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContext.jsx";
 import { joinEvent, leaveEvent } from "../../services/event.service.js";
-import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
+import { BASE, EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
 import { errorChecker, themeChecker } from "../../common/helpers/toast.js";
 import showConfirmDialog from "../ConfirmDialog.jsx";
 
@@ -75,7 +75,9 @@ const EventItem = ({ event }) => {
           <button
             className="btn btn-primary"
             onClick={() =>
-              user ? navigate(`/events/${event.id}`) : navigate(`/login`)
+              user
+                ? navigate(`${BASE}events/${event.id}`)
+                : navigate(`${BASE}login`)
             }
           >
             View more

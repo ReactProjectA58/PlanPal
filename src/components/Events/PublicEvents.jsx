@@ -7,7 +7,7 @@ import {
 import { AppContext } from "../../context/AppContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { GoBackArrow } from "../../common/helpers/icons.jsx";
-import { EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
+import { BASE, EVENT_COVER_BY_DEFAULT } from "../../common/constants.js";
 import { errorChecker, themeChecker } from "../../common/helpers/toast.js";
 import showConfirmDialog from "../ConfirmDialog.jsx";
 import LoadingSpinner from "../Loading/LoadingSpinner.jsx";
@@ -56,7 +56,7 @@ export default function PublicEvents() {
         },
       };
       setAppState(updatedUserData);
-      navigate("/my-events");
+      navigate(`${BASE}my-events`);
     }
   };
 
@@ -71,7 +71,7 @@ export default function PublicEvents() {
           ...userData,
           goingToEvents: updatedGoingToEvents,
         });
-        navigate("/my-events");
+        navigate(`${BASE}my-events`);
       }
     });
   };
@@ -89,7 +89,7 @@ export default function PublicEvents() {
     <div className="events-container relative px-4 py-8">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-4xl text-center font-bold ">Public Events</h1>
-        <GoBackArrow onClick={() => navigate("/events")} />
+        <GoBackArrow onClick={() => navigate(`${BASE}events`)} />
       </div>
       <div className="flex flex-col space-y-6 mt-4">
         {events.length === 0 ? (
@@ -130,7 +130,7 @@ export default function PublicEvents() {
                 <div className="card-actions flex space-x-2">
                   <button
                     className="btn btn-primary"
-                    onClick={() => navigate(`/events/${event.id}`)}
+                    onClick={() => navigate(`${BASE}events/${event.id}`)}
                   >
                     View more
                   </button>

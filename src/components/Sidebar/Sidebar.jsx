@@ -1,6 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import { Burger, CancelBurger } from "../../common/helpers/icons";
+import { BASE } from "../../common/constants";
 
 export default function SideBar() {
+  const navigate = useNavigate();
+
   return (
     <div className="drawer w-max z-50">
       <input id="my-drawer" type="checkbox" className="drawer-toggle " />
@@ -24,28 +28,38 @@ export default function SideBar() {
           <br />
           <br />
           <br />
-          {/* <li>
-            <a href="/dashboard">Dashboard</a>
-          </li> */}
+
           <li>
-            <a href="/calendar" className="btn flex justify-start">
+            <button
+              onClick={() => navigate(`${BASE}calendar`)}
+              className="btn flex justify-start"
+            >
               Calendar
-            </a>
+            </button>
           </li>
           <li>
-            <a href="/events" className="btn flex justify-start">
+            <button
+              onClick={() => navigate(`${BASE}events`)}
+              className="btn flex justify-start"
+            >
               Events
-            </a>
+            </button>
           </li>
           <li>
-            <a href="/contacts" className="btn flex justify-start">
+            <button
+              onClick={() => navigate(`${BASE}contacts`)}
+              className="btn flex justify-start"
+            >
               Contacts
-            </a>
+            </button>
           </li>
           <li>
-            <a href="/about" className="btn flex justify-start">
+            <button
+              onClick={() => navigate(`${BASE}about`)}
+              className="btn flex justify-start"
+            >
               About us
-            </a>
+            </button>
           </li>
         </ul>
       </div>

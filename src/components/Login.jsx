@@ -4,6 +4,7 @@ import { AppContext } from "../context/AppContext";
 import { loginUser } from "../services/auth.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"; // Import icons directly
+import { BASE } from "../common/constants";
 
 export default function Login() {
   const { user, setAppState } = useContext(AppContext);
@@ -18,7 +19,7 @@ export default function Login() {
 
   useEffect(() => {
     if (user) {
-      navigate(location.state?.from.pathname || "/");
+      navigate(location.state?.from.pathname || `${BASE}`);
     }
   }, [user, navigate, location.state]);
 
@@ -35,7 +36,7 @@ export default function Login() {
       setError(response.error);
     } else {
       setAppState({ user: response.user, userData: null });
-      navigate(location.state?.from.pathname || "/");
+      navigate(location.state?.from.pathname || `${BASE}`);
     }
   };
 

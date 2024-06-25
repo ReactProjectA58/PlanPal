@@ -28,6 +28,7 @@ import { uploadCover } from "../../services/upload.service.js";
 import "./styles.css";
 import { errorChecker, themeChecker } from "../../common/helpers/toast.js";
 import showConfirmDialog from "../ConfirmDialog.jsx";
+import { BASE } from "../../common/constants.js";
 
 const MAPBOX_TOKEN =
   "sk.eyJ1IjoibWRvbmV2diIsImEiOiJjbHhia2xlMzAwZWx5MmlzODhzdm83M3RrIn0.I9KO-Iji0OdFNuq23omNhQ";
@@ -147,7 +148,7 @@ export default function UpdateEvent() {
 
     try {
       await updateEvent(eventId, event);
-      navigate(`/events/${eventId}`);
+      navigate(`${BASE}events/${eventId}`);
     } catch (error) {
       console.error("Error updating event:", error);
       errorChecker("Failed to update event. Please try again.");
@@ -161,7 +162,7 @@ export default function UpdateEvent() {
         try {
           const result = await deleteEvent(eventId);
           if (result) {
-            navigate("/my-events");
+            navigate(`${BASE}my-events`);
           } else {
             errorChecker("Failed to delete event. Please try again.");
           }
@@ -327,7 +328,7 @@ export default function UpdateEvent() {
             onChange={handleUpdateCover}
           />
           <DeleteEvent onClick={handleDeleteEvent} />
-          <GoBackArrow onClick={() => navigate(`/events/${eventId}`)} />
+          <GoBackArrow onClick={() => navigate(`${BASE}events/${eventId}`)} />
         </div>
       </div>
       {[

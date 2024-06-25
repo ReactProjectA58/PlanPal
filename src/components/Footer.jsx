@@ -1,23 +1,27 @@
+import { useNavigate } from "react-router-dom";
 import {
   AboutUs,
   ContactUs,
   GithubIcon,
   GithubIssues,
 } from "../common/helpers/icons.jsx";
+import { BASE } from "../common/constants.js";
 
 export default function Footer() {
+  const navigate = useNavigate();
+
   return (
     <footer className="bg-primary-800 text-white  ">
       <footer className="footer bg-base-300 text-base-content  bottom-0 p-3 flex justify-around backdrop-blur-lg bg-white/10">
         <nav>
           <h6 className=" font-semibold uppercase ">Team 03</h6>
           <div className="footer-icons grid grid-flow-col gap-4 mt-1">
-            <a href="/contact-us">
+            <button onClick={() => navigate(`${BASE}contact-us`)}>
               <ContactUs />
-            </a>
-            <a href="/about">
+            </button>
+            <button onClick={() => navigate(`${BASE}about`)}>
               <AboutUs />
-            </a>
+            </button>
           </div>
         </nav>
         <nav>

@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PanelLists from "./PanelLists";
+import { BASE } from "../../../common/constants";
 
 export default function ContactList({
   setCurrentView,
@@ -25,7 +26,7 @@ export default function ContactList({
           className={`text-sm cursor-pointer tracking-wider `}
           onClick={() => {
             setCurrentView("My Contacts");
-            navigate("/contacts");
+            navigate(`${BASE}contacts`);
           }}
         >
           My Contacts

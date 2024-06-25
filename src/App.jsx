@@ -27,6 +27,7 @@ import AboutUs from "./views/AboutUs.jsx";
 import UserSearch from "./components/AdminPanel/UserSearch.jsx";
 import Blocked from "./views/Blocked.jsx";
 import Authenticated from "./hoc/Authenticated"; // Import the Authenticated component
+import { BASE } from "./common/constants.js";
 
 const HomeWithLoading = withLoading(Home);
 const LoginWithLoading = withLoading(Login);
@@ -96,7 +97,7 @@ function App() {
           <div className="container mx-auto min-h-screen min-w-min">
             <Routes>
               <Route
-                path="/"
+                path={`${BASE}`}
                 element={
                   appState.user ? (
                     appState.userData && appState.userData.isBlocked ? (
@@ -109,10 +110,13 @@ function App() {
                   )
                 }
               />
-              <Route path="/login" element={<LoginWithLoading />} />
-              <Route path="/register" element={<RegisterWithLoading />} />
+              <Route path={`${BASE}login`} element={<LoginWithLoading />} />
               <Route
-                path="/contacts"
+                path={`${BASE}register`}
+                element={<RegisterWithLoading />}
+              />
+              <Route
+                path={`${BASE}contacts`}
                 element={
                   <Authenticated>
                     <ContactsDashboardWithLoading />
@@ -120,7 +124,7 @@ function App() {
                 }
               />
               <Route
-                path="/dashboard"
+                path={`${BASE}dashboard`}
                 element={
                   <Authenticated>
                     <DashboardWithLoading />
@@ -128,7 +132,7 @@ function App() {
                 }
               />
               <Route
-                path="/create-event"
+                path={`${BASE}create-event`}
                 element={
                   <Authenticated>
                     <CreateEventWithLoading />
@@ -136,7 +140,7 @@ function App() {
                 }
               />
               <Route
-                path="/calendar"
+                path={`${BASE}calendar`}
                 element={
                   <Authenticated>
                     <CalendarWithLoading />
@@ -144,7 +148,7 @@ function App() {
                 }
               />
               <Route
-                path="/update-event/:eventId"
+                path={`${BASE}update-event/:eventId`}
                 element={
                   <Authenticated>
                     <UpdateEvent />
@@ -152,7 +156,7 @@ function App() {
                 }
               />
               <Route
-                path="/events"
+                path={`${BASE}events`}
                 element={
                   <Authenticated>
                     <AllEventsWithLoading />
@@ -160,7 +164,7 @@ function App() {
                 }
               />
               <Route
-                path="/my-events"
+                path={`${BASE}my-events`}
                 element={
                   <Authenticated>
                     <MyEventsWithLoading />
@@ -168,7 +172,7 @@ function App() {
                 }
               />
               <Route
-                path="/public-events"
+                path={`${BASE}public-events`}
                 element={
                   <Authenticated>
                     <PublicEventsWithLoading />
@@ -176,7 +180,7 @@ function App() {
                 }
               />
               <Route
-                path="/private-events"
+                path={`${BASE}private-events`}
                 element={
                   <Authenticated>
                     <PrivateEventsWithLoading />
@@ -184,7 +188,7 @@ function App() {
                 }
               />
               <Route
-                path="/events/:eventId"
+                path={`${BASE}events/:eventId`}
                 element={
                   <Authenticated>
                     <SingleViewEventWithLoading />
@@ -192,16 +196,16 @@ function App() {
                 }
               />
               <Route
-                path="/profile/:handle"
+                path={`${BASE}profile/:handle`}
                 element={
                   <Authenticated>
                     <ProfileWithLoading />
                   </Authenticated>
                 }
               />
-              <Route path="/about" element={<AboutUsWithLoading />} />
-              <Route path="/user-search" element={<UserSearch />} />
-              <Route path="/blocked" element={<Blocked />} />
+              <Route path={`${BASE}about`} element={<AboutUsWithLoading />} />
+              <Route path={`${BASE}user-search`} element={<UserSearch />} />
+              <Route path={`${BASE}blocked`} element={<Blocked />} />
               <Route path="*" element={<NotFoundWithLoading />} />
             </Routes>
           </div>

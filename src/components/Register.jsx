@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import "daisyui/dist/full.css"; // Ensure you have daisyUI installed and imported
 import RegisterButton from "./AnimatedButton/RegisterButton";
+import { BASE } from "../common/constants";
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -29,7 +30,7 @@ export default function Register() {
 
   useEffect(() => {
     if (user) {
-      navigate("/");
+      navigate(`${BASE}`);
     }
   }, [user, navigate]);
 
@@ -55,7 +56,7 @@ export default function Register() {
         setErrors(validationErrors);
         return;
       }
-  
+
       const credential = await registerUser(form.email, form.password);
       const userData = {
         uid: credential.user.uid,
@@ -70,21 +71,22 @@ export default function Register() {
         isBlocked: false,
         role: "User",
       };
-  
+
       try {
         await createUserHandle(userData);
         setAppState({ user: credential.user, userData });
-        navigate("/");
+        navigate(`${BASE}`);
       } catch (error) {
         console.error("Error creating user handle:", error);
-        setErrors({ server: "Failed to create user handle. Please try again." });
+        setErrors({
+          server: "Failed to create user handle. Please try again.",
+        });
       }
     } catch (error) {
       console.error("Error during registration:", error);
       setErrors({ server: "Registration failed. Please try again." });
     }
   };
-  
 
   return (
     <div className="register-form flex flex-col gap-4 sm:flex-row justify-center items-center mx-auto p-4 rounded-lg mt-8 mb-8 w-auto h-auto">

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AnimatedButton.css";
+import { BASE } from "../../common/constants";
 
 function HomeButton() {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ function HomeButton() {
   }, []);
 
   const handleClick = () => {
-    navigate("/");
+    navigate(`${BASE}dashboard`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
