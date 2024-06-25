@@ -31,8 +31,9 @@ export default function AllEvents() {
 
   useEffect(() => {
     const fetchEvents = async () => {
+      if (!userData) return;
       try {
-        const eventsData = await getAllEvents();
+        const eventsData = await getAllEvents(userData.handle);
         setEvents(eventsData);
       } catch (error) {
         setError("Failed to fetch events. Please try again.");
@@ -42,21 +43,22 @@ export default function AllEvents() {
     };
 
     fetchEvents();
-  }, []);
+  }, [userData]);
 
   useEffect(() => {
     const performSearch = async () => {
+      if (!userData) return;
       if (searchTerm.trim() !== "") {
         const results = await searchEventsByName(searchTerm);
         setEvents(results);
       } else {
-        const eventsData = await getAllEvents();
+        const eventsData = await getAllEvents(userData.handle);
         setEvents(eventsData);
       }
     };
 
     performSearch();
-  }, [searchTerm]);
+  }, [searchTerm, userData]);
 
   const handleJoinEvent = async (eventId, eventTitle) => {
     if (!userData) {
@@ -79,7 +81,13 @@ export default function AllEvents() {
       navigate("/my-events");
     }
   };
+
   const handleLeaveEvent = async (eventTitle) => {
+    if (!userData) {
+      errorChecker("User data is not available.");
+      return;
+    }
+
     showConfirmDialog("Do you want to leave this event?", async () => {
       const result = await leaveEvent(userData.handle, eventTitle);
       if (result) {
@@ -249,5 +257,5 @@ export default function AllEvents() {
         )}
       </div>
     </div>
-  );
+  );  
 }

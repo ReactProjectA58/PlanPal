@@ -51,7 +51,7 @@ export default function CreateEvent() {
   const [contacts, setContacts] = useState([]);
   const [contactLists, setContactLists] = useState([]);
   const [invitedUsers, setInvitedUsers] = useState([]);
-  const { userData } = useContext(AppContext);
+  const { userData, setAppState } = useContext(AppContext);
   const navigate = useNavigate();
   const inviteRef = useRef(null);
   const inviteListRef = useRef(null);
@@ -210,7 +210,7 @@ export default function CreateEvent() {
       endTime,
       category,
     } = event;
-
+  
     const validationErrors = {
       title: validateTitle(title),
       description: validateDescription(description),
@@ -220,17 +220,17 @@ export default function CreateEvent() {
       endDate: validateEndDate(endDate, startDate),
       endTime: validateEndTime(endTime),
     };
-
+  
     const filteredErrors = Object.keys(validationErrors).reduce((acc, key) => {
       if (validationErrors[key]) acc[key] = validationErrors[key];
       return acc;
     }, {});
-
+  
     if (Object.keys(filteredErrors).length > 0) {
       setErrors(filteredErrors);
       return;
     }
-
+  
     try {
       let coverURL = "";
       if (coverFile) {
@@ -238,7 +238,7 @@ export default function CreateEvent() {
       } else {
         coverURL = getDefaultCoverByCategory(category);
       }
-
+  
       const newEvent = await addEvent(
         {
           ...event,
@@ -247,11 +247,20 @@ export default function CreateEvent() {
         },
         invitedUsers
       );
-
+  
       for (const userHandle of invitedUsers) {
         await inviteUser(newEvent.id, userData.handle, userHandle);
       }
-
+  
+      const updatedUserData = {
+        ...userData,
+        goingToEvents: {
+          ...userData.goingToEvents,
+          [event.title]: true,
+        },
+      };
+      setAppState(updatedUserData);
+  
       setEvent({
         title: "",
         startDate: "",

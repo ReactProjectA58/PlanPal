@@ -23,10 +23,10 @@ export const addEvent = async (event) => {
   return { id: eventId, ...newEvent };
 };
 
-export const getAllEvents = async () => {
+export const getAllEvents = async (userHandle) => {
   try {
     const publicEvents = await getPublicEvents();
-    const privateEvents = await getPrivateEvents();
+    const privateEvents = await getPrivateEvents(userHandle);
 
     return [...publicEvents, ...privateEvents];
   } catch (error) {
@@ -34,6 +34,7 @@ export const getAllEvents = async () => {
     throw new Error("Failed to fetch events");
   }
 };
+
 
 export const joinEvent = async (handle, eventId) => {
   const eventRef = ref(db, `events/${eventId}`);
@@ -170,6 +171,7 @@ export const getPrivateEvents = async (userHandle) => {
     throw new Error("Failed to fetch private events");
   }
 };
+
 
 
 
