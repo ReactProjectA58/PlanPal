@@ -12,6 +12,8 @@ import {
   isToday,
   parse,
   startOfToday,
+  startOfDay,
+  sub,
 } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -36,8 +38,8 @@ export default function MonthCalendar({ onDateClick, events }) {
   }, [selectedDay]);
 
   const previousMonth = () => {
-    const firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
-    setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
+    const firstDayPrevMonth = add(firstDayCurrentMonth, { months: -1 });
+    setCurrentMonth(format(firstDayPrevMonth, "MMM-yyyy"));
   };
 
   const nextMonth = () => {
@@ -53,17 +55,16 @@ export default function MonthCalendar({ onDateClick, events }) {
   const getEventsForDay = (day) => {
     const recurringEventsForSelectedDay = RecurringEvents({ events, selectedDate: day });
     const eventsForSelectedDay = events.filter((event) =>
-      isEqual(parse(event.startDate, "yyyy-MM-dd", new Date()), day)
+      isEqual(startOfDay(parse(event.startDate, "yyyy-MM-dd", new Date())), startOfDay(day))
     );
-  
+
     const allEventsForSelectedDay = [
       ...eventsForSelectedDay,
       ...recurringEventsForSelectedDay,
     ];
-  
+
     return allEventsForSelectedDay;
   };
-  
 
   const getEventIcon = (category) => {
     const iconMap = {
@@ -88,6 +89,11 @@ export default function MonthCalendar({ onDateClick, events }) {
     end: endOfMonth(firstDayCurrentMonth),
   });
 
+  const startDayOfWeek = (getDay(firstDayCurrentMonth) + 6) % 7; // Adjust to start week on Monday
+  const blankDays = Array.from({ length: startDayOfWeek }).map((_, index) => (
+    <div key={`blank-${index}`} className="py-1.5 relative h-auto"></div>
+  ));
+
   return (
     <div className="pt-16" style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', padding: '20px' }}>
       <div className="max-w-full h-full px-2 sm:px-4 mx-auto">
@@ -95,7 +101,7 @@ export default function MonthCalendar({ onDateClick, events }) {
           <button
             type="button"
             onClick={previousMonth}
-            className="flex items-center justify-center p-2  text-400 hover:text-500"
+            className="flex items-center justify-center p-2 text-400 hover:text-500"
           >
             <span className="sr-only">Previous month</span>
             <svg
@@ -146,6 +152,7 @@ export default function MonthCalendar({ onDateClick, events }) {
               {day}
             </div>
           ))}
+          {blankDays}
           {days.map((day, dayIdx) => (
             <div
               key={day.toString()}
