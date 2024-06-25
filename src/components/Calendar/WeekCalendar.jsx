@@ -64,12 +64,6 @@ function WeekCalendar({ events = [], onDateClick = () => {}, isInWeekView = fals
     return [...eventsForSelectedDay, ...recurringEventsForSelectedDay];
   };
 
-  const maxEventsPerDay = Math.max(
-    ...daysOfWeek.map(
-      (day) => getEventsForDay(day).length
-    )
-  );
-
   const isOverlapping = (startA, endA, startB, endB) => {
     return startA < endB && startB < endA;
   };
