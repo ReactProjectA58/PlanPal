@@ -5,12 +5,17 @@ import { BASE } from "../../common/constants";
 export default function SideBar() {
   const navigate = useNavigate();
 
+  const handleNavigation = (path) => {
+    navigate(path);
+    document.getElementById("my-drawer").checked = false; // Close the drawer
+  };
+
   return (
     <div className="drawer w-max z-50">
-      <input id="my-drawer" type="checkbox" className="drawer-toggle " />
+      <input id="my-drawer" type="checkbox" className="drawer-toggle" />
 
       <label
-        className="btn btn-circle swap swap-rotate z-10 relative  "
+        className="btn btn-circle swap swap-rotate z-10 relative"
         htmlFor="my-drawer"
       >
         <Burger />
@@ -31,7 +36,7 @@ export default function SideBar() {
 
           <li>
             <button
-              onClick={() => navigate(`${BASE}calendar`)}
+              onClick={() => handleNavigation(`${BASE}calendar`)}
               className="btn flex justify-start"
             >
               Calendar
@@ -39,7 +44,7 @@ export default function SideBar() {
           </li>
           <li>
             <button
-              onClick={() => navigate(`${BASE}events`)}
+              onClick={() => handleNavigation(`${BASE}events`)}
               className="btn flex justify-start"
             >
               Events
@@ -47,7 +52,7 @@ export default function SideBar() {
           </li>
           <li>
             <button
-              onClick={() => navigate(`${BASE}contacts`)}
+              onClick={() => handleNavigation(`${BASE}contacts`)}
               className="btn flex justify-start"
             >
               Contacts
@@ -55,7 +60,7 @@ export default function SideBar() {
           </li>
           <li>
             <button
-              onClick={() => navigate(`${BASE}about`)}
+              onClick={() => handleNavigation(`${BASE}about`)}
               className="btn flex justify-start"
             >
               About us
